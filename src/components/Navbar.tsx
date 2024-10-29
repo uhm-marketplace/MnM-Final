@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable @typescript-eslint/indent */
 
@@ -82,6 +83,14 @@ const NavBar: React.FC = () => {
                   </Nav.Link>,
                 ]
               : ''}
+            <Nav.Link
+              id={ComponentIDs.projectsMenuItem}
+              active={pathname === '/lucky'}
+              href="/lucky"
+              key="lucky"
+            >
+              I'm Feeling Lucky
+            </Nav.Link>
           </Nav>
           <Nav className="justify-content-end">
             {currentUser ? (
