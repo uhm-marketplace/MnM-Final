@@ -1,6 +1,22 @@
 {
     "defaultProfiles": [
       {
+        "firstName": "Lionel Derrick",
+        "lastName": "Roxas",
+        "bio": "I am an ICS 314 Student and I am interested in Software Engineering and Climate Change.",
+        "title": "Student",
+        "interests": [
+          "Software Engineering",
+          "Climate Change"
+        ],
+        "projects":[
+          "RadGrad",
+          "Open Power Quality"
+        ],
+        "picture": "https://github.com/philipmjohnson.png",
+        "email": "ldroxas@hawaii.edu"
+      },
+      {
         "firstName": "Philip",
         "lastName": "Johnson",
         "bio": "I am a Professor and like to paddle outrigger canoes.",

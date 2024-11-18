@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-
 'use client';
 
 import React from 'react';
@@ -15,22 +13,25 @@ const HomePage = ({
   projects,
   profileInterests,
   profileProjects,
+  isNewProfile,
 }: {
   profile: Profile;
   interests: Interest[];
   projects: Project[];
   profileInterests: Interest[];
   profileProjects: Project[];
+  isNewProfile: boolean;
 }) => (
   <Container id={PageIDs.homePage} style={pageStyle}>
     <Col>
-      <h2 className="text-center">Your Profile</h2>
+      <h2 className="text-center">{isNewProfile ? 'Create Your Profile' : 'Your Profile'}</h2>
       <ProfileForm
         profile={profile}
         interests={interests}
         projects={projects}
         profileInterests={profileInterests}
         profileProjects={profileProjects}
+        isNewProfile={isNewProfile}
       />
     </Col>
   </Container>
