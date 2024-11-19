@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { Entity, entity } from 'simpler-state';
 
 const entities: Record<string, { savedEntity: Entity<any>; savedSetter: (value: any) => void }> = {};

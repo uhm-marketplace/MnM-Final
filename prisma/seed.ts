@@ -46,7 +46,7 @@ async function main() {
   });
   const password = await hash('foo', 10);
   config.defaultProfiles.forEach(async (profile) => {
-    console.log(`  Creating/Updating profile ${profile.email}`);
+    console.log(`Creating/Updating profile ${profile.email}`);
     // upsert interests from the profile
     profile.interests.forEach(async (interest) => {
       await prisma.interest.upsert({
@@ -95,24 +95,39 @@ async function main() {
       }
     });
     // Upsert/Create the profile projects
-    profile.projects.forEach(async (project) => {
-      // console.log(`Project member ${dbProfile.firstName} ${project}`);
-      const dbProject = await prisma.project.findFirst({
-        where: { name: project },
-      });
-      const dbProfileProject = await prisma.profileProject.findMany({
-        where: { profileId: dbProfile.id, projectId: dbProject!.id },
-      });
-      if (dbProfileProject.length === 0 && dbProject !== null) {
-        // Create the profile project
-        await prisma.profileProject.create({
-          data: {
+    // Upsert/Create the profile projects
+    await Promise.all(
+      profile.projects.map(async (project) => {
+        const dbProject = await prisma.project.findFirst({
+          where: { name: project },
+        });
+
+        // Guard clause - if no project found, skip this iteration
+        if (!dbProject) {
+          console.log(
+            `Project "${project}" not found in database, skipping...`,
+          );
+          return;
+        }
+
+        const dbProfileProject = await prisma.profileProject.findMany({
+          where: {
             profileId: dbProfile.id,
             projectId: dbProject.id,
           },
         });
-      }
-    });
+
+        if (dbProfileProject.length === 0) {
+          // Create the profile project
+          await prisma.profileProject.create({
+            data: {
+              profileId: dbProfile.id,
+              projectId: dbProject.id,
+            },
+          });
+        }
+      }),
+    );
   });
 }
 

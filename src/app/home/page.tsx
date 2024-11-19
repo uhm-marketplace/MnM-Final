@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import React from 'react';
 import { getServerSession } from 'next-auth';
 import { Profile, Interest, Project } from '@prisma/client';
@@ -9,41 +8,60 @@ import HomePage from './HomePage';
 
 const HomePageHelper = async () => {
   const session = await getServerSession(authOptions);
-  // console.log(session);
+
   loggedInProtectedPage(
     session as {
       user: { email: string; id: string; randomKey: string };
     } | null,
   );
-  const email = (session && session.user && session.user.email) || '';
-  const profile = await prisma.profile.findUnique({
-    where: { email },
-  });
-  const interests = await prisma.interest.findMany();
-  // const allInterestNames = interests.map((interest) => interest.name);
-  const projects = await prisma.project.findMany();
-  // const allProjectNames = projects.map((project) => project.name);
-  const profileInterests = await prisma.profileInterest.findMany({
-    where: { profileId: profile!.id },
-  });
-  const proInterests: Interest[] = profileInterests.map((profileInterest) => {
-    const i = interests.find((interest) => interest.id === profileInterest.interestId);
-    return i as Interest;
-  });
-  const profileProjects = await prisma.profileProject.findMany({
-    where: { profileId: profile!.id },
-  });
-  const proProjects: Project[] = profileProjects.map((profileProject) => {
-    const p = projects.find((project) => project.id === profileProject.projectId);
-    return p as Project;
-  });
+
+  const email = session?.user?.email || '';
+  const [profile, interests, projects] = await Promise.all([
+    prisma.profile.findUnique({ where: { email } }),
+    prisma.interest.findMany(),
+    prisma.project.findMany(),
+  ]);
+
+  if (!profile) {
+    // If no profile exists, return the HomePage with just the email
+    return (
+      <HomePage
+        profile={{ email } as Profile}
+        interests={interests}
+        projects={projects}
+        profileInterests={[]}
+        profileProjects={[]}
+        isNewProfile
+      />
+    );
+  }
+
+  // If profile exists, get their interests and projects
+  const [profileInterests, profileProjects] = await Promise.all([
+    prisma.profileInterest.findMany({
+      where: { profileId: profile.id },
+    }),
+    prisma.profileProject.findMany({
+      where: { profileId: profile.id },
+    }),
+  ]);
+
+  const proInterests: Interest[] = profileInterests
+    .map((profileInterest) => interests.find((interest) => interest.id === profileInterest.interestId))
+    .filter((interest): interest is Interest => interest !== undefined);
+
+  const proProjects: Project[] = profileProjects
+    .map((profileProject) => projects.find((project) => project.id === profileProject.projectId))
+    .filter((project): project is Project => project !== undefined);
+
   return (
     <HomePage
-      profile={profile as Profile}
+      profile={profile}
       interests={interests}
       projects={projects}
       profileInterests={proInterests}
       profileProjects={proProjects}
+      isNewProfile={false}
     />
   );
 };

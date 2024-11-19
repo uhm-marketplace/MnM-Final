@@ -25,6 +25,7 @@ export interface IProfile {
   bio?: string;
   interests?: (string | undefined)[] | undefined;
   projects?: (string | undefined)[] | undefined;
+  picture?: string;
 }
 
 export const ProfileSchema = Yup.object().shape({
@@ -34,4 +35,5 @@ export const ProfileSchema = Yup.object().shape({
   bio: Yup.string().optional(),
   interests: Yup.array().of(Yup.string()),
   projects: Yup.array().of(Yup.string()),
+  picture: Yup.string().url('Invalid URL').nullable(),
 });
