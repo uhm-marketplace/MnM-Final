@@ -25,7 +25,7 @@ export interface IProfile {
   bio?: string;
   interests?: (string | undefined)[] | undefined;
   projects?: (string | undefined)[] | undefined;
-  picture?: string;
+  picture?: string | null;
 }
 
 export const ProfileSchema = Yup.object().shape({

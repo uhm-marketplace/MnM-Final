@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { Container, Row } from 'react-bootstrap';
 import { PageIDs } from '@/utilities/ids';
-import { pageStyle } from '@/utilities/pageStyle';
+import pageStyle from '@/utilities/pageStyle';
 import InterestCardHelper from './InterestCardHelper';
 
 const InterestsPage = async () => {
