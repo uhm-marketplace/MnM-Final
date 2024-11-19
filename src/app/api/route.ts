@@ -1,8 +1,10 @@
+/* eslint-disable import/prefer-default-export */
+// src/app/api/route.ts
 import { getServerSession } from 'next-auth/next';
 import { NextResponse } from 'next/server';
-import { authOptions } from './auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
-export default async function GET() {
+export async function GET() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -11,6 +13,5 @@ export default async function GET() {
     });
   }
 
-  // console.log('GET API', session)
   return NextResponse.json({ authenticated: !!session });
 }
