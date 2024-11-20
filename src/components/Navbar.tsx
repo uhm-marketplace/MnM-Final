@@ -13,6 +13,8 @@ import { ComponentIDs } from '@/utilities/ids';
 
 const NavBar: React.FC = () => {
   const { data: session } = useSession();
+  const userWithRole = session?.user as { email: string; randomKey: string };
+  const role = userWithRole?.randomKey;
   const pathname = usePathname();
   const currentUser = session?.user?.email;
   // const userWithRole = session?.user as { email: string; randomKey: string };
@@ -91,6 +93,13 @@ const NavBar: React.FC = () => {
             >
               I'm Feeling Lucky
             </Nav.Link>
+            {currentUser && role === 'ADMIN' ? (
+              <Nav.Link id="admin-stuff-nav" href="/admin" key="admin" active={pathname === '/admin'}>
+                Admin
+              </Nav.Link>
+            ) : (
+              ''
+            )}
           </Nav>
           <Nav className="justify-content-end">
             {currentUser ? (
