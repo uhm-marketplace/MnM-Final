@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "playwright-development": "npx playwright test",
-    "playwright-ci": "next dev && npx playwright test"
+    "playwright-ci": "next dev && npx playwright test",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
