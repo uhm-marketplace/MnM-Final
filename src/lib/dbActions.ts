@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 
-'use server';
+'use client';
 
 import { compare, hash } from 'bcrypt';
 import { revalidatePath } from 'next/cache';
@@ -113,7 +113,7 @@ export async function upsertProject(project: any) {
 }
 
 export async function createProfile(data: IProfile) {
-  'use server';
+  'use client';
 
   try {
     const {
