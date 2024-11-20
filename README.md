@@ -10,6 +10,12 @@
 
 ## About UHM Marketplace
 
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
 UHM Marketplace is a comprehensive platform for University of Hawai‘i students and staff to buy, sell, and trade a wide variety of items, from electronics and textbooks to collectibles and accessories. Modeled after popular platforms like Amazon and eBay, UH Marketplace aims to provide users with a seamless and secure shopping experience tailored to the university community.
 
 UHM Marketplace displays various different technologies useful for Software Engineering students such as:
