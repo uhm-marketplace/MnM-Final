@@ -19,17 +19,17 @@ const NavBar: React.FC = () => {
       {/* Main Navbar with Border */}
       <Navbar expand="lg" className={`border ${navbarClassName}`}>
         <Container>
-        <Navbar.Brand href="/" className="align-items-center">
-      <span style={{ fontWeight: 800, fontSize: '24px', display: 'flex', alignItems: 'center' }}>
-        <Image
-          src="/images/manoanow1.png"
-          width={50}
-          style={{ marginBottom: 3, marginRight: 10 }}
-          alt="Mānoa Now Marketplace"
-        />
-        Mānoa Now Marketplace
-      </span>
-    </Navbar.Brand>
+          <Navbar.Brand href="/" className="align-items-center">
+            <span style={{ fontWeight: 800, fontSize: '24px', display: 'flex', alignItems: 'center' }}>
+              <Image
+                src="/images/manoanow1.png"
+                width={50}
+                style={{ marginBottom: 3, marginRight: 10 }}
+                alt="Mānoa Now Marketplace"
+              />
+              Mānoa Now Marketplace
+            </span>
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls={ComponentIDs.basicNavbarNav} />
           <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
             <Nav className="me-auto justify-content-start">
@@ -62,12 +62,12 @@ const NavBar: React.FC = () => {
             {/* Right side of Navbar */}
             <Nav className="d-flex align-items-center justify-content-end">
               {/* Search Bar */}
-              <Form inline className="me-3">
+              <Form className="d-inline me-3">
                 <FormControl
                   type="text"
                   placeholder="Search..."
-                  className="rounded-pill" // Make the input rounded
-                  style={{ width: '200px' }} // Adjust width as needed
+                  className="rounded-pill"
+                  style={{ width: '200px' }}
                 />
               </Form>
 
