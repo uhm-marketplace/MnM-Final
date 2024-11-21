@@ -57,7 +57,7 @@ const NavBar: React.FC = () => {
             {/* Right side of Navbar */}
             <Nav className="d-flex align-items-center justify-content-end">
               {/* Search Bar */}
-              <Form inline className="me-3">
+              <Form className="d-inline-flex me-3">
                 <FormControl
                   type="text"
                   placeholder="Search..."
@@ -108,52 +108,53 @@ const NavBar: React.FC = () => {
         </Container>
       </Navbar>
 
-      {/* Smaller Navbar with Border */}
-      <Navbar expand="lg" className={`border ${currentUser ? 'bg-dark' : 'bg-light'} py-1`}>
-        <Container>
-          <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
-            <Nav className="me-auto">
-              {/* Browse Categories Dropdown */}
-              <NavDropdown title="Browse Categories" id={ComponentIDs.browseCategoriesDropdown}>
-                <NavDropdown.Item href="/digital-hq" id={ComponentIDs.digitalHQMenuItem}>
-                  Digital HQ
-                </NavDropdown.Item>
-                <NavDropdown.Item href="/study-tools" id={ComponentIDs.studyToolsMenuItem}>
-                  Study Tools
-                </NavDropdown.Item>
-                <NavDropdown.Item href="/campus-closet" id={ComponentIDs.campusClosetMenuItem}>
-                  Campus Closet
-                </NavDropdown.Item>
-                <NavDropdown.Item href="/self-care" id={ComponentIDs.selfCareMenuItem}>
-                  Self-Care
-                </NavDropdown.Item>
-                <NavDropdown.Item href="/dorm-life" id={ComponentIDs.dormLifeMenuItem}>
-                  Dorm Life
-                </NavDropdown.Item>
-              </NavDropdown>
+     {/* Smaller Navbar with Border */}
+<Navbar expand="lg" className={`border ${navbarClassName} py-1`}>
+  <Container>
+    <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
+      <Nav className="me-auto">
+        {/* Browse Categories Dropdown */}
+        <NavDropdown title="Browse Categories" id={ComponentIDs.browseCategoriesDropdown}>
+          <NavDropdown.Item href="/digital-hq" id={ComponentIDs.digitalHQMenuItem}>
+            Digital HQ
+          </NavDropdown.Item>
+          <NavDropdown.Item href="/study-tools" id={ComponentIDs.studyToolsMenuItem}>
+            Study Tools
+          </NavDropdown.Item>
+          <NavDropdown.Item href="/campus-closet" id={ComponentIDs.campusClosetMenuItem}>
+            Campus Closet
+          </NavDropdown.Item>
+          <NavDropdown.Item href="/self-care" id={ComponentIDs.selfCareMenuItem}>
+            Self-Care
+          </NavDropdown.Item>
+          <NavDropdown.Item href="/dorm-life" id={ComponentIDs.dormLifeMenuItem}>
+            Dorm Life
+          </NavDropdown.Item>
+        </NavDropdown>
 
-              {/* Vendors Link */}
-              <Nav.Link active={pathname === '/vendors'} href="/vendors" id={ComponentIDs.vendorsMenuItem}>
-                Vendors
-              </Nav.Link>
-            </Nav>
+        {/* Vendors Link */}
+        <Nav.Link active={pathname === '/vendors'} href="/vendors" id={ComponentIDs.vendorsMenuItem}>
+          Vendors
+        </Nav.Link>
+      </Nav>
 
-            {/* Right-aligned links: Sell and Customer Service */}
-            <Nav className="justify-content-end">
-              <Nav.Link active={pathname === '/sell'} href="/sell" id={ComponentIDs.sellMenuItem}>
-                Sell
-              </Nav.Link>
-              <Nav.Link
-                active={pathname === '/customer-service'}
-                href="/customer-service"
-                id={ComponentIDs.customerServiceMenuItem}
-              >
-                Customer Service
-              </Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      {/* Right-aligned links: Sell and Customer Service */}
+      <Nav className="justify-content-end">
+        <Nav.Link active={pathname === '/sell'} href="/sell" id={ComponentIDs.sellMenuItem}>
+          Sell
+        </Nav.Link>
+        <Nav.Link
+          active={pathname === '/customer-service'}
+          href="/customer-service"
+          id={ComponentIDs.customerServiceMenuItem}
+        >
+          Customer Service
+        </Nav.Link>
+      </Nav>
+    </Navbar.Collapse>
+  </Container>
+</Navbar>
+
     </>
   );
 };
