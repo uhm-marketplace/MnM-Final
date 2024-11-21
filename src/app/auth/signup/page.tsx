@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+
 'use client';
 
 import { signIn } from 'next-auth/react';
@@ -21,7 +23,7 @@ const SignUp = () => {
       .test(
         'is-hawaii-email',
         'Only hawaii.edu emails are allowed',
-        (value) => value?.endsWith('@hawaii.edu') || false
+        (value) => value?.endsWith('@hawaii.edu') || false,
       ),
     password: Yup.string()
       .required('Password is required')
@@ -72,7 +74,9 @@ const SignUp = () => {
                       {...register('email')}
                       className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                     />
-                    <div className="invalid-feedback">{errors.email?.message}</div>
+                    <div className="invalid-feedback">
+                      {errors.email?.message}
+                    </div>
                   </Form.Group>
 
                   <Form.Group className="form-group">
@@ -82,7 +86,9 @@ const SignUp = () => {
                       {...register('password')}
                       className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                     />
-                    <div className="invalid-feedback">{errors.password?.message}</div>
+                    <div className="invalid-feedback">
+                      {errors.password?.message}
+                    </div>
                   </Form.Group>
                   <Form.Group className="form-group">
                     <Form.Label>Confirm Password</Form.Label>
@@ -91,7 +97,9 @@ const SignUp = () => {
                       {...register('confirmPassword')}
                       className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
                     />
-                    <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
+                    <div className="invalid-feedback">
+                      {errors.confirmPassword?.message}
+                    </div>
                   </Form.Group>
                   <Form.Group className="form-group py-3">
                     <Row>
@@ -101,7 +109,11 @@ const SignUp = () => {
                         </Button>
                       </Col>
                       <Col>
-                        <Button type="button" onClick={() => reset()} className="btn btn-warning float-right">
+                        <Button
+                          type="button"
+                          onClick={() => reset()}
+                          className="btn btn-warning float-right"
+                        >
                           Reset
                         </Button>
                       </Col>
