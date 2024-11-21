@@ -15,6 +15,19 @@ const NavBar: React.FC = () => {
   const cartItemCount = 5; // Example count of items in the shopping cart, you can dynamically update this
 
   return (
+<Navbar expand="lg" style={menuStyle} className={navbarClassName}>
+  <Container>
+    <Navbar.Brand href="/" className="align-items-center">
+      <span style={{ fontWeight: 800, fontSize: '24px', display: 'flex', alignItems: 'center' }}>
+        <Image
+          src="/images/manoanow1.png"
+          width={50}
+          style={{ marginBottom: 3, marginRight: 10 }}
+          alt="Mānoa Now Marketplace"
+        />
+        Mānoa Now Marketplace
+      </span>
+    </Navbar.Brand>
     <>
       {/* Main Navbar with Border */}
       <Navbar expand="lg" className={`border ${navbarClassName}`}>
