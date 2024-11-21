@@ -23,12 +23,12 @@ export default function Home() {
               Start by making your profile....
             </h2>
             <Row md={1} lg={2}>
-            <Col xs={6} style={{ paddingBottom: '20px' }}>
-        <Image src="/images/signup.png" width={500} alt="sign up" />
-      </Col>
-      <Col xs={6} style={{ paddingBottom: '20px' }}>
-        <Image src="/images/createprofile.png" width={500} alt="profile" />
-      </Col>
+              <Col xs={6} style={{ paddingBottom: '20px' }}>
+                <Image src="/images/signup.png" width={500} alt="sign up" />
+              </Col>
+              <Col xs={6} style={{ paddingBottom: '20px' }}>
+                <Image src="/images/createprofile.png" width={500} alt="profile" />
+              </Col>
             </Row>
           </Container>
         </div>
