@@ -21,14 +21,19 @@ const NavBar: React.FC = () => {
   const navbarClassName = currentUser ? 'bg-dark' : 'bg-light';
   // const navbarVariant = currentUser ? 'dark' : 'light';
   return (
-    <Navbar expand="lg" style={menuStyle} className={navbarClassName}>
-      <Container>
-        <Navbar.Brand href="/" className="align-items-center">
-          <span style={{ fontWeight: 800, fontSize: '24px' }}>
-            <Image src="/images/logo.png" width={50} style={{ marginBottom: 3 }} alt="Bowfolios" />
-            Bowfolios
-          </span>
-        </Navbar.Brand>
+<Navbar expand="lg" style={menuStyle} className={navbarClassName}>
+  <Container>
+    <Navbar.Brand href="/" className="align-items-center">
+      <span style={{ fontWeight: 800, fontSize: '24px', display: 'flex', alignItems: 'center' }}>
+        <Image
+          src="/images/manoanow1.png"
+          width={50}
+          style={{ marginBottom: 3, marginRight: 10 }}
+          alt="Mānoa Now Marketplace"
+        />
+        Mānoa Now Marketplace
+      </span>
+    </Navbar.Brand>
         <Navbar.Toggle aria-controls={ComponentIDs.basicNavbarNav} />
         <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
           <Nav className="me-auto justify-content-start">
@@ -83,14 +88,6 @@ const NavBar: React.FC = () => {
                   </Nav.Link>,
                 ]
               : ''}
-            <Nav.Link
-              id={ComponentIDs.projectsMenuItem}
-              active={pathname === '/lucky'}
-              href="/lucky"
-              key="lucky"
-            >
-              I'm Feeling Lucky
-            </Nav.Link>
           </Nav>
           <Nav className="justify-content-end">
             {currentUser ? (
