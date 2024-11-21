@@ -25,7 +25,7 @@ const NavBar: React.FC = () => {
     <>
       {/* Top Navbar */}
       <Navbar
-        expanded="lg"
+        expanded={false}
         style={{ paddingTop: '2px', paddingBottom: '2px', fontSize: '0.9rem', borderBottom: '2px solid #ddd' }}
         className="bg-secondary"
       >
@@ -63,7 +63,7 @@ const NavBar: React.FC = () => {
       </Navbar>
 
       {/* Main Navbar */}
-      <Navbar expanded="lg" style={{ borderBottom: '2px solid #ddd' }} className={navbarClassName}>
+      <Navbar expanded={false} style={{ borderBottom: '2px solid #ddd' }} className={navbarClassName}>
         <div className="container">
           <Navbar.Brand href="/" className="align-items-center">
             <span style={{ fontWeight: 800, fontSize: '24px' }}>
@@ -91,7 +91,7 @@ const NavBar: React.FC = () => {
             </Nav>
 
             {/* Search Bar */}
-            <Form onSubmit={handleSearch}>
+            <Form onSubmit={handleSearch} className="d-flex">
               <FormControl
                 type="search"
                 placeholder="Search..."
