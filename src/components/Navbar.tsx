@@ -2,141 +2,157 @@
 
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { Image, Nav, Navbar, NavDropdown, Form, FormControl, Badge } from 'react-bootstrap';
-import { BoxArrowRight, PersonFill, PersonPlusFill, PersonCircle, Cart3 } from 'react-bootstrap-icons';
-import Link from 'next/link';
+import { Image, Nav, Navbar, NavDropdown, Container, Form, FormControl } from 'react-bootstrap';
+import { BoxArrowRight, PersonCircle, Cart } from 'react-bootstrap-icons'; // Using PersonCircle for the login icon
+import { ComponentIDs } from '@/utilities/ids';
 
 const NavBar: React.FC = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
   const currentUser = session?.user?.email;
   const navbarClassName = currentUser ? 'bg-dark' : 'bg-light';
-  const cartItemCount = 5;
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const searchInput = form.elements[0] as HTMLInputElement;
-    const searchValue = searchInput.value;
-    console.log('Searching for:', searchValue);
-  };
+  const cartItemCount = 5; // Example count of items in the shopping cart, you can dynamically update this
 
   return (
     <>
-      {/* Top Navbar */}
-      <Navbar
-        expanded={false}
-        style={{ paddingTop: '2px', paddingBottom: '2px', fontSize: '0.9rem', borderBottom: '2px solid #ddd' }}
-        className="bg-secondary"
-      >
-        <div className="container">
-          <Nav className="me-auto">
-            <Link href="/limited-time-offers" passHref>
-              <Nav.Link className="text-muted" style={{ fontSize: '0.8rem', marginRight: '15px' }}>
-                Limited Time Offers
-              </Nav.Link>
-            </Link>
-            <Link href="/giftcards" passHref>
-              <Nav.Link className="text-muted" style={{ fontSize: '0.8rem', marginRight: '15px' }}>
-                Giftcards
-              </Nav.Link>
-            </Link>
-            <Link href="/about-us" passHref>
-              <Nav.Link className="text-muted" style={{ fontSize: '0.8rem', marginRight: '15px' }}>
-                About Us
-              </Nav.Link>
-            </Link>
-          </Nav>
-          <Nav className="ms-auto">
-            <Link href="/sell" passHref>
-              <Nav.Link className="text-muted" style={{ fontSize: '0.8rem', marginLeft: '15px' }}>
-                Sell
-              </Nav.Link>
-            </Link>
-            <Link href="/customer-service" passHref>
-              <Nav.Link className="text-muted" style={{ fontSize: '0.8rem', marginLeft: '15px' }}>
-                Customer Service
-              </Nav.Link>
-            </Link>
-          </Nav>
-        </div>
-      </Navbar>
-
-      {/* Main Navbar */}
-      <Navbar expanded={false} style={{ borderBottom: '2px solid #ddd' }} className={navbarClassName}>
-        <div className="container">
+      {/* Main Navbar with Border */}
+      <Navbar expand="lg" className={`border ${navbarClassName}`}>
+        <Container>
           <Navbar.Brand href="/" className="align-items-center">
             <span style={{ fontWeight: 800, fontSize: '24px' }}>
-              <Image src="/images/logo.png" width={50} alt="Mānoa Now Marketplace" />
+              <Image src="/images/logo.png" width={50} style={{ marginBottom: 3 }} alt="Mānoa Now Marketplace" />
               Mānoa Now Marketplace
             </span>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="navbar-nav" />
-          <Navbar.Collapse id="navbar-nav">
-            <Nav className="me-auto">
+          <Navbar.Toggle aria-controls={ComponentIDs.basicNavbarNav} />
+          <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
+            <Nav className="me-auto justify-content-start">
               {currentUser && (
-                <Link href="/home" passHref>
-                  <Nav.Link active={pathname === '/home'}>Home</Nav.Link>
-                </Link>
+                <Nav.Link active={pathname === '/home'} href="/home" id={ComponentIDs.homeMenuItem}>
+                  Home
+                </Nav.Link>
               )}
-              <Link href="/profiles" passHref>
-                <Nav.Link active={pathname === '/profiles'}>Profiles</Nav.Link>
-              </Link>
-              <Link href="/projects" passHref>
-                <Nav.Link active={pathname === '/projects'}>Projects</Nav.Link>
-              </Link>
-              <Link href="/interests" passHref>
-                <Nav.Link active={pathname === '/interests'}>Interests</Nav.Link>
-              </Link>
+              <Nav.Link active={pathname === '/profiles'} href="/profiles" id={ComponentIDs.profilesMenuItem}>
+                Profiles
+              </Nav.Link>
+              <Nav.Link active={pathname === '/projects'} href="/projects" id={ComponentIDs.projectsMenuItem}>
+                Projects
+              </Nav.Link>
+              <Nav.Link active={pathname === '/interests'} href="/interests" id={ComponentIDs.interestsMenuItem}>
+                Interests
+              </Nav.Link>
+              {currentUser && (
+                <>
+                  <Nav.Link active={pathname === '/addProject'} href="/addProject" id={ComponentIDs.addProjectMenuItem}>
+                    Add Project
+                  </Nav.Link>
+                  <Nav.Link active={pathname === '/filter'} href="/filter" id={ComponentIDs.filterMenuItem}>
+                    Filter
+                  </Nav.Link>
+                </>
+              )}
             </Nav>
 
-            {/* Search Bar */}
-            <Form onSubmit={handleSearch} className="d-flex">
-              <FormControl
-                type="search"
-                placeholder="Search..."
-                className="me-2"
-                aria-label="Search"
-              />
-            </Form>
+            {/* Right side of Navbar */}
+            <Nav className="d-flex align-items-center justify-content-end">
+              {/* Search Bar */}
+              <Form inline className="me-3">
+                <FormControl
+                  type="text"
+                  placeholder="Search..."
+                  className="rounded-pill" // Make the input rounded
+                  style={{ width: '200px' }} // Adjust width as needed
+                />
+              </Form>
 
-            {/* User and Cart */}
-            <Nav className="justify-content-end">
               {currentUser ? (
-                <NavDropdown title={currentUser}>
-                  <NavDropdown.Item href="/auth/signout">
+                // User Dropdown with PersonCircle icon
+                <NavDropdown id={ComponentIDs.currentUserDropdown} title={<PersonCircle size={20} />}>
+                  <NavDropdown.Item id={ComponentIDs.currentUserDropdownSignOut} href="/auth/signout">
                     <BoxArrowRight />
                     {' '}
                     Sign out
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <NavDropdown title={<PersonCircle size={20} />}>
-                  <NavDropdown.Item href="/auth/signin">
-                    <PersonFill />
-                    {' '}
+                // Login Dropdown
+                <NavDropdown id={ComponentIDs.loginDropdown} title={<PersonCircle size={20} />}>
+                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignIn} href="/auth/signin">
                     Sign in
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/auth/signup">
-                    <PersonPlusFill />
-                    {' '}
+                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignUp} href="/auth/signup">
                     Sign up
                   </NavDropdown.Item>
                 </NavDropdown>
               )}
 
-              {/* Cart Icon */}
-              <Nav.Link href="/cart" className="d-flex align-items-center position-relative">
-                <Cart3 size={20} />
+              {/* Cart Icon with Badge */}
+              <Nav.Link href="/cart" id={ComponentIDs.cartMenuItem} className="position-relative">
+                <Cart size={20} />
                 {cartItemCount > 0 && (
-                  <Badge pill bg="success" style={{ position: 'absolute', top: '-5px', right: '-5px' }}>
+                  <span
+                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                    style={{
+                      fontSize: '12px',
+                      padding: '3px 8px',
+                      color: '#fff',
+                    }}
+                  >
                     {cartItemCount}
-                  </Badge>
+                  </span>
                 )}
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
-        </div>
+        </Container>
+      </Navbar>
+
+      {/* Smaller Navbar with Border */}
+      <Navbar expand="lg" className={`border ${currentUser ? 'bg-dark' : 'bg-light'} py-1`}>
+        <Container>
+          <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
+            <Nav className="me-auto">
+              {/* Browse Categories Dropdown */}
+              <NavDropdown title="Browse Categories" id={ComponentIDs.browseCategoriesDropdown}>
+                <NavDropdown.Item href="/digital-hq" id={ComponentIDs.digitalHQMenuItem}>
+                  Digital HQ
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/study-tools" id={ComponentIDs.studyToolsMenuItem}>
+                  Study Tools
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/campus-closet" id={ComponentIDs.campusClosetMenuItem}>
+                  Campus Closet
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/self-care" id={ComponentIDs.selfCareMenuItem}>
+                  Self-Care
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/dorm-life" id={ComponentIDs.dormLifeMenuItem}>
+                  Dorm Life
+                </NavDropdown.Item>
+              </NavDropdown>
+
+              {/* Vendors Link */}
+              <Nav.Link active={pathname === '/vendors'} href="/vendors" id={ComponentIDs.vendorsMenuItem}>
+                Vendors
+              </Nav.Link>
+            </Nav>
+
+            {/* Right-aligned links: Sell and Customer Service */}
+            <Nav className="justify-content-end">
+              <Nav.Link active={pathname === '/sell'} href="/sell" id={ComponentIDs.sellMenuItem}>
+                Sell
+              </Nav.Link>
+              <Nav.Link
+                active={pathname === '/customer-service'}
+                href="/customer-service"
+                id={ComponentIDs.customerServiceMenuItem}
+              >
+                Customer Service
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
       </Navbar>
     </>
   );
