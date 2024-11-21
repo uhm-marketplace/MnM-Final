@@ -19,12 +19,17 @@ const NavBar: React.FC = () => {
       {/* Main Navbar with Border */}
       <Navbar expand="lg" className={`border ${navbarClassName}`}>
         <Container>
-          <Navbar.Brand href="/" className="align-items-center">
-            <span style={{ fontWeight: 800, fontSize: '24px' }}>
-              <Image src="/images/logo.png" width={50} style={{ marginBottom: 3 }} alt="Mānoa Now Marketplace" />
-              Mānoa Now Marketplace
-            </span>
-          </Navbar.Brand>
+        <Navbar.Brand href="/" className="align-items-center">
+      <span style={{ fontWeight: 800, fontSize: '24px', display: 'flex', alignItems: 'center' }}>
+        <Image
+          src="/images/manoanow1.png"
+          width={50}
+          style={{ marginBottom: 3, marginRight: 10 }}
+          alt="Mānoa Now Marketplace"
+        />
+        Mānoa Now Marketplace
+      </span>
+    </Navbar.Brand>
           <Navbar.Toggle aria-controls={ComponentIDs.basicNavbarNav} />
           <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
             <Nav className="me-auto justify-content-start">
