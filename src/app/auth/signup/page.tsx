@@ -21,7 +21,7 @@ const SignUp = () => {
       .test(
         'is-hawaii-email',
         'Only hawaii.edu emails are allowed',
-        (value) => value?.endsWith('@hawaii.edu') || false
+        (value) => value?.endsWith('@hawaii.edu') || false,
       ),
     password: Yup.string()
       .required('Password is required')
