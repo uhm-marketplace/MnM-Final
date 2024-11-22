@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import { Image, Nav, Navbar, NavDropdown, Container, Form, FormControl } from 'react-bootstrap';
 import { BoxArrowRight, PersonCircle, Cart } from 'react-bootstrap-icons'; // Using PersonCircle for the login icon
 import { ComponentIDs } from '@/utilities/ids';
+import Link from 'next/link'; // Use Next.js Link component
 
 const NavBar: React.FC = () => {
   const { data: session } = useSession();
@@ -97,7 +98,12 @@ const NavBar: React.FC = () => {
               )}
 
               {/* Cart Icon with Badge */}
-              <Nav.Link href="/cart" id={ComponentIDs.cartMenuItem} className="position-relative">
+              <Nav.Link
+                as={Link}
+                href="/cart"
+                id={ComponentIDs.cartMenuItem}
+                className={`position-relative ${pathname === '/cart' ? 'active' : ''}`}
+              >
                 <Cart size={20} />
                 {cartItemCount > 0 && (
                   <span
