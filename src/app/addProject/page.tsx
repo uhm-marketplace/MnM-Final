@@ -13,8 +13,7 @@ const AddProjectPage = async () => {
       user: { email: string; id: string; randomKey: string };
     } | null,
   );
-  // Fetching interests and participants as before
-  const interests = await prisma.interest.findMany();
+  // Fetching participants as before
   const participants = await prisma.user.findMany();
 
   return (
@@ -26,8 +25,8 @@ const AddProjectPage = async () => {
         price={0}
         buyer={null}
         seller={null}
-        interests={interests}
         participants={participants}
+        interests={[]}
       />
     </Container>
   );
