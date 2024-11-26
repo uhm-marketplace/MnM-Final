@@ -155,9 +155,10 @@ const NavBar: React.FC = () => {
                 Sell
               </Nav.Link>
               <Nav.Link
-                active={pathname === '/customer-service'}
+                as={Link}
                 href="/customer-service"
                 id={ComponentIDs.customerServiceMenuItem}
+                active={pathname === '/customer-service'}
               >
                 Customer Service
               </Nav.Link>

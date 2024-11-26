@@ -5,7 +5,6 @@ const CartPage: React.FC = () => (
     <h1>Your Shopping Cart</h1>
     <p>This is the cart page. You can display the cart items here.</p>
 
-    {/* Example placeholder for cart items */}
     <ul>
       <li>Item 1 - $10</li>
       <li>Item 2 - $20</li>
