@@ -30,6 +30,8 @@ export const ComponentIDs = {
   loginDropdownSignUp: 'loginDropdownSignUp',
   profilesMenuItem: 'profilesMenuItem',
   projectsMenuItem: 'projectsMenuItem',
+  productsMenuItem: 'productsMenuItem',
+  reviewsMenuItem: 'reviewsMenuItem',
   selfCareMenuItem: 'selfCareMenuItem',
   sellMenuItem: 'sellMenuItem',
   signInFormEmail: 'signInFormEmail',
@@ -55,4 +57,6 @@ export const PageIDs = {
   signInPage: 'signInPage',
   signOutPage: 'signOutPage',
   signUpPage: 'signUpPage',
+  reviewPage: 'reviewPage',
+  productPage: 'productPage',
 };
