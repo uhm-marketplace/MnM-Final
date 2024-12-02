@@ -126,19 +126,19 @@ const NavBar: React.FC = () => {
             <Nav className="me-auto">
               {/* Browse Categories Dropdown */}
               <NavDropdown title="Browse Categories" id={ComponentIDs.browseCategoriesDropdown}>
-                <NavDropdown.Item href="/digital-hq" id={ComponentIDs.digitalHQMenuItem}>
+                <NavDropdown.Item href="/digital-hq" as={Link} id={ComponentIDs.digitalHQMenuItem}>
                   Digital HQ
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/study-tools" id={ComponentIDs.studyToolsMenuItem}>
+                <NavDropdown.Item href="/study-tools" as={Link} id={ComponentIDs.studyToolsMenuItem}>
                   Study Tools
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/campus-closet" id={ComponentIDs.campusClosetMenuItem}>
+                <NavDropdown.Item href="/campus-closet" as={Link} id={ComponentIDs.campusClosetMenuItem}>
                   Campus Closet
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/self-care" id={ComponentIDs.selfCareMenuItem}>
+                <NavDropdown.Item href="/self-care" as={Link} id={ComponentIDs.selfCareMenuItem}>
                   Self-Care
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/dorm-life" id={ComponentIDs.dormLifeMenuItem}>
+                <NavDropdown.Item href="/dorm-life" as={Link} id={ComponentIDs.dormLifeMenuItem}>
                   Dorm Life
                 </NavDropdown.Item>
               </NavDropdown>
@@ -151,7 +151,12 @@ const NavBar: React.FC = () => {
 
             {/* Right-aligned links: Sell and Customer Service */}
             <Nav className="justify-content-end">
-              <Nav.Link active={pathname === '/sell'} href="/sell" id={ComponentIDs.sellMenuItem}>
+              <Nav.Link
+                as={Link}
+                href="/sell"
+                id={ComponentIDs.sellMenuItem}
+                active={pathname === '/sell'}
+              >
                 Sell
               </Nav.Link>
               <Nav.Link
