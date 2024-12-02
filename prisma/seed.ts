@@ -24,6 +24,19 @@ async function main() {
     });
     // console.log(`  Created user: ${user.email} with role: ${user.role}`);
   });
+  config.defaultProducts.forEach(async (product, index) => {
+    console.log(`  Creating/Updating product ${product.name}`);
+    await prisma.product.upsert({
+      where: { id: index },
+      update: {},
+      create: {
+        name: product.name,
+        price: product.price,
+        description: product.description,
+        owner: product.owner,
+      },
+    });
+  });
   config.defaultProjects.forEach(async (project) => {
     console.log(`  Creating/Updating project ${project.name}`);
     project.interests.forEach(async (interest) => {

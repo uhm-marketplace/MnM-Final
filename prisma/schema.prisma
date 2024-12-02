@@ -30,17 +30,17 @@ model User {
 }
 
 model Profile {
-  id              Int           @id @default(autoincrement())
-  email           String        @unique
-  firstName       String?
-  lastName        String?
-  bio             String?
-  title           String?
-  picture         String?
-  interests       ProfileInterest[]
-  projects        ProfileProject[]
-  ProfileReview   ProfileReview[]
-  ProfileProduct  ProfileProduct[]
+  id             Int               @id @default(autoincrement())
+  email          String            @unique
+  firstName      String?
+  lastName       String?
+  bio            String?
+  title          String?
+  picture        String?
+  interests      ProfileInterest[]
+  projects       ProfileProject[]
+  ProfileReview  ProfileReview[]
+  ProfileProduct ProfileProduct[]
 }
 
 model Project {
@@ -62,11 +62,10 @@ model ProfileProject {
 }
 
 model Interest {
-  id            Int               @id @default(autoincrement())
-  name          String            @unique
-  profiles      ProfileInterest[]
-  projects      ProjectInterest[]
-  ProductReview ProductReview[]
+  id       Int               @id @default(autoincrement())
+  name     String            @unique
+  profiles ProfileInterest[]
+  projects ProjectInterest[]
 }
 
 model ProjectInterest {
@@ -86,17 +85,18 @@ model ProfileInterest {
 }
 
 model Review {
-  id            Int             @id @default(autoincrement())
-  firstName     String
-  lastName      String
-  review        String
-  ProfileReview ProfileReview[]
+  id        Int      @id @default(autoincrement())
+  productId Int
+  reviewId  Int
+  name      String
+  review    String
+  owner     String
+  createdAt DateTime @default(now())
 }
 
 model ProductReview {
-  id       Int      @id @default(autoincrement())
+  id       Int @id @default(autoincrement())
   reviewId Int
-  review   Interest @relation(fields: [reviewId], references: [id])
 }
 
 model ProfileReview {
@@ -104,21 +104,22 @@ model ProfileReview {
   profileId Int
   reviewId  Int
   profile   Profile @relation(fields: [profileId], references: [id])
-  review    Review  @relation(fields: [reviewId], references: [id])
 }
 
 model Product {
-  id          Int               @id @default(autoincrement())
-  name        String            @unique
-  description String?
-  picture     String?
-  profiles    ProfileProduct[]
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  price          String              
+  description    String?
+  picture        String?
+  owner          String
+  ProfileProduct ProfileProduct[]
 }
 
 model ProfileProduct {
   id        Int     @id @default(autoincrement())
   profileId Int
   productId Int
-  profile   Profile @relation(fields: [profileId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  Profile   Profile @relation(fields: [profileId], references: [id])
+  Product   Product @relation(fields: [productId], references: [id])
 }

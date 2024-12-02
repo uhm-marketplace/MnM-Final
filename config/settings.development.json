@@ -1,8 +1,32 @@
 {
-  "defaultAccounts": [
-    { "email": "admin@foo.com", "password": "changeme", "role": "ADMIN" },
-    { "email": "john@foo.com", "password": "changeme" }
-  ],
+    "defaultAccounts": [
+      { "email": "admin@foo.com", "password": "changeme", "role": "ADMIN" },
+      { "email": "john@foo.com", "password": "changeme" }
+    ],
+    
+    "defaultProducts": [
+      {
+        "name": "Calculator",
+        "price": "30",
+        "image": "https://github.com/philipmjohnson.png",
+        "description": "A calculator that can add, subtract, multiply, and divide",
+        "owner": "john@foo.com"
+      },
+      {
+        "name": "Toaster",
+        "price": "50",
+        "image": "https://avatars0.githubusercontent.com/u/7494478?s=460&v=4",
+        "description": "A toaster that can toast bread",
+        "owner": "john@foo.com"
+      },
+      {
+        "name": "Microwave",
+        "price": "100",
+        "image": "https://www.ics.hawaii.edu/wp-content/uploads/2013/08/kim_binsted-square-300x300.jpg",
+        "description": "A microwave that can heat up food",
+        "owner": "admin@foo.com"
+      }
+    ],
 
     "defaultProfiles": [
       {
