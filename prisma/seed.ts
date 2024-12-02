@@ -24,15 +24,16 @@ async function main() {
     });
     // console.log(`  Created user: ${user.email} with role: ${user.role}`);
   });
-  config.defaultProducts.forEach(async (product, index) => {
+  config.defaultProducts.forEach(async (product) => {
     console.log(`  Creating/Updating product ${product.name}`);
     await prisma.product.upsert({
-      where: { id: index },
+      where: { name: product.name },
       update: {},
       create: {
         name: product.name,
-        price: product.price,
         description: product.description,
+        price: product.price,
+        picture: product.image,
         owner: product.owner,
       },
     });
