@@ -4,7 +4,9 @@ export type PictureInfo = {
 };
 
 export type ReviewCardData = {
-  name: string;
+  firstName: string;
+  lastName: string;
+  review: string;
   profilePictures: (PictureInfo | null)[];
-  projectPictures: (PictureInfo | null)[];
+  productPictures: (PictureInfo | null)[];
 };

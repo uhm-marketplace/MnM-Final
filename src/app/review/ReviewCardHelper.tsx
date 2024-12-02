@@ -17,16 +17,18 @@ const ReviewCardHelper = async ({ review }: { review: Review }) => {
   const productReview = await prisma.productReview.findMany({
     where: { reviewId: review.id },
   });
-  const product = await prisma.project.findMany({
-    where: { id: { in: productReview.map((preview) => preview.productId) } },
+  const product = await prisma.product.findMany({
+    where: { id: { in: productReview.map((preview) => preview.reviewId) } },
   });
   // console.log('projects: ', projects);
-  const projectImages = product.map((productim) => ({ name: productim.name, picture: productim.picture }));
+  const productImages = product.map((products) => ({ name: products.name, picture: products.picture }));
   // console.log('projectImages: ', projectImages);
   const reviewData = {
-    name: review.name,
+    firstName: review.firstName,
+    lastName: review.lastName,
+    review: review.review,
     profilePictures: profileImages,
-    projectPictures: projectImages,
+    productPictures: productImages,
   };
   return <ReviewCard review={reviewData} />;
 };
