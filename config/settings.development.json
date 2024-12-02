@@ -8,21 +8,21 @@
       {
         "name": "Calculator",
         "price": "30",
-        "image": "https://github.com/philipmjohnson.png",
+        "image": "https://avatars0.githubusercontent.com/u/4641939",
         "description": "A calculator that can add, subtract, multiply, and divide",
         "owner": "john@foo.com"
       },
       {
         "name": "Toaster",
         "price": "50",
-        "image": "https://avatars0.githubusercontent.com/u/7494478?s=460&v=4",
+        "image": "https://wrench-project.org/images/logo-vertical.png",
         "description": "A toaster that can toast bread",
         "owner": "john@foo.com"
       },
       {
         "name": "Microwave",
         "price": "100",
-        "image": "https://www.ics.hawaii.edu/wp-content/uploads/2013/08/kim_binsted-square-300x300.jpg",
+        "image": "https://www.radgrad.org/img/radgrad_logo.png",
         "description": "A microwave that can heat up food",
         "owner": "admin@foo.com"
       }

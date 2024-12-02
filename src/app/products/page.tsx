@@ -3,7 +3,7 @@ import { Container, Row } from 'react-bootstrap';
 import { prisma } from '@/lib/prisma';
 import { PageIDs } from '@/utilities/ids';
 import pageStyle from '@/utilities/pageStyle';
-import ProjectCardHelper from './ProjectCardHelper';
+import ProductCardHelper from './ProjectCardHelper';
 
 const ProjectsPage = async () => {
   const projects = await prisma.project.findMany();
@@ -12,7 +12,7 @@ const ProjectsPage = async () => {
     <Container id={PageIDs.projectsPage} style={pageStyle}>
       <Row xs={1} md={2} lg={4} className="g-2">
         {projects.map((project) => (
-          <ProjectCardHelper key={project.id} project={project} />
+          <ProductCardHelper key={project.id} product={project} />
         ))}
       </Row>
     </Container>
