@@ -1,4 +1,9 @@
 {
+  "defaultAccounts": [
+    { "email": "admin@foo.com", "password": "changeme", "role": "ADMIN" },
+    { "email": "john@foo.com", "password": "changeme" }
+  ],
+
     "defaultProfiles": [
       {
         "firstName": "Lionel Derrick",
@@ -9,6 +14,7 @@
           "Software Engineering",
           "Climate Change"
         ],
+        "review": "bad",
         "projects":[
           "RadGrad",
           "Open Power Quality"
@@ -25,6 +31,7 @@
           "Software Engineering",
           "Climate Change"
         ],
+        "review": "good",
         "projects":[
           "RadGrad",
           "Open Power Quality"
@@ -41,6 +48,7 @@
           "HPC",
           "Distributed Computing"
         ],
+        "review": "bad",
         "projects":[
           "WRENCH"
         ],
@@ -56,6 +64,7 @@
           "Software Engineering",
           "Renewable Energy"
         ],
+        "review": "good",
         "projects":[
           "RadGrad"
         ],
@@ -71,6 +80,7 @@
           "AI",
           "Distributed Computing"
         ],
+        "review": "bad",
         "projects":[
           "Open Power Quality"
         ],
@@ -85,6 +95,7 @@
         "interests": [
           "Visualization"
         ],
+        "review": "good",
         "projects":[
           "Cyber Canoe"
         ],
@@ -99,6 +110,7 @@
         "interests": [
           "Scalable IP Networks"
         ],
+        "review": "bad",
         "projects":[
           "Open Power Quality"
         ],
@@ -106,6 +118,7 @@
         "email": "sin8@hawaii.edu"
       }
     ],
+
     "defaultProjects": [
       {
         "name": "Open Power Quality",
