@@ -4,17 +4,17 @@ import { PageIDs } from '@/utilities/ids';
 import pageStyle from '@/utilities/pageStyle';
 import ReviewCardHelper from './ReviewCardHelper';
 
-const InterestsPage = async () => {
-  const interests = await prisma.interest.findMany();
-  interests.sort((a, b) => a.name.localeCompare(b.name));
-  console.log(interests);
+const ReviewPage = async () => {
+  const reviews = await prisma.review.findMany();
+  reviews.sort((a, b) => a.firstName.localeCompare(b.firstName));
+  console.log(reviews);
   return (
     <Container id={PageIDs.interestsPage} style={pageStyle}>
       <Row xs={1} md={2} lg={4} className="g-2">
-        {interests.map((interest) => (<ReviewCardHelper key={interest.id} interest={interest} />))}
+        {reviews.map((review) => (<ReviewCardHelper key={review.id} review={review} />))}
       </Row>
     </Container>
   );
 };
 
-export default InterestsPage;
+export default ReviewPage;

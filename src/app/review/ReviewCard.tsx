@@ -8,7 +8,11 @@ import { ReviewCardData } from './ReviewCardData';
 const ReviewCard = ({ review }: { review: ReviewCardData }) => (
   <Card>
     <Card.Body>
-      <Card.Title style={{ marginTop: '0px' }}>{review.name}</Card.Title>
+      <Card.Title style={{ marginTop: '0px' }}>
+        {review.firstName}
+        {' '}
+        {review.lastName}
+      </Card.Title>
       {review.profilePictures.map((p) => (
         <TooltipImage
           className="mx-1"
@@ -19,7 +23,7 @@ const ReviewCard = ({ review }: { review: ReviewCardData }) => (
           roundedCircle
         />
       ))}
-      {review.projectPictures.map((p) => (
+      {review.productPictures.map((p) => (
         <TooltipImage
           className={undefined}
           key={`project-${p!.name}`}
