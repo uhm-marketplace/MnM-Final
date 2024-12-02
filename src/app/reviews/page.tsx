@@ -6,10 +6,10 @@ import ReviewCardHelper from './ReviewCardHelper';
 
 const ReviewPage = async () => {
   const reviews = await prisma.review.findMany();
-  reviews.sort((a, b) => a.firstName.localeCompare(b.firstName));
+  reviews.sort((a, b) => a.name.localeCompare(b.name));
   console.log(reviews);
   return (
-    <Container id={PageIDs.interestsPage} style={pageStyle}>
+    <Container id={PageIDs.reviewPage} style={pageStyle}>
       <Row xs={1} md={2} lg={4} className="g-2">
         {reviews.map((review) => (<ReviewCardHelper key={review.id} review={review} />))}
       </Row>
