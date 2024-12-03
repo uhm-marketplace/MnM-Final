@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -50,12 +47,20 @@ model Interest {
 
 model Project {
   id          Int               @id @default(autoincrement())
-  name        String            @unique
-  homepage    String?
+  name        String            @unique // or change to `title` if preferred
   description String?
+  homepage    String?
   picture     String?
+  price       Float?            // Added field for price
+  buyerId     Int?              // Foreign key to Profile for buyer
+  sellerId    Int?              // Foreign key to Profile for seller
+
   profiles    ProfileProject[]
   interests   ProjectInterest[]
+
+  // Relations for buyer and seller
+  buyer       Profile?          @relation("Buyer", fields: [buyerId], references: [id])
+  seller      Profile?          @relation("Seller", fields: [sellerId], references: [id])
 }
 
 model ProfileInterest {
