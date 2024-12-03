@@ -16,64 +16,55 @@ interface Product {
 const products: Product[] = [
   {
     id: 1,
-    name: 'UHM Hoodie',
-    description: 'A grey hoodie that is ideal for chilly classrooms or outdoor activities.',
-    price: 20.50,
+    name: 'Mini Fridge',
+    description: 'A compact refriedgerator ideal for storing drinks, snacks and leftovers.',
+    price: 100.00,
     image: '/images/planner.jpg',
-    category: 'Everyday Wear',
+    category: 'Personal Care & Hygiene',
   },
   {
     id: 2,
-    name: 'UHM Baseball Cap',
-    description: 'Stylish and suitable for hot weather.',
-    price: 10.25,
+    name: 'A Veriety of Teas',
+    description: 'Herbal tears flavors such as: chamomile, that encourages relaxation, digestion and overall wellness.',
+    price: 20.40,
     image: '/images/headphones.jpg',
-    category: 'Accessories',
+    category: 'Health & Wellness',
   },
   {
     id: 3,
-    name: 'Compression Socks',
-    description: 'Special socks designed to improve circulation and reduce muscle fatigue.',
-    price: 20.00,
+    name: 'Eye Cream',
+    description: 'Specialized cream that targets the delicate skin around the eyes that reduces dark circles and puffiness.',
+    price: 21.00,
     image: '/images/workbook.jpg',
-    category: 'Activewear',
+    category: 'Beauty Essentials',
   },
   {
     id: 4,
-    name: 'Traditional Graduation Cap & Gown',
-    description: 'The classic cap and gown set made of lightweight polyester that is adjustable along'
-    + 'with a cap and tassel.',
-    price: 120.00,
+    name: 'Weighted Plush',
+    description: 'A stuffed animal that is filled with weight-desibuting substances in order to provide a therapuetic benefits',
+    price: 35.00,
     image: '/images/laptop-stand.jpg',
-    category: 'Graduation Apparel',
+    category: 'Comfort Zone',
   },
   {
     id: 5,
-    name: 'Mini Umbrella',
-    description: 'Useful for unexpected rain showers on campus.',
-    price: 10.99,
+    name: 'Foam Rollers',
+    description: 'A simple tool for relieving muscle tightness, tension and stress.',
+    price: 5.99,
     image: '/images/study-guide.jpg',
-    category: 'Miscellaneous',
+    category: 'Comfort Zone',
   },
   {
     id: 6,
-    name: 'Honor Cords',
-    description: 'Worn as a symbol of academic achievement as students wear them to ditinguish themselves.',
-    price: 10.00,
+    name: 'Standard Lip Balm',
+    description: 'A soothing product that moisturizes the lips for ten to twelve hours.',
+    price: 5.00,
     image: '/images/whiteboard.jpg',
-    category: 'Graduation Apparel',
-  },
-  {
-    id: 7,
-    name: 'UHM Gym Bag',
-    description: 'A UHM bag designed to carry gym essentials such as clothes, shows, water bottles and towels',
-    price: 45.00,
-    image: '/images/whiteboard.jpg',
-    category: 'Activewear',
+    category: 'Beauty Essentials',
   },
 ];
 
-const CampusClosetPage: React.FC = () => {
+const DormLifePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 6;
@@ -114,51 +105,42 @@ const CampusClosetPage: React.FC = () => {
               All
             </button>
             <button
-              className={`list-group-item list-group-item-action ${selectedCategory === 'Everyday Wear' ? 'active' : ''}`}
-              onClick={() => handleCategoryChange('Everyday Wear')}
+              className={`list-group-item list-group-item-action ${selectedCategory === 'Personal Care & Hygiene' ? 'active' : ''}`}
+              onClick={() => handleCategoryChange('Personal Care & Hygiene')}
               type="button"
             >
-              Everyday Wear
+              Personal Care & Hygiene
             </button>
             <button
               className={
-                `list-group-item list-group-item-action ${selectedCategory === 'Accessories' ? 'active' : ''}`
+                `list-group-item list-group-item-action ${selectedCategory === 'Health & Wellness' ? 'active' : ''}`
               }
-              onClick={() => handleCategoryChange('Accessories')}
+              onClick={() => handleCategoryChange('Health & Wellness')}
               type="button"
             >
-              Accessories
+              Health & Wellness
             </button>
             <button
               className={
-                `list-group-item list-group-item-action ${selectedCategory === 'Activewear' ? 'active' : ''}`
+                `list-group-item list-group-item-action ${selectedCategory === 'Beauty Essentials' ? 'active' : ''}`
               }
-              onClick={() => handleCategoryChange('Activewear')}
+              onClick={() => handleCategoryChange('Beauty Essentials')}
               type="button"
             >
-              Activewear
+              Beauty Essentials
             </button>
             <button
-              className={`list-group-item list-group-item-action ${selectedCategory === 'Graduation Apparel' ? 'active' : ''}`}
-              onClick={() => handleCategoryChange('Graduation Apparel')}
+              className={`list-group-item list-group-item-action ${selectedCategory === 'Comfort Zone' ? 'active' : ''}`}
+              onClick={() => handleCategoryChange('Comfort Zone')}
               type="button"
             >
-              Graduation Apparel
-            </button>
-            <button
-              className={
-                `list-group-item list-group-item-action ${selectedCategory === 'Miscellaneous' ? 'active' : ''}`
-              }
-              onClick={() => handleCategoryChange('Miscellaneous')}
-              type="button"
-            >
-              Miscellaneous
+              Comfort Zone
             </button>
           </div>
         </Col>
 
         <Col md={9}>
-          <h2 className="mb-4">Campus Closet</h2>
+          <h2 className="mb-4">Dorm Life</h2>
 
           <Row>
             {/* Product Cards */}
@@ -212,4 +194,4 @@ const CampusClosetPage: React.FC = () => {
   );
 };
 
-export default CampusClosetPage;
+export default DormLifePage;
