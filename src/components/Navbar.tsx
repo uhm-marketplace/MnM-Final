@@ -1,3 +1,7 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/jsx-indent */
+/* eslint-disable @typescript-eslint/indent */
+
 'use client';
 
 import { useSession } from 'next-auth/react';
