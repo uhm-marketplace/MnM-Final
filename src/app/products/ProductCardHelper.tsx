@@ -5,13 +5,6 @@ import { prisma } from '@/lib/prisma';
 import { ProductCardData } from '@/lib/ProductCardData';
 
 const ProductCardHelper = async ({ product }: { product: Product }) => {
-  const projectInterests = await prisma.projectInterest.findMany({
-    where: { projectId: product.id },
-  });
-  const reviews = await prisma.review.findMany({
-    where: { id: { in: projectInterests.map((projectInterest) => projectInterest.interestId) } },
-  });
-  const productReviews = reviews.map((review) => review.name);
   const owner = await prisma.product.findUnique({
     where: { id: product.id },
   });
