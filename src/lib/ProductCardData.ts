@@ -1,9 +1,8 @@
-import { Profile } from '@prisma/client';
-
 export type ProductCardData = {
   name: string;
   picture: string | null;
-  price: number | null;
+  price: string | null;
   description: string | null;
-  owner: Profile;
+  reviews: string[];
+  owner: string | null;
 };

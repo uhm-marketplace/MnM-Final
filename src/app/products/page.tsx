@@ -3,7 +3,7 @@ import { Container, Row } from 'react-bootstrap';
 import { prisma } from '@/lib/prisma';
 import { PageIDs } from '@/utilities/ids';
 import pageStyle from '@/utilities/pageStyle';
-import ProductCardHelper from './ProjectCardHelper';
+import ProductCardHelper from './ProductCardHelper';
 
 const ProjectsPage = async () => {
   const projects = await prisma.project.findMany();

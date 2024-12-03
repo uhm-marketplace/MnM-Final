@@ -1,8 +1,8 @@
 /* eslint-disable import/extensions */
 import { Product } from '@prisma/client';
-import ProjectCard from '@/components/ProjectCard';
+import ProductCard from '@/components/ProductCard';
 import { prisma } from '@/lib/prisma';
-import { ProjectCardData } from '@/lib/ProjectCardData';
+import { ProductCardData } from '@/lib/ProductCardData';
 
 const ProductCardHelper = async ({ product }: { product: Product }) => {
   const projectInterests = await prisma.projectInterest.findMany({
@@ -12,22 +12,18 @@ const ProductCardHelper = async ({ product }: { product: Product }) => {
     where: { id: { in: projectInterests.map((projectInterest) => projectInterest.interestId) } },
   });
   const productReviews = reviews.map((review) => review.name);
-  const projectParticipants = await prisma.profileProject.findMany({
-    where: { projectId: product.id },
-  });
-  const participants = projectParticipants.map((projectParticipant) => projectParticipant.profileId);
-  const profileParticipants = await prisma.profile.findMany({
-    where: { id: { in: participants } },
+  const owner = await prisma.product.findUnique({
+    where: { id: product.id },
   });
   const productData: ProductCardData = {
     name: product.name,
     picture: product.picture,
     price: product.price,
     description: product.description,
-    interests: interestNames,
-    participants: profileParticipants,
+    reviews: productReviews,
+    owner: owner,
   };
-  return <ProjectCard project={projectData} />;
+  return <ProductCard product={productData} />;
 };
 
 export default ProductCardHelper;

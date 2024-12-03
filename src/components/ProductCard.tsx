@@ -4,37 +4,37 @@
 
 import { Badge, Card, Col } from 'react-bootstrap';
 import TooltipImage from '@/components/TooltipImage';
-import { ProjectCardData } from '@/lib/ProjectCardData';
+import { ProductCardData } from '@/lib/ProductCardData';
 
-const ProjectCard = ({ project }: { project: ProjectCardData }) => (
+const ProductCard = ({ product }: { product: ProductCardData }) => (
   <Col>
     <Card className="h-100">
       <Card.Body>
-        <Card.Img src={project.picture ? project.picture : ''} width={50} />
-        <Card.Title style={{ marginTop: '0px' }}>{project.name}</Card.Title>
-        <Card.Text>{project.description}</Card.Text>
+        <Card.Img src={product.picture ? product.picture : ''} width={50} />
+        <Card.Title style={{ marginTop: '0px' }}>{product.name}</Card.Title>
+        <Card.Text>{product.description}</Card.Text>
       </Card.Body>
       <Card.Body>
-        {project.interests.map((interest) => (
-          <Badge className="mx-1" key={interest} bg="info">
-            {interest}
+        {product.reviews.map((review) => (
+          <Badge className="mx-1" key={review} bg="info">
+            {review}
           </Badge>
         ))}
       </Card.Body>
       <Card.Body>
-        {project.participants.map((p) => (
+        {product.owner && (
           <TooltipImage
             className="mx-1"
-            key={p.email}
-            name={p.email}
+            key={product.owner}
+            name={product.owner}
             roundedCircle
-            src={p.picture ? p.picture : ''}
+            src={product.picture ? product.picture : ''}
             width={50}
           />
-        ))}
+        )}
       </Card.Body>
     </Card>
   </Col>
 );
 
-export default ProjectCard;
+export default ProductCard;
