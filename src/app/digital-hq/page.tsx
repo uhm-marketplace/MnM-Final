@@ -18,14 +18,14 @@ const products: Product[] = [
   {
     id: 1,
     name: 'MacOS',
-    description: 'offers a secure, computing experience with powerful performance across Apple devices',
+    description: 'A Laptop that offers a secure, computing experience with powerful performance across Apple devices',
     price: 200.00,
     image: '/images/planner.jpg',
-    category: 'Laptop',
+    category: 'Laptops',
   },
   {
     id: 2,
-    name: 'Noice canceling headphones',
+    name: 'Noise canceling headphones',
     description: 'Block out distractions and focus with high-quality noise-cancelling headphones.',
     price: 99.99,
     image: '/images/headphones.jpg',
@@ -45,7 +45,7 @@ const products: Product[] = [
     description: 'The ultimate tablet for productivity and media.',
     price: 200.00,
     image: '/images/laptop-stand.jpg',
-    category: 'Tablet',
+    category: 'Tablets',
   },
   {
     id: 5,
@@ -58,10 +58,20 @@ const products: Product[] = [
   {
     id: 6,
     name: 'Power Bank',
-    description: 'portable battery pack that stores energy to charge devices like smartphones, tablets, and laptops on the go when there’s no access to an outlet.',
+    description: 'A portable battery pack that stores energy to charge devices like smartphones, tablets, and laptops'
+    + 'on the go when there’s no access to an outlet.',
     price: 149.99,
     image: '/images/chargers.jpg',
     category: 'Chargers',
+  },
+
+  {
+    id: 7,
+    name: 'Smartphones',
+    description: 'A multifunctional device that could be used for communication, entertainment, educational and etc.',
+    price: 149.99,
+    image: '/images/chargers.jpg',
+    category: 'Phones',
   },
 ];
 
@@ -106,36 +116,43 @@ const DigitalHQPage: React.FC = () => {
               All
             </button>
             <button
-              className={`list-group-item list-group-item-action ${selectedCategory === 'Books' ? 'active' : ''}`}
-              onClick={() => handleCategoryChange('Books')}
+              className={`list-group-item list-group-item-action ${selectedCategory === 'Laptops' ? 'active' : ''}`}
+              onClick={() => handleCategoryChange('Laptops')}
               type="button"
             >
-              Books
+              Laptops
             </button>
             <button
               className={
-                `list-group-item list-group-item-action ${selectedCategory === 'Tech Gadgets' ? 'active' : ''}`
+                `list-group-item list-group-item-action ${selectedCategory === 'Accessories' ? 'active' : ''}`
               }
-              onClick={() => handleCategoryChange('Tech Gadgets')}
+              onClick={() => handleCategoryChange('Accessories')}
               type="button"
             >
-              Tech Gadgets
+              Accessories
             </button>
             <button
               className={
-                `list-group-item list-group-item-action ${selectedCategory === 'Online Courses' ? 'active' : ''}`
+                `list-group-item list-group-item-action ${selectedCategory === 'Tablets' ? 'active' : ''}`
               }
-              onClick={() => handleCategoryChange('Online Courses')}
+              onClick={() => handleCategoryChange('Tablets')}
               type="button"
             >
-              Online Courses
+              Tablets
             </button>
             <button
-              className={`list-group-item list-group-item-action ${selectedCategory === 'Stationery' ? 'active' : ''}`}
-              onClick={() => handleCategoryChange('Stationery')}
+              className={`list-group-item list-group-item-action ${selectedCategory === 'Chargers' ? 'active' : ''}`}
+              onClick={() => handleCategoryChange('Chargers')}
               type="button"
             >
-              Stationery
+              Chargers
+            </button>
+            <button
+              className={`list-group-item list-group-item-action ${selectedCategory === 'Phones' ? 'active' : ''}`}
+              onClick={() => handleCategoryChange('Phones')}
+              type="button"
+            >
+              Phones
             </button>
           </div>
         </Col>

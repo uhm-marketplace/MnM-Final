@@ -74,7 +74,7 @@ const products: Product[] = [
   },
 ];
 
-const StudyToolsPage: React.FC = () => {
+const CampusClosetPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 6;
@@ -159,7 +159,7 @@ const StudyToolsPage: React.FC = () => {
         </Col>
 
         <Col md={9}>
-          <h2 className="mb-4">Study Tools</h2>
+          <h2 className="mb-4">Campus Closet</h2>
 
           <Row>
             {/* Product Cards */}
@@ -213,4 +213,4 @@ const StudyToolsPage: React.FC = () => {
   );
 };
 
-export default StudyToolsPage;
+export default CampusClosetPage;
