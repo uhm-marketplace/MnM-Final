@@ -30,6 +30,11 @@ html, body {
   flex-direction: column;
 }
 
+.navbar-nav .nav-link {
+  white-space: nowrap;
+  padding-left: 12px;
+  padding-right: 12px;
+}
 
 /* Color the light Brand and links with dark color */
 .bg-light span, .bg-light a {
