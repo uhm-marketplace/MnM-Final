@@ -1,8 +1,7 @@
 export type ProductCardData = {
   name: string;
-  picture: string | null;
-  price: string | null;
-  description: string | null;
-  reviews: string[];
-  owner: string | null;
+  picture: string
+  price: string
+  description: string
+  owner: string
 };
