@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CartPage: React.FC = () => (
-  <div>
+  <div style={{ borderLeft: '2px solid #000', borderRight: '2px solid #000', padding: '20px' }}>
     <h1>Your Shopping Cart</h1>
     <p>This is the cart page. You can display the cart items here.</p>
 
