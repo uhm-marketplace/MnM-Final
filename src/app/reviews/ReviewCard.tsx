@@ -9,9 +9,7 @@ const ReviewCard = ({ review }: { review: ReviewCardData }) => (
   <Card>
     <Card.Body>
       <Card.Title style={{ marginTop: '0px' }}>
-        {review.firstName}
-        {' '}
-        {review.lastName}
+        {review.name}
       </Card.Title>
       {review.profilePictures.map((p) => (
         <TooltipImage

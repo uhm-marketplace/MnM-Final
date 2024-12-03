@@ -24,8 +24,7 @@ const ReviewCardHelper = async ({ review }: { review: Review }) => {
   const productImages = product.map((products) => ({ name: products.name, picture: products.picture }));
   // console.log('projectImages: ', projectImages);
   const reviewData = {
-    firstName: review.firstName,
-    lastName: review.lastName,
+    name: review.name,
     review: review.review,
     profilePictures: profileImages,
     productPictures: productImages,
