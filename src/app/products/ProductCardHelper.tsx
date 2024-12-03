@@ -14,7 +14,7 @@ const ProductCardHelper = async ({ product }: { product: Product }) => {
     price: product.price,
     description: product.description,
     reviews: productReviews,
-    owner: owner?.name || '',
+    owner: owner.id,
   };
   return <ProductCard product={productData} />;
 };
