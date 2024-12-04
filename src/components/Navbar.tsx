@@ -6,7 +6,15 @@
 
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import { Image, Nav, Navbar, NavDropdown, Container, Form, FormControl } from 'react-bootstrap';
+import {
+  Image,
+  Nav,
+  Navbar,
+  NavDropdown,
+  Container,
+  Form,
+  FormControl,
+} from 'react-bootstrap';
 import { BoxArrowRight, PersonCircle, Cart } from 'react-bootstrap-icons'; // Using PersonCircle for the login icon
 import { ComponentIDs } from '@/utilities/ids';
 import Link from 'next/link'; // Use Next.js Link component
@@ -25,7 +33,14 @@ const NavBar: React.FC = () => {
       <Navbar expand="lg" className={`border ${navbarClassName}`}>
         <Container>
           <Navbar.Brand href="/" className="align-items-center">
-            <span style={{ fontWeight: 800, fontSize: '24px', display: 'flex', alignItems: 'center' }}>
+            <span
+              style={{
+                fontWeight: 800,
+                fontSize: '24px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
               <Image
                 src="/images/manoanow1.png"
                 width={50}
@@ -39,28 +54,43 @@ const NavBar: React.FC = () => {
           <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
             <Nav className="me-auto justify-content-start">
               {currentUser && (
-                <Nav.Link active={pathname === '/home'} href="/home" id={ComponentIDs.homeMenuItem}>
+                <Nav.Link
+                  active={pathname === '/home'}
+                  href="/home"
+                  id={ComponentIDs.homeMenuItem}
+                >
                   Home
                 </Nav.Link>
               )}
-              <Nav.Link active={pathname === '/profiles'} href="/profiles" id={ComponentIDs.profilesMenuItem}>
-                Profiles
+              <Nav.Link
+                active={pathname === '/community'}
+                href="/community"
+                id={ComponentIDs.profilesMenuItem}
+              >
+                Community
               </Nav.Link>
-              <Nav.Link active={pathname === '/projects'} href="/projects" id={ComponentIDs.projectsMenuItem}>
-                Projects
+              <Nav.Link
+                active={pathname === '/products'}
+                href="/products"
+                id={ComponentIDs.projectsMenuItem}
+              >
+                Shop Products
               </Nav.Link>
-              <Nav.Link active={pathname === '/reviews'} href="/reviews" id={ComponentIDs.reviewsMenuItem}>
+              <Nav.Link
+                active={pathname === '/reviews'}
+                href="/reviews"
+                id={ComponentIDs.reviewsMenuItem}
+              >
                 Reviews
               </Nav.Link>
               {currentUser && (
-                <>
-                  <Nav.Link active={pathname === '/addProject'} href="/addProject" id={ComponentIDs.addProjectMenuItem}>
-                    Add Project
-                  </Nav.Link>
-                  <Nav.Link active={pathname === '/filter'} href="/filter" id={ComponentIDs.filterMenuItem}>
-                    Filter
-                  </Nav.Link>
-                </>
+                <Nav.Link
+                  active={pathname === '/addProducts'}
+                  href="/addProducts"
+                  id={ComponentIDs.addProjectMenuItem}
+                >
+                  Sell Here
+                </Nav.Link>
               )}
             </Nav>
 
@@ -78,20 +108,34 @@ const NavBar: React.FC = () => {
 
               {currentUser ? (
                 // User Dropdown with PersonCircle icon
-                <NavDropdown id={ComponentIDs.currentUserDropdown} title={<PersonCircle size={20} />}>
-                  <NavDropdown.Item id={ComponentIDs.currentUserDropdownSignOut} href="/auth/signout">
-                    <BoxArrowRight />
-                    {' '}
+                <NavDropdown
+                  id={ComponentIDs.currentUserDropdown}
+                  title={<PersonCircle size={20} />}
+                >
+                  <NavDropdown.Item
+                    id={ComponentIDs.currentUserDropdownSignOut}
+                    href="/auth/signout"
+                  >
+                    <BoxArrowRight size={20} className="me-3" />
                     Sign out
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
                 // Login Dropdown
-                <NavDropdown id={ComponentIDs.loginDropdown} title={<PersonCircle size={20} />}>
-                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignIn} href="/auth/signin">
+                <NavDropdown
+                  id={ComponentIDs.loginDropdown}
+                  title={<PersonCircle size={20} />}
+                >
+                  <NavDropdown.Item
+                    id={ComponentIDs.loginDropdownSignIn}
+                    href="/auth/signin"
+                  >
                     Sign in
                   </NavDropdown.Item>
-                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignUp} href="/auth/signup">
+                  <NavDropdown.Item
+                    id={ComponentIDs.loginDropdownSignUp}
+                    href="/auth/signup"
+                  >
                     Sign up
                   </NavDropdown.Item>
                 </NavDropdown>
@@ -124,40 +168,62 @@ const NavBar: React.FC = () => {
       </Navbar>
 
       {/* Smaller Navbar with Border */}
-      <Navbar expand="lg" className={`border ${currentUser ? 'bg-dark' : 'bg-light'} py-1`}>
+      <Navbar
+        expand="lg"
+        className={`border ${currentUser ? 'bg-dark' : 'bg-light'} py-1`}
+      >
         <Container>
           <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
             <Nav className="me-auto">
               {/* Browse Categories Dropdown */}
-              <NavDropdown title="Browse Categories" id={ComponentIDs.browseCategoriesDropdown}>
-                <NavDropdown.Item href="/digital-hq" id={ComponentIDs.digitalHQMenuItem}>
+              <NavDropdown
+                title="Browse Interests"
+                id={ComponentIDs.browseCategoriesDropdown}
+              >
+                <NavDropdown.Item
+                  href="/digital-hq"
+                  id={ComponentIDs.digitalHQMenuItem}
+                >
                   Digital HQ
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/study-tools" id={ComponentIDs.studyToolsMenuItem}>
+                <NavDropdown.Item
+                  href="/study-tools"
+                  id={ComponentIDs.studyToolsMenuItem}
+                >
                   Study Tools
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/campus-closet" id={ComponentIDs.campusClosetMenuItem}>
+                <NavDropdown.Item
+                  href="/campus-closet"
+                  id={ComponentIDs.campusClosetMenuItem}
+                >
                   Campus Closet
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/self-care" id={ComponentIDs.selfCareMenuItem}>
+                <NavDropdown.Item
+                  href="/self-care"
+                  id={ComponentIDs.selfCareMenuItem}
+                >
                   Self-Care
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/dorm-life" id={ComponentIDs.dormLifeMenuItem}>
+                <NavDropdown.Item
+                  href="/dorm-life"
+                  id={ComponentIDs.dormLifeMenuItem}
+                >
                   Dorm Life
                 </NavDropdown.Item>
               </NavDropdown>
 
               {/* Vendors Link */}
-              <Nav.Link active={pathname === '/vendors'} href="/vendors" id={ComponentIDs.vendorsMenuItem}>
-                Vendors
+              <Nav.Link
+                active={pathname === '/vendors'}
+                href="/vendors"
+                id={ComponentIDs.vendorsMenuItem}
+              >
+                Find Vendors
               </Nav.Link>
             </Nav>
 
             {/* Right-aligned links: Sell and Customer Service */}
             <Nav className="justify-content-end">
-              <Nav.Link active={pathname === '/sell'} href="/sell" id={ComponentIDs.sellMenuItem}>
-                Sell
-              </Nav.Link>
               <Nav.Link
                 active={pathname === '/customer-service'}
                 href="/customer-service"

@@ -20,6 +20,7 @@ const FilterPage = async () => {
   const allProfileProjects = await prisma.profileProject.findMany();
   return (
     <Container>
+      <h1 className="text-center mt-5">Find Vendors Who Share Your Interests</h1>
       <FilterProfileForm
         interests={allInterests}
         profiles={allProfiles}
