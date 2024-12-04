@@ -74,6 +74,7 @@ export async function upsertProject(project: any) {
       description: project.description,
       homepage: project.homepage,
       picture: project.picture,
+      price: project.price,
     },
   });
   project.interests.forEach(async (intere: string) => {

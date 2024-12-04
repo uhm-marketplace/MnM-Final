@@ -4,9 +4,6 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  // for local development
-  // url      = env("DATABASE_URL")
-  // for Vercel
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
@@ -19,15 +16,16 @@ model User {
 }
 
 model Profile {
-  id        Int               @id @default(autoincrement())
-  email     String            @unique
-  firstName String?
-  lastName  String?
-  bio       String?
-  title     String?
-  picture   String?
-  interests ProfileInterest[]
-  projects  ProfileProject[]
+  id           Int               @id @default(autoincrement())
+  email        String            @unique
+  firstName    String?
+  lastName     String?
+  bio          String?
+  title        String?
+  picture      String?
+  interests    ProfileInterest[]
+  projects     ProfileProject[]
+  ProjectBuyer ProjectBuyer[]
 }
 
 model Interest {
@@ -43,8 +41,10 @@ model Project {
   homepage    String?
   description String?
   picture     String?
+  price       Float
   profiles    ProfileProject[]
   interests   ProjectInterest[]
+  buyers      ProjectBuyer[]
 }
 
 model ProfileInterest {
@@ -69,6 +69,25 @@ model ProjectInterest {
   interestId Int
   interest   Interest @relation(fields: [interestId], references: [id])
   project    Project  @relation(fields: [projectId], references: [id])
+}
+
+model ProjectBuyer {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+  profileId Int
+  project   Project  @relation(fields: [projectId], references: [id])
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Reviews {
+  id         Int    @id @default(autoincrement())
+  userName   String
+  item       String
+  rating     Float?
+  contact    String
+  reviewText String
+  profileId  Int    @unique
 }
 
 enum Role {
