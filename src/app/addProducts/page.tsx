@@ -13,21 +13,13 @@ const AddProjectPage = async () => {
       user: { email: string; id: string; randomKey: string };
     } | null,
   );
-  // Fetching participants as before
+  const interests = await prisma.interest.findMany();
   const participants = await prisma.user.findMany();
 
   return (
     <Container>
-      <h1 className="text-center">Add Project</h1>
-      <AddProjectForm
-        title=""
-        description=""
-        price={0}
-        buyer={null}
-        seller={null}
-        participants={participants}
-        interests={[]}
-      />
+      <h1 className="text-center mt-5">Add Products To Sell</h1>
+      <AddProjectForm interests={interests} participants={participants} />
     </Container>
   );
 };

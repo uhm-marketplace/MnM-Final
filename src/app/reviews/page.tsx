@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, Button, Form, ListGroup, Row, Col, Container } from 'react-bootstrap';
+import {
+  Card,
+  Button,
+  Form,
+  ListGroup,
+  Row,
+  Col,
+  Container,
+} from 'react-bootstrap';
 
 // Mock Data for Initial Reviews
 const initialReviews = [
@@ -33,7 +41,9 @@ const ReviewPage: React.FC = () => {
     reviewText: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -68,7 +78,9 @@ const ReviewPage: React.FC = () => {
               <ListGroup.Item key={review.id}>
                 <Row>
                   <Col>
-                    <strong>{review.userName}</strong> reviewed <em>{review.item}</em>
+                    <strong>{review.userName}</strong>
+                    reviewed
+                    <em>{review.item}</em>
                   </Col>
                   <Col className="text-end">
                     <span>{'⭐'.repeat(review.rating)}</span>
@@ -77,7 +89,10 @@ const ReviewPage: React.FC = () => {
                 <Row>
                   <Col xs={12}>
                     <p>{review.reviewText}</p>
-                    <small className="text-muted">Contact: {review.contact}</small>
+                    <small className="text-muted">
+                      Contact:
+                      {review.contact}
+                    </small>
                   </Col>
                 </Row>
               </ListGroup.Item>
