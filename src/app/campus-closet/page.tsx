@@ -114,7 +114,10 @@ const CampusClosetPage: React.FC = () => {
               All
             </button>
             <button
-              className={`list-group-item list-group-item-action ${selectedCategory === 'Everyday Wear' ? 'active' : ''}`}
+              className={
+                `list-group-item list-group-item-action
+                ${selectedCategory === 'Everyday Wear' ? 'active' : ''}`
+              }
               onClick={() => handleCategoryChange('Everyday Wear')}
               type="button"
             >
@@ -139,7 +142,9 @@ const CampusClosetPage: React.FC = () => {
               Activewear
             </button>
             <button
-              className={`list-group-item list-group-item-action ${selectedCategory === 'Graduation Apparel' ? 'active' : ''}`}
+              className={
+                `list-group-item list-group-item-action ${selectedCategory === 'Graduation Apparel' ? 'active' : ''}`
+              }
               onClick={() => handleCategoryChange('Graduation Apparel')}
               type="button"
             >
