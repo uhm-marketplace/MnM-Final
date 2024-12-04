@@ -30,7 +30,6 @@ export const ComponentIDs = {
   loginDropdownSignUp: 'loginDropdownSignUp',
   profilesMenuItem: 'profilesMenuItem',
   projectsMenuItem: 'projectsMenuItem',
-  reviewsMenuItem: 'reviewsMenuItem',
   selfCareMenuItem: 'selfCareMenuItem',
   sellMenuItem: 'sellMenuItem',
   signInFormEmail: 'signInFormEmail',

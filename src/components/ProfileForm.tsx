@@ -112,7 +112,8 @@ const ProfileForm = ({
             <Row className={formPadding}>
               <Col xs={4}>
                 <Form.Group controlId="firstName">
-                  <Form.Label>First Name*</Form.Label>
+                  <Form.Label>First Name</Form.Label>
+                  <span className="text-danger">*</span>
                   <Form.Control
                     type="text"
                     {...register('firstName')}
@@ -127,6 +128,7 @@ const ProfileForm = ({
               <Col xs={4}>
                 <Form.Group controlId="lastName">
                   <Form.Label>Last Name</Form.Label>
+                  <span className="text-danger">*</span>
                   <Form.Control
                     type="text"
                     {...register('lastName')}
@@ -141,6 +143,7 @@ const ProfileForm = ({
               <Col xs={4}>
                 <Form.Group controlId="email">
                   <Form.Label>Email</Form.Label>
+                  <span className="text-danger">*</span>
                   <Form.Control
                     type="text"
                     {...register('email')}
@@ -158,6 +161,7 @@ const ProfileForm = ({
               <Col>
                 <Form.Group controlId="bio">
                   <Form.Label>Biographical statement</Form.Label>
+                  <span className="text-danger">*</span>
                   <Form.Control
                     as="textarea"
                     placeholder="Your short biography."
@@ -220,6 +224,7 @@ const ProfileForm = ({
               <Col>
                 <Form.Group controlId="picture">
                   <Form.Label>Profile Picture URL</Form.Label>
+                  <span className="text-danger">*</span>
                   <Form.Control
                     type="text"
                     placeholder="Enter image URL"
@@ -253,6 +258,7 @@ const ProfileForm = ({
               {!isNewProfile && (
                 <Col>
                   <Button
+                    className="float-end"
                     variant="warning"
                     type="reset"
                     onClick={() => reset()}

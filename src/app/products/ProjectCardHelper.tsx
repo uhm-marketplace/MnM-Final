@@ -1,21 +1,29 @@
-/* eslint-disable import/extensions */
+// ProjectCardHelper.tsx
 import { Project } from '@prisma/client';
-import ProjectCard from '@/components/ProjectCard';
 import { prisma } from '@/lib/prisma';
 import { ProjectCardData } from '@/lib/ProjectCardData';
+import ProjectCardWithCart from './ProjectCardWithCart';
 
 const ProjectCardHelper = async ({ project }: { project: Project }) => {
   const projectInterests = await prisma.projectInterest.findMany({
     where: { projectId: project.id },
   });
   const interests = await prisma.interest.findMany({
-    where: { id: { in: projectInterests.map((projectInterest) => projectInterest.interestId) } },
+    where: {
+      id: {
+        in: projectInterests.map(
+          (projectInterest) => projectInterest.interestId,
+        ),
+      },
+    },
   });
   const interestNames = interests.map((interest) => interest.name);
   const projectParticipants = await prisma.profileProject.findMany({
     where: { projectId: project.id },
   });
-  const participants = projectParticipants.map((projectParticipant) => projectParticipant.profileId);
+  const participants = projectParticipants.map(
+    (projectParticipant) => projectParticipant.profileId,
+  );
   const profileParticipants = await prisma.profile.findMany({
     where: { id: { in: participants } },
   });
@@ -27,7 +35,8 @@ const ProjectCardHelper = async ({ project }: { project: Project }) => {
     interests: interestNames,
     participants: profileParticipants,
   };
-  return <ProjectCard project={projectData} />;
+
+  return <ProjectCardWithCart projectData={projectData} />;
 };
 
 export default ProjectCardHelper;

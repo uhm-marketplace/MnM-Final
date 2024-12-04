@@ -12,7 +12,13 @@ import { Interest, User } from '@prisma/client';
 import { AddProjectSchema, IProject } from '@/lib/validationSchemas';
 import { upsertProject } from '@/lib/dbActions';
 
-const AddProjectForm = ({ interests, participants }: { interests: Interest[]; participants: User[] }) => {
+const AddProjectForm = ({
+  interests,
+  participants,
+}: {
+  interests: Interest[];
+  participants: User[];
+}) => {
   const formPadding = 'py-1';
   const interestNames = interests.map((interest) => interest.name);
   const participantNames = participants.map((participant) => participant.email);
@@ -46,28 +52,38 @@ const AddProjectForm = ({ interests, participants }: { interests: Interest[]; pa
                 <Form.Group controlId="name">
                   <Form.Label>Name</Form.Label>
                   <Form.Control type="text" {...register('name')} />
-                  <Form.Text className="text-danger">{errors.name?.message}</Form.Text>
+                  <Form.Text className="text-danger">
+                    {errors.name?.message}
+                  </Form.Text>
                 </Form.Group>
               </Col>
               <Col xs={4}>
                 <Form.Group controlId="picture">
                   <Form.Label>Picture</Form.Label>
                   <Form.Control type="text" {...register('picture')} />
-                  <Form.Text className="text-danger">{errors.picture?.message}</Form.Text>
+                  <Form.Text className="text-danger">
+                    {errors.picture?.message}
+                  </Form.Text>
                 </Form.Group>
               </Col>
               <Col xs={4}>
                 <Form.Group controlId="homepage">
                   <Form.Label>Homepage</Form.Label>
                   <Form.Control type="text" {...register('homepage')} />
-                  <Form.Text className="text-danger">{errors.homepage?.message}</Form.Text>
+                  <Form.Text className="text-danger">
+                    {errors.homepage?.message}
+                  </Form.Text>
                 </Form.Group>
               </Col>
             </Row>
             <Row className={formPadding}>
               <Form.Group controlId="description">
                 <Form.Label>Description</Form.Label>
-                <Form.Control as="textarea" placeholder="Describe the project here." {...register('description')} />
+                <Form.Control
+                  as="textarea"
+                  placeholder="Describe the project here."
+                  {...register('description')}
+                />
                 <Form.Text muted>(optional)</Form.Text>
               </Form.Group>
             </Row>
@@ -95,7 +111,7 @@ const AddProjectForm = ({ interests, participants }: { interests: Interest[]; pa
               </Col>
               <Col xs={6}>
                 <Form.Group controlId="participants">
-                  <Form.Label>Participants</Form.Label>
+                  <Form.Label>Seller Email</Form.Label>
                   <Controller
                     control={control}
                     name="participants"
