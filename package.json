@@ -18,6 +18,7 @@
     "@hookform/resolvers": "^3.6.0",
     "@neondatabase/serverless": "^0.10.3",
     "@ngneat/falso": "^7.2.0",
+    "@playwright/test": "^1.49.0",
     "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "^2.46.1",
     "bcrypt": "^5.1.1",
@@ -36,7 +37,6 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.45.1",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.5.4",
     "@types/react": "^18",

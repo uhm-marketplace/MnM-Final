@@ -225,9 +225,10 @@ const NavBar: React.FC = () => {
             {/* Right-aligned links: Sell and Customer Service */}
             <Nav className="justify-content-end">
               <Nav.Link
-                active={pathname === '/customer-service'}
+                as={Link}
                 href="/customer-service"
                 id={ComponentIDs.customerServiceMenuItem}
+                active={pathname === '/customer-service'}
               >
                 Customer Service
               </Nav.Link>
