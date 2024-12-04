@@ -1,50 +1,53 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable @typescript-eslint/indent */
-
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
-import {
-  Image,
-  Nav,
-  Navbar,
-  NavDropdown,
-  Container,
-  Form,
-  FormControl,
-} from 'react-bootstrap';
-import { BoxArrowRight, PersonCircle, Cart } from 'react-bootstrap-icons'; // Using PersonCircle for the login icon
+import { Image, Nav, Navbar, NavDropdown, Container, Form, FormControl } from 'react-bootstrap';
+import { BoxArrowRight, PersonCircle, Cart } from 'react-bootstrap-icons';
 import { ComponentIDs } from '@/utilities/ids';
-import Link from 'next/link'; // Use Next.js Link component
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 const NavBar: React.FC = () => {
   const { data: session } = useSession();
-  const pathname = usePathname();
   const currentUser = session?.user?.email;
-  const navbarClassName = currentUser ? 'bg-dark' : 'bg-light';
+  const [isClient, setIsClient] = useState(false);
+  const [cartItemCount, setCartItemCount] = useState(0);
 
-  const cartItemCount = 5; // Example count of items in the shopping cart, you can dynamically update this
+  useEffect(() => {
+    setIsClient(true);
+    // Initial cart count
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    setCartItemCount(cart.length);
+
+    // Listen for cart updates
+    const updateCartCount = () => {
+      const updatedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      setCartItemCount(updatedCart.length);
+    };
+
+    window.addEventListener('cartUpdated', updateCartCount);
+
+    return () => {
+      window.removeEventListener('cartUpdated', updateCartCount);
+    };
+  }, []);
+
+  if (!isClient) {
+    return null; // Return nothing during initial server-side render
+  }
 
   return (
     <>
       {/* Main Navbar with Border */}
-      <Navbar expand="lg" className={`border ${navbarClassName}`}>
+      <Navbar expand="lg" className="border bg-light">
         <Container>
           <Navbar.Brand href="/" className="align-items-center">
-            <span
-              style={{
-                fontWeight: 800,
-                fontSize: '24px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
+            <span style={{ fontWeight: 800, fontSize: '24px', display: 'flex', alignItems: 'center' }}>
               <Image
                 src="/images/manoanow1.png"
                 width={50}
-                style={{ marginBottom: 3, marginRight: 10 }}
+                height={50}
+                style={{ marginRight: 10 }}
                 alt="Mānoa Now Marketplace"
               />
               Mānoa Now Marketplace
@@ -54,49 +57,27 @@ const NavBar: React.FC = () => {
           <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
             <Nav className="me-auto justify-content-start">
               {currentUser && (
-                <Nav.Link
-                  active={pathname === '/home'}
-                  href="/home"
-                  id={ComponentIDs.homeMenuItem}
-                >
+                <Nav.Link href="/home" id={ComponentIDs.homeMenuItem}>
                   Home
                 </Nav.Link>
               )}
-              <Nav.Link
-                active={pathname === '/community'}
-                href="/community"
-                id={ComponentIDs.profilesMenuItem}
-              >
+              <Nav.Link href="/community" id={ComponentIDs.profilesMenuItem}>
                 Community
               </Nav.Link>
-              <Nav.Link
-                active={pathname === '/products'}
-                href="/products"
-                id={ComponentIDs.projectsMenuItem}
-              >
+              <Nav.Link href="/products" id={ComponentIDs.projectsMenuItem}>
                 Shop Products
               </Nav.Link>
-              <Nav.Link
-                active={pathname === '/reviews'}
-                href="/reviews"
-                id={ComponentIDs.reviewsMenuItem}
-              >
+              <Nav.Link href="/reviews" id={ComponentIDs.reviewsMenuItem}>
                 Reviews
               </Nav.Link>
               {currentUser && (
-                <Nav.Link
-                  active={pathname === '/addProducts'}
-                  href="/addProducts"
-                  id={ComponentIDs.addProjectMenuItem}
-                >
+                <Nav.Link href="/addProducts" id={ComponentIDs.addProjectMenuItem}>
                   Sell Here
                 </Nav.Link>
               )}
             </Nav>
 
-            {/* Right side of Navbar */}
             <Nav className="d-flex align-items-center justify-content-end">
-              {/* Search Bar */}
               <Form className="d-inline me-3">
                 <FormControl
                   type="text"
@@ -107,46 +88,28 @@ const NavBar: React.FC = () => {
               </Form>
 
               {currentUser ? (
-                // User Dropdown with PersonCircle icon
-                <NavDropdown
-                  id={ComponentIDs.currentUserDropdown}
-                  title={<PersonCircle size={20} />}
-                >
-                  <NavDropdown.Item
-                    id={ComponentIDs.currentUserDropdownSignOut}
-                    href="/auth/signout"
-                  >
+                <NavDropdown id={ComponentIDs.currentUserDropdown} title={<PersonCircle size={20} />}>
+                  <NavDropdown.Item id={ComponentIDs.currentUserDropdownSignOut} href="/auth/signout">
                     <BoxArrowRight size={20} className="me-3" />
                     Sign out
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                // Login Dropdown
-                <NavDropdown
-                  id={ComponentIDs.loginDropdown}
-                  title={<PersonCircle size={20} />}
-                >
-                  <NavDropdown.Item
-                    id={ComponentIDs.loginDropdownSignIn}
-                    href="/auth/signin"
-                  >
+                <NavDropdown id={ComponentIDs.loginDropdown} title={<PersonCircle size={20} />}>
+                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignIn} href="/auth/signin">
                     Sign in
                   </NavDropdown.Item>
-                  <NavDropdown.Item
-                    id={ComponentIDs.loginDropdownSignUp}
-                    href="/auth/signup"
-                  >
+                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignUp} href="/auth/signup">
                     Sign up
                   </NavDropdown.Item>
                 </NavDropdown>
               )}
 
-              {/* Cart Icon with Badge */}
               <Nav.Link
                 as={Link}
                 href="/cart"
                 id={ComponentIDs.cartMenuItem}
-                className={`position-relative ${pathname === '/cart' ? 'active' : ''}`}
+                className="position-relative"
               >
                 <Cart size={20} />
                 {cartItemCount > 0 && (
@@ -168,68 +131,35 @@ const NavBar: React.FC = () => {
       </Navbar>
 
       {/* Smaller Navbar with Border */}
-      <Navbar
-        expand="lg"
-        className={`border ${currentUser ? 'bg-dark' : 'bg-light'} py-1`}
-      >
+      <Navbar expand="lg" className="border bg-light py-1">
         <Container>
           <Navbar.Collapse id={ComponentIDs.basicNavbarNav}>
             <Nav className="me-auto">
-              {/* Browse Categories Dropdown */}
-              <NavDropdown
-                title="Browse Interests"
-                id={ComponentIDs.browseCategoriesDropdown}
-              >
-                <NavDropdown.Item
-                  href="/digital-hq"
-                  id={ComponentIDs.digitalHQMenuItem}
-                >
+              <NavDropdown title="Browse Interests" id={ComponentIDs.browseCategoriesDropdown}>
+                <NavDropdown.Item href="/digital-hq" id={ComponentIDs.digitalHQMenuItem}>
                   Digital HQ
                 </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="/study-tools"
-                  id={ComponentIDs.studyToolsMenuItem}
-                >
+                <NavDropdown.Item href="/study-tools" id={ComponentIDs.studyToolsMenuItem}>
                   Study Tools
                 </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="/campus-closet"
-                  id={ComponentIDs.campusClosetMenuItem}
-                >
+                <NavDropdown.Item href="/campus-closet" id={ComponentIDs.campusClosetMenuItem}>
                   Campus Closet
                 </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="/self-care"
-                  id={ComponentIDs.selfCareMenuItem}
-                >
+                <NavDropdown.Item href="/self-care" id={ComponentIDs.selfCareMenuItem}>
                   Self-Care
                 </NavDropdown.Item>
-                <NavDropdown.Item
-                  href="/dorm-life"
-                  id={ComponentIDs.dormLifeMenuItem}
-                >
+                <NavDropdown.Item href="/dorm-life" id={ComponentIDs.dormLifeMenuItem}>
                   Dorm Life
                 </NavDropdown.Item>
               </NavDropdown>
 
-              {/* Vendors Link */}
-              <Nav.Link
-                active={pathname === '/vendors'}
-                href="/vendors"
-                id={ComponentIDs.vendorsMenuItem}
-              >
+              <Nav.Link href="/vendors" id={ComponentIDs.vendorsMenuItem}>
                 Find Vendors
               </Nav.Link>
             </Nav>
 
-            {/* Right-aligned links: Sell and Customer Service */}
             <Nav className="justify-content-end">
-              <Nav.Link
-                as={Link}
-                href="/customer-service"
-                id={ComponentIDs.customerServiceMenuItem}
-                active={pathname === '/customer-service'}
-              >
+              <Nav.Link as={Link} href="/customer-service" id={ComponentIDs.customerServiceMenuItem}>
                 Customer Service
               </Nav.Link>
             </Nav>
