@@ -14,6 +14,7 @@ const ProfileCard = ({ profile }: { profile: ProfileCardData }) => (
           src={profile.picture ? profile.picture : ''}
           name={profile.email}
           width={50}
+          height={50}
           roundedCircle
         />
         <Card.Title>
@@ -40,6 +41,7 @@ const ProfileCard = ({ profile }: { profile: ProfileCardData }) => (
             key={project.name}
             src={project.picture ? project.picture : ''}
             width={50}
+            height={50}
             name={project.name}
             roundedCircle
             className="mx-1"
