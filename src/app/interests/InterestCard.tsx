@@ -16,6 +16,7 @@ const InterestCard = ({ interest }: { interest: InterestCardData }) => (
           src={p?.picture ? p.picture : ''}
           name={p!.name}
           width={50}
+          height={50}
           roundedCircle
         />
       ))}
@@ -26,6 +27,7 @@ const InterestCard = ({ interest }: { interest: InterestCardData }) => (
           src={p?.picture ? p.picture : ''}
           name={p!.name}
           width={50}
+          height={50}
           roundedCircle
         />
       ))}
