@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Col, Container, Card, Row } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -28,13 +28,21 @@ const ProfileForm = ({
   isNewProfile: boolean;
 }) => {
   const formPadding = 'py-1';
-  const [pictureUrl, setPictureUrl] = useState(profile.picture || '');
-  const interestNames = interests.map((interest) => interest.name);
-  const profileInterestNames = profileInterests.map(
-    (interest) => interest.name,
-  );
-  const projectNames = projects.map((project) => project.name);
-  const profileProjectNames = profileProjects.map((project) => project.name);
+  const [isClient, setIsClient] = useState(false);
+  const [pictureUrl, setPictureUrl] = useState('');
+  const [interestNames, setInterestNames] = useState<string[]>([]);
+  const [profileInterestNames, setProfileInterestNames] = useState<string[]>([]);
+  const [projectNames, setProjectNames] = useState<string[]>([]);
+  const [profileProjectNames, setProfileProjectNames] = useState<string[]>([]);
+
+  useEffect(() => {
+    setIsClient(true);
+    setPictureUrl(profile.picture || '');
+    setInterestNames(interests.map((interest) => interest.name));
+    setProfileInterestNames(profileInterests.map((interest) => interest.name));
+    setProjectNames(projects.map((project) => project.name));
+    setProfileProjectNames(profileProjects.map((project) => project.name));
+  }, [profile, interests, projects, profileInterests, profileProjects]);
 
   const {
     register,
@@ -44,6 +52,15 @@ const ProfileForm = ({
     formState: { errors },
   } = useForm({
     resolver: yupResolver(ProfileSchema),
+    defaultValues: {
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || '',
+      email: profile.email || '',
+      bio: profile.bio || '',
+      picture: profile.picture || '',
+      interests: profileInterestNames,
+      projects: profileProjectNames,
+    },
   });
 
   const onSubmit = async (data: IProfile) => {
@@ -58,9 +75,8 @@ const ProfileForm = ({
           `Profile ${isNewProfile ? 'created' : 'updated'} successfully!`,
           'success',
         );
-        // No need to reload the page, Next.js will revalidate
       } else {
-        swal(
+        await swal(
           'Error!',
           `Failed to ${isNewProfile ? 'create' : 'update'} profile!`,
           'error',
@@ -68,13 +84,25 @@ const ProfileForm = ({
       }
     } catch (error) {
       console.error('Error with profile:', error);
-      swal(
+      await swal(
         'Error!',
         `Failed to ${isNewProfile ? 'create' : 'update'} profile!`,
         'error',
       );
     }
   };
+
+  if (!isClient) {
+    return (
+      <Container>
+        <Card>
+          <Card.Body>
+            <div>Loading...</div>
+          </Card.Body>
+        </Card>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -88,11 +116,12 @@ const ProfileForm = ({
                   <Form.Control
                     type="text"
                     {...register('firstName')}
-                    defaultValue={profile.firstName || ''}
                   />
-                  <Form.Text className="text-danger">
-                    {errors.firstName?.message}
-                  </Form.Text>
+                  {errors.firstName?.message && (
+                    <Form.Text className="text-danger">
+                      {errors.firstName.message}
+                    </Form.Text>
+                  )}
                 </Form.Group>
               </Col>
               <Col xs={4}>
@@ -101,11 +130,12 @@ const ProfileForm = ({
                   <Form.Control
                     type="text"
                     {...register('lastName')}
-                    defaultValue={profile.lastName!}
                   />
-                  <Form.Text className="text-danger">
-                    {errors.lastName?.message}
-                  </Form.Text>
+                  {errors.lastName?.message && (
+                    <Form.Text className="text-danger">
+                      {errors.lastName.message}
+                    </Form.Text>
+                  )}
                 </Form.Group>
               </Col>
               <Col xs={4}>
@@ -114,12 +144,13 @@ const ProfileForm = ({
                   <Form.Control
                     type="text"
                     {...register('email')}
-                    defaultValue={profile.email!}
                     readOnly
                   />
-                  <Form.Text className="text-danger">
-                    {errors.email?.message}
-                  </Form.Text>
+                  {errors.email?.message && (
+                    <Form.Text className="text-danger">
+                      {errors.email.message}
+                    </Form.Text>
+                  )}
                 </Form.Group>
               </Col>
             </Row>
@@ -131,12 +162,13 @@ const ProfileForm = ({
                     as="textarea"
                     placeholder="Your short biography."
                     {...register('bio')}
-                    defaultValue={profile.bio!}
                   />
                   <Form.Text muted>(optional)</Form.Text>
-                  <Form.Text className="text-danger">
-                    {errors.bio?.message}
-                  </Form.Text>
+                  {errors.bio?.message && (
+                    <Form.Text className="text-danger">
+                      {errors.bio.message}
+                    </Form.Text>
+                  )}
                 </Form.Group>
               </Col>
             </Row>
@@ -151,12 +183,12 @@ const ProfileForm = ({
                       <Multiselect
                         options={interestNames}
                         isObject={false}
-                        // showCheckbox
                         hidePlaceholder
                         closeOnSelect={false}
                         onSelect={onChange}
                         onRemove={onChange}
                         selectedValues={profileInterestNames}
+                        key="interests-select"
                       />
                     )}
                   />
@@ -164,7 +196,7 @@ const ProfileForm = ({
               </Col>
               <Col xs={6}>
                 <Form.Group controlId="projects">
-                  <Form.Label>Projects</Form.Label>
+                  <Form.Label>Products</Form.Label>
                   <Controller
                     control={control}
                     name="projects"
@@ -172,12 +204,12 @@ const ProfileForm = ({
                       <Multiselect
                         options={projectNames}
                         isObject={false}
-                        // showCheckbox
                         hidePlaceholder
                         closeOnSelect={false}
                         onSelect={onChange}
                         onRemove={onChange}
                         selectedValues={profileProjectNames}
+                        key="projects-select"
                       />
                     )}
                   />
@@ -192,12 +224,13 @@ const ProfileForm = ({
                     type="text"
                     placeholder="Enter image URL"
                     {...register('picture')}
-                    defaultValue={pictureUrl}
                     onChange={(e) => setPictureUrl(e.target.value)}
                   />
-                  <Form.Text className="text-danger">
-                    {errors.picture?.message}
-                  </Form.Text>
+                  {errors.picture?.message && (
+                    <Form.Text className="text-danger">
+                      {errors.picture.message}
+                    </Form.Text>
+                  )}
                 </Form.Group>
                 {pictureUrl && (
                   <div className="mt-3">

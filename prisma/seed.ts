@@ -1,3 +1,5 @@
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcrypt';
 import * as config from '../config/settings.development.json';

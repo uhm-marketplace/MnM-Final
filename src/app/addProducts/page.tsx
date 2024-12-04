@@ -18,7 +18,7 @@ const AddProjectPage = async () => {
 
   return (
     <Container>
-      <h1 className="text-center">Add Project</h1>
+      <h1 className="text-center mt-5">Add Products To Sell</h1>
       <AddProjectForm interests={interests} participants={participants} />
     </Container>
   );

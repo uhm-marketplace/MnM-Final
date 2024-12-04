@@ -34,7 +34,7 @@ const ProfileCard = ({ profile }: { profile: ProfileCardData }) => (
             </Badge>
           ))}
         </Card.Text>
-        <h5>Projects</h5>
+        <h5>Products</h5>
         {profile.projects.map((project) => (
           <TooltipImage
             key={project.name}

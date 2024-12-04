@@ -4,7 +4,6 @@ const CartPage: React.FC = () => (
   <div style={{ borderLeft: '2px solid #000', borderRight: '2px solid #000', padding: '20px' }}>
     <h1>Your Shopping Cart</h1>
     <p>This is the cart page. You can display the cart items here.</p>
-
     <ul>
       <li>Item 1 - $10</li>
       <li>Item 2 - $20</li>

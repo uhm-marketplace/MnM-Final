@@ -41,6 +41,7 @@ export const ComponentIDs = {
   signUpFormSubmit: 'signUpFormSubmit',
   studyToolsMenuItem: 'studyToolsMenuItem',
   vendorsMenuItem: 'vendorsMenuItem',
+  reviewsMenuItem: 'reviewsMenuItem',
 };
 
 export const PageIDs = {

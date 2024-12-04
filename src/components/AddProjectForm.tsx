@@ -37,7 +37,7 @@ const AddProjectForm = ({ interests, participants }: { interests: Interest[]; pa
   };
 
   return (
-    <Container>
+    <Container className="mb-5">
       <Card>
         <Card.Body>
           <Form onSubmit={handleSubmit(onSubmit)}>
