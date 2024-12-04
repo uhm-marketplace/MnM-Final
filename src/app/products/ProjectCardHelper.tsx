@@ -8,32 +8,35 @@ const ProjectCardHelper = async ({ project }: { project: Project }) => {
   const projectInterests = await prisma.projectInterest.findMany({
     where: { projectId: project.id },
   });
+
   const interests = await prisma.interest.findMany({
     where: {
-      id: {
-        in: projectInterests.map(
-          (projectInterest) => projectInterest.interestId,
-        ),
-      },
+      id: { in: projectInterests.map((pi) => pi.interestId) },
     },
   });
+
   const interestNames = interests.map((interest) => interest.name);
+
   const projectParticipants = await prisma.profileProject.findMany({
     where: { projectId: project.id },
+    include: { profile: true },
   });
-  const participants = projectParticipants.map(
-    (projectParticipant) => projectParticipant.profileId,
-  );
-  const profileParticipants = await prisma.profile.findMany({
-    where: { id: { in: participants } },
+
+  const buyers = await prisma.projectBuyer.findMany({
+    where: { projectId: project.id },
+    include: { profile: true },
   });
+
   const projectData: ProjectCardData = {
+    id: project.id,
     name: project.name,
     homepage: project.homepage,
     picture: project.picture,
+    price: project.price,
     description: project.description,
     interests: interestNames,
-    participants: profileParticipants,
+    participants: projectParticipants.map((pp) => pp.profile),
+    buyers: buyers.map((b) => b.profile),
   };
 
   return <ProjectCardWithCart projectData={projectData} />;

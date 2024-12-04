@@ -10,7 +10,7 @@ const ProjectsPage = async () => {
   projects.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <Container id={PageIDs.projectsPage} style={pageStyle}>
-      <Row xs={1} md={2} lg={4} className="g-4">
+      <Row xs={1} md={2} lg={4} className="g-2">
         {projects.map((project) => (
           <ProjectCardHelper key={project.id} project={project} />
         ))}

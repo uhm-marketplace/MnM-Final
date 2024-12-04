@@ -4,18 +4,22 @@ export interface IProject {
   name: string;
   homepage?: string;
   picture?: string;
+  price: number;
   description: string;
   interests?: (string | undefined)[] | undefined;
   participants?: (string | undefined)[] | undefined;
+  buyers?: (string | undefined)[] | undefined;
 }
 
 export const AddProjectSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
   homepage: Yup.string().optional().url('Homepage must be a valid URL'),
   picture: Yup.string().optional(),
+  price: Yup.number().required('Price is required').min(0, 'Price must be positive'),
   description: Yup.string().required('Description is required'),
   interests: Yup.array().of(Yup.string()),
   participants: Yup.array().of(Yup.string()),
+  buyers: Yup.array().of(Yup.string()),
 });
 
 export interface IProfile {

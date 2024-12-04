@@ -19,12 +19,18 @@ async function main() {
       });
       const dbProject = await prisma.project.upsert({
         where: { name: project.name },
-        update: {},
+        update: {
+          description: project.description,
+          homepage: project.homepage,
+          picture: project.picture,
+          price: project.price,
+        },
         create: {
           name: project.name,
           description: project.description,
           homepage: project.homepage,
           picture: project.picture,
+          price: project.price,
         },
       });
       project.interests.forEach(async (intere) => {

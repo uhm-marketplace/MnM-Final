@@ -22,6 +22,7 @@ const AddProjectForm = ({
   const formPadding = 'py-1';
   const interestNames = interests.map((interest) => interest.name);
   const participantNames = participants.map((participant) => participant.email);
+
   const {
     register,
     handleSubmit,
@@ -48,27 +49,41 @@ const AddProjectForm = ({
         <Card.Body>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className={formPadding}>
-              <Col xs={4}>
+              <Col xs={3}>
                 <Form.Group controlId="name">
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label>Name*</Form.Label>
                   <Form.Control type="text" {...register('name')} />
                   <Form.Text className="text-danger">
                     {errors.name?.message}
                   </Form.Text>
                 </Form.Group>
               </Col>
-              <Col xs={4}>
+              <Col xs={3}>
+                <Form.Group controlId="price">
+                  <Form.Label>Price ($)*</Form.Label>
+                  <Form.Control
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    {...register('price')}
+                  />
+                  <Form.Text className="text-danger">
+                    {errors.price?.message}
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+              <Col xs={3}>
                 <Form.Group controlId="picture">
-                  <Form.Label>Picture</Form.Label>
+                  <Form.Label>Picture URL</Form.Label>
                   <Form.Control type="text" {...register('picture')} />
                   <Form.Text className="text-danger">
                     {errors.picture?.message}
                   </Form.Text>
                 </Form.Group>
               </Col>
-              <Col xs={4}>
+              <Col xs={3}>
                 <Form.Group controlId="homepage">
-                  <Form.Label>Homepage</Form.Label>
+                  <Form.Label>Homepage URL</Form.Label>
                   <Form.Control type="text" {...register('homepage')} />
                   <Form.Text className="text-danger">
                     {errors.homepage?.message}
@@ -78,19 +93,21 @@ const AddProjectForm = ({
             </Row>
             <Row className={formPadding}>
               <Form.Group controlId="description">
-                <Form.Label>Description</Form.Label>
+                <Form.Label>Description*</Form.Label>
                 <Form.Control
                   as="textarea"
-                  placeholder="Describe the project here."
+                  placeholder="Describe your product here."
                   {...register('description')}
                 />
-                <Form.Text muted>(optional)</Form.Text>
+                <Form.Text className="text-danger">
+                  {errors.description?.message}
+                </Form.Text>
               </Form.Group>
             </Row>
             <Row className={formPadding}>
               <Col xs={6}>
                 <Form.Group controlId="interests">
-                  <Form.Label>Interests</Form.Label>
+                  <Form.Label>Interests*</Form.Label>
                   <Controller
                     control={control}
                     name="interests"
@@ -111,7 +128,7 @@ const AddProjectForm = ({
               </Col>
               <Col xs={6}>
                 <Form.Group controlId="participants">
-                  <Form.Label>Seller Email</Form.Label>
+                  <Form.Label>Seller Email*</Form.Label>
                   <Controller
                     control={control}
                     name="participants"
