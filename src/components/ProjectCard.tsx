@@ -148,7 +148,7 @@ const ProjectCard = ({ project }: { project: ProjectCardData }) => {
                     key={buyer.email}
                     name={buyer.email}
                     roundedCircle
-                    src={buyer.picture || '/images/default-avatar.png'}
+                    src={buyer.picture || '/images/user.png'}
                     width={30}
                     height={30}
                     style={{

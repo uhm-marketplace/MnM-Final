@@ -5,7 +5,7 @@ export type ProfileCardData = {
   bio: string | null;
   firstName: string | null;
   lastName: string | null;
-  picture: string | null;
+  picture: string;
   title: string | null;
   projects: Project[];
   interests: string[];

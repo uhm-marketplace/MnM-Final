@@ -167,7 +167,6 @@ const ProfileForm = ({
                     placeholder="Your short biography."
                     {...register('bio')}
                   />
-                  <Form.Text muted>(optional)</Form.Text>
                   {errors.bio?.message && (
                     <Form.Text className="text-danger">
                       {errors.bio.message}
@@ -224,7 +223,7 @@ const ProfileForm = ({
               <Col>
                 <Form.Group controlId="picture">
                   <Form.Label>Profile Picture URL</Form.Label>
-                  <span className="text-danger">*</span>
+                  <Form.Text muted> (optional)</Form.Text>
                   <Form.Control
                     type="text"
                     placeholder="Enter image URL"

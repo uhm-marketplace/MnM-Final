@@ -1,7 +1,7 @@
 import { Image, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export type TooltipImageProps = {
-  src: string;
+  src: string | null;
   name: string;
   width: number;
   height: number;
@@ -22,7 +22,7 @@ const TooltipImage = ({
   <OverlayTrigger overlay={<Tooltip id={`tooltip-${name}`}>{name}</Tooltip>}>
     <Image
       roundedCircle={roundedCircle}
-      src={src}
+      src={src || '/images/user.png'}
       width={width}
       height={height}
       style={style}

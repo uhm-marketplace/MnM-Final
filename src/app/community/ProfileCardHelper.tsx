@@ -1,34 +1,42 @@
-/* eslint-disable import/extensions */
+'use client';
+
+import { useEffect, useState } from 'react';
 import { Profile } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
 import { ProfileCardData } from '@/lib/ProfileCardData';
 import ProfileCard from '../../components/ProfileCard';
 
-const ProfileCardHelper = async ({ profile }: { profile: Profile }) => {
-  const profileInterests = await prisma.profileInterest.findMany({
-    where: { profileId: profile.id },
-  });
-  const interests = await prisma.interest.findMany({
-    where: { id: { in: profileInterests.map((profileInterest) => profileInterest.interestId) } },
-  });
-  const interestNames = interests.map((interest) => interest.name);
-  const profileProjects = await prisma.profileProject.findMany({
-    where: { profileId: profile.id },
-  });
-  console.log('profileProjects: ', profileProjects);
-  const projects = await prisma.project.findMany({
-    where: { id: { in: profileProjects.map((profileProject) => profileProject.projectId) } },
-  });
-  const profileData: ProfileCardData = {
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-    email: profile.email,
-    bio: profile.bio,
-    title: profile.title,
-    picture: profile.picture,
-    interests: interestNames,
-    projects,
-  };
+const ProfileCardHelper = ({ profile }: { profile: Profile }) => {
+  const [profileData, setProfileData] = useState<ProfileCardData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch(`/api/profile/${profile.id}/details`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile data');
+        }
+        const data = await response.json();
+        setProfileData(data);
+      } catch (err) {
+        console.error('Error fetching profile data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch profile data');
+      }
+    };
+
+    fetchProfileData();
+  }, [profile.id]);
+
+  if (error) {
+    return (
+      <div>
+        Error loading profile:
+        {error}
+      </div>
+    );
+  }
+  if (!profileData) return <div>Loading...</div>;
+
   return <ProfileCard profile={profileData} />;
 };
 
