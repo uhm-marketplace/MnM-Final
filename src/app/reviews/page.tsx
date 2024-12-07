@@ -63,7 +63,13 @@ const ReviewPage = () => {
   });
 
   // Submission Handler
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: {
+    userName: string;
+    item: string;
+    rating: number;
+    contact: string;
+    reviewText: string;
+  }) => {
     try {
       // Simmulate sending data to database
       const response = await fetch('/api/reviews', {
@@ -113,7 +119,7 @@ const ReviewPage = () => {
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Group controlId="formItemName">
+                <Form.Group controlId="item">
                   <Form.Label>Item</Form.Label>
                   <Form.Control
                     type="text"
@@ -130,7 +136,7 @@ const ReviewPage = () => {
             </Row>
             <Row className="mb-3">
               <Col>
-                <Form.Group controlId="formRating">
+                <Form.Group controlId="rating">
                   <Form.Label>Rating</Form.Label>
                   <Controller
                     name="rating"
@@ -150,7 +156,7 @@ const ReviewPage = () => {
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Group controlId="formContact">
+                <Form.Group controlId="contact">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
@@ -165,14 +171,19 @@ const ReviewPage = () => {
                 </Form.Group>
               </Col>
             </Row>
-            <Form.Group className="mb-3" controlId="formReviewText">
+            <Form.Group className="mb-3" controlId="reviewText">
               <Form.Label>Review</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
                 required
                 placeholder="Write your review here"
+                {...register('reviewText')}
+                isInvalid={!!errors.reviewText}
               />
+              <Form.Control.Feedback type="invalid">
+                {errors.reviewText?.message}
+              </Form.Control.Feedback>
             </Form.Group>
             <Button variant="primary" type="submit">
               Submit Review
@@ -180,6 +191,30 @@ const ReviewPage = () => {
           </Form>
         </Card.Body>
       </Card>
+      <h2>Customer Reviews</h2>
+      <ListGroup>
+        {reviews.map((review) => (
+          <ListGroup.Item key={review.id}>
+            <h5>{review.userName}</h5>
+            <p>
+              <strong>Item:</strong>
+              {' '}
+              {review.item}
+            </p>
+            <p>
+              <strong>Rating:</strong>
+              {' '}
+              {review.rating}
+            </p>
+            <p>
+              <strong>Contact:</strong>
+              {' '}
+              {review.contact}
+            </p>
+            <p>{review.reviewText}</p>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
     </Container>
   );
 };
