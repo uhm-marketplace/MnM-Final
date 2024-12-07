@@ -1,13 +1,10 @@
-/* eslint-disable import/extensions */
-
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Button, Card, Container, Row } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
 import Multiselect from 'multiselect-react-dropdown';
 import { Interest, Profile, ProfileInterest, ProfileProject, Project } from '@prisma/client';
-import { useStickyState } from '@/lib/StickyState';
 import { ProfileCardData } from '@/lib/ProfileCardData';
 import ProfileCard from './ProfileCard';
 
@@ -24,7 +21,7 @@ const FilterProfileForm = ({
   profileProjects: ProfileProject[];
   projects: Project[];
 }) => {
-  const [selectedInterests, setSelectedInterests] = useStickyState('selectedInterests', []);
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const interestNames = interests.map((interest) => interest.name);
   const selectedInterestIds = interests
     .filter((interest) => selectedInterests.includes(interest.name))
@@ -61,7 +58,8 @@ const FilterProfileForm = ({
   const makeProfileData = (profile: Profile): ProfileCardData => {
     const profileInterestNames = getProfileInterestNames(profile.id);
     const profProjects = getProfileProjects(profile.id);
-    const retVal = {
+    return {
+      id: profile.id,
       email: profile.email,
       bio: profile.bio,
       firstName: profile.firstName,
@@ -71,7 +69,6 @@ const FilterProfileForm = ({
       projects: profProjects,
       interests: profileInterestNames,
     };
-    return retVal;
   };
 
   return (

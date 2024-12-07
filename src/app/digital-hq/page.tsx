@@ -1,11 +1,22 @@
 /* eslint-disable no-await-in-loop */
 // app/digital-hq/page.tsx
+import { getServerSession } from 'next-auth';
 import { Container, Row } from 'react-bootstrap';
 import { prisma } from '@/lib/prisma';
 import pageStyle from '@/utilities/pageStyle';
+import { authOptions } from '@/lib/auth';
+import { loggedInProtectedPage } from '@/lib/page-protection';
 import ProjectCardHelper from '../products/ProjectCardHelper';
 
 const DigitalHQPage = async () => {
+  const session = await getServerSession(authOptions);
+
+  loggedInProtectedPage(
+    session as {
+      user: { email: string; id: string; randomKey: string };
+    } | null,
+  );
+
   // First get all projects and their associated interests
   const allProjects = await prisma.project.findMany();
   const projectsWithDigitalHQ = [];
@@ -33,11 +44,14 @@ const DigitalHQPage = async () => {
     <Container style={pageStyle}>
       <Row xs={1} md={2} lg={4} className="g-2">
         {projectsWithDigitalHQ.map((project) => (
-          <ProjectCardHelper key={project.id} project={project} />
+          <ProjectCardHelper key={`project-${project.id}`} project={project} />
         ))}
       </Row>
     </Container>
   );
 };
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default DigitalHQPage;

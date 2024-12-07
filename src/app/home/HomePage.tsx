@@ -24,9 +24,6 @@ const HomePage = ({
 }) => (
   <Container id={PageIDs.homePage} style={pageStyle}>
     <Col>
-      <h2 className="text-center">
-        {isNewProfile ? 'Create Your Profile' : 'Your Profile'}
-      </h2>
       <ProfileForm
         profile={profile}
         interests={interests}
