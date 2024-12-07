@@ -13,8 +13,9 @@ export interface IProject {
 
 export const AddProjectSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
-  homepage: Yup.string().optional().url('Homepage must be a valid URL'),
-  picture: Yup.string().optional(),
+  homepage: Yup.string().optional().url('Website must be a valid URL'),
+  picture: Yup.string()
+    .required('Profile picture URL is required'),
   price: Yup.number()
     .required('Price is required')
     .min(0, 'Price must be positive'),
@@ -40,11 +41,8 @@ export const ProfileSchema = Yup.object().shape({
   email: Yup.string()
     .required('Email is required')
     .email('Email must be a valid email'),
-  bio: Yup.string()
-    .required('Bio is required'),
+  bio: Yup.string().required('Bio is required'),
   interests: Yup.array().of(Yup.string()),
   projects: Yup.array().of(Yup.string()),
-  picture: Yup.string()
-    .required('Profile picture URL is required')
-    .url('Must be a valid URL'),
+  picture: Yup.string().optional().url('Profile picture must be a valid URL'),
 });

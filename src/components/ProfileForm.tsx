@@ -1,9 +1,13 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
+/* eslint-disable no-nested-ternary */
 
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Col, Container, Card, Row } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import swal from 'sweetalert';
@@ -11,6 +15,18 @@ import Multiselect from 'multiselect-react-dropdown';
 import { IProfile, ProfileSchema } from '@/lib/validationSchemas';
 import { Interest, Profile, Project } from '@prisma/client';
 import { createProfile, updateProfile } from '@/lib/dbActions';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Loader2,
+  RefreshCw,
+  User,
+  Mail,
+  Image as ImageIcon,
+} from 'lucide-react';
 
 const ProfileForm = ({
   profile,
@@ -27,11 +43,13 @@ const ProfileForm = ({
   profileProjects: Project[];
   isNewProfile: boolean;
 }) => {
-  const formPadding = 'py-1';
   const [isClient, setIsClient] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [pictureUrl, setPictureUrl] = useState('');
   const [interestNames, setInterestNames] = useState<string[]>([]);
-  const [profileInterestNames, setProfileInterestNames] = useState<string[]>([]);
+  const [profileInterestNames, setProfileInterestNames] = useState<string[]>(
+    [],
+  );
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [profileProjectNames, setProfileProjectNames] = useState<string[]>([]);
 
@@ -64,6 +82,7 @@ const ProfileForm = ({
   });
 
   const onSubmit = async (data: IProfile) => {
+    setIsLoading(true);
     try {
       const result = isNewProfile
         ? await createProfile(data)
@@ -89,96 +108,136 @@ const ProfileForm = ({
         `Failed to ${isNewProfile ? 'create' : 'update'} profile!`,
         'error',
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (!isClient) {
     return (
-      <Container>
-        <Card>
-          <Card.Body>
-            <div>Loading...</div>
-          </Card.Body>
-        </Card>
-      </Container>
+      <div className="min-vh-100 bg-light py-5">
+        <Container>
+          <Card className="p-4">
+            <div className="text-center">Loading...</div>
+          </Card>
+        </Container>
+      </div>
     );
   }
 
   return (
-    <Container>
-      <Card>
-        <Card.Body>
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <Row className={formPadding}>
-              <Col xs={4}>
-                <Form.Group controlId="firstName">
-                  <Form.Label>First Name</Form.Label>
-                  <span className="text-danger">*</span>
-                  <Form.Control
-                    type="text"
-                    {...register('firstName')}
-                  />
+    <div className="min-vh-100 bg-light py-5">
+      <Container>
+        <div className="text-center mb-4">
+          <h1 className="display-6 fw-bold" style={{ color: '#376551' }}>
+            {isNewProfile ? 'Create Profile' : 'Update Profile'}
+          </h1>
+          <p className="text-muted">
+            {isNewProfile
+              ? 'Set up your profile information'
+              : 'Manage your profile information'}
+          </p>
+        </div>
+
+        <Card className="p-4">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-4">
+              <Row>
+                <Col xs={12} md={6} className="mb-3">
+                  <Label htmlFor="firstName">
+                    First Name
+                    <span className="text-danger">*</span>
+                  </Label>
+                  <div className="position-relative">
+                    <User
+                      className="position-absolute top-50 translate-middle-y ms-2 text-muted"
+                      size={18}
+                    />
+                    <Input
+                      id="firstName"
+                      type="text"
+                      {...register('firstName')}
+                      className={`form-control ps-4 ${errors.firstName ? 'is-invalid' : ''}`}
+                      placeholder=" Enter your first name"
+                    />
+                  </div>
                   {errors.firstName?.message && (
-                    <Form.Text className="text-danger">
+                    <div className="invalid-feedback d-block">
                       {errors.firstName.message}
-                    </Form.Text>
+                    </div>
                   )}
-                </Form.Group>
-              </Col>
-              <Col xs={4}>
-                <Form.Group controlId="lastName">
-                  <Form.Label>Last Name</Form.Label>
-                  <span className="text-danger">*</span>
-                  <Form.Control
-                    type="text"
-                    {...register('lastName')}
-                  />
+                </Col>
+
+                <Col xs={12} md={6} className="mb-3">
+                  <Label htmlFor="lastName">
+                    Last Name
+                    <span className="text-danger">*</span>
+                  </Label>
+                  <div className="position-relative">
+                    <User
+                      className="position-absolute top-50 translate-middle-y ms-2 text-muted"
+                      size={18}
+                    />
+                    <Input
+                      id="lastName"
+                      type="text"
+                      {...register('lastName')}
+                      className={`form-control ps-4 ${errors.lastName ? 'is-invalid' : ''}`}
+                      placeholder=" Enter your last name"
+                    />
+                  </div>
                   {errors.lastName?.message && (
-                    <Form.Text className="text-danger">
+                    <div className="invalid-feedback d-block">
                       {errors.lastName.message}
-                    </Form.Text>
+                    </div>
                   )}
-                </Form.Group>
-              </Col>
-              <Col xs={4}>
-                <Form.Group controlId="email">
-                  <Form.Label>Email</Form.Label>
+                </Col>
+              </Row>
+
+              <Row className="mb-3">
+                <Col>
+                  <Label htmlFor="email">
+                    Email
+                    <span className="text-danger">*</span>
+                  </Label>
+                  <div className="position-relative">
+                    <Mail
+                      className="position-absolute top-50 translate-middle-y ms-2 text-muted"
+                      size={18}
+                    />
+                    <Input
+                      id="email"
+                      type="email"
+                      {...register('email')}
+                      className="form-control ps-4"
+                      readOnly
+                    />
+                  </div>
+                </Col>
+              </Row>
+
+              <div className="mb-3">
+                <Label htmlFor="bio">
+                  Biographical Statement
                   <span className="text-danger">*</span>
-                  <Form.Control
-                    type="text"
-                    {...register('email')}
-                    readOnly
-                  />
-                  {errors.email?.message && (
-                    <Form.Text className="text-danger">
-                      {errors.email.message}
-                    </Form.Text>
-                  )}
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row className={formPadding}>
-              <Col>
-                <Form.Group controlId="bio">
-                  <Form.Label>Biographical statement</Form.Label>
-                  <span className="text-danger">*</span>
-                  <Form.Control
-                    as="textarea"
-                    placeholder="Your short biography."
-                    {...register('bio')}
-                  />
-                  {errors.bio?.message && (
-                    <Form.Text className="text-danger">
-                      {errors.bio.message}
-                    </Form.Text>
-                  )}
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row className={formPadding}>
-              <Col xs={6}>
-                <Form.Group controlId="interests">
-                  <Form.Label>Interests</Form.Label>
+                </Label>
+                <Textarea
+                  id="bio"
+                  {...register('bio')}
+                  className={`form-control ${errors.bio ? 'is-invalid' : ''}`}
+                  placeholder="Tell us about yourself..."
+                  rows={4}
+                />
+                {errors.bio?.message && (
+                  <div className="invalid-feedback d-block">
+                    {errors.bio.message}
+                  </div>
+                )}
+              </div>
+
+              <Row>
+                <Col xs={12} md={6} className="mb-3">
+                  <Label htmlFor="interests">Interests</Label>
                   <Controller
                     control={control}
                     name="interests"
@@ -186,20 +245,28 @@ const ProfileForm = ({
                       <Multiselect
                         options={interestNames}
                         isObject={false}
+                        showCheckbox
                         hidePlaceholder
                         closeOnSelect={false}
                         onSelect={onChange}
                         onRemove={onChange}
                         selectedValues={profileInterestNames}
-                        key="interests-select"
+                        style={{
+                          chips: { color: '#fff', background: '#007bff' },
+                          searchBox: {
+                            border: '1px solid #ced4da',
+                            borderRadius: '0.375rem',
+                            padding: '0.5rem',
+                            color: '#fff',
+                          },
+                        }}
                       />
                     )}
                   />
-                </Form.Group>
-              </Col>
-              <Col xs={6}>
-                <Form.Group controlId="projects">
-                  <Form.Label>Products</Form.Label>
+                </Col>
+
+                <Col xs={12} md={6} className="mb-3">
+                  <Label htmlFor="projects">Product Listings</Label>
                   <Controller
                     control={control}
                     name="projects"
@@ -207,70 +274,94 @@ const ProfileForm = ({
                       <Multiselect
                         options={projectNames}
                         isObject={false}
+                        showCheckbox
                         hidePlaceholder
                         closeOnSelect={false}
                         onSelect={onChange}
                         onRemove={onChange}
                         selectedValues={profileProjectNames}
-                        key="projects-select"
+                        style={{
+                          chips: { color: '#fff', background: '#6c757d' },
+                          searchBox: {
+                            border: '1px solid #ced4da',
+                            borderRadius: '0.375rem',
+                            padding: '0.5rem',
+                            color: '#fff',
+                          },
+                        }}
                       />
                     )}
                   />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row className={formPadding}>
-              <Col>
-                <Form.Group controlId="picture">
-                  <Form.Label>Profile Picture URL</Form.Label>
-                  <Form.Text muted> (optional)</Form.Text>
-                  <Form.Control
+                </Col>
+              </Row>
+
+              <div className="mb-4">
+                <Label htmlFor="picture">Profile Picture URL</Label>
+                <div className="position-relative">
+                  <ImageIcon
+                    className="position-absolute top-50 translate-middle-y ms-2 text-muted"
+                    size={18}
+                  />
+                  <Input
+                    id="picture"
                     type="text"
-                    placeholder="Enter image URL"
                     {...register('picture')}
+                    className={`form-control ps-4 ${errors.picture ? 'is-invalid' : ''}`}
+                    placeholder=" Enter image URL"
                     onChange={(e) => setPictureUrl(e.target.value)}
                   />
-                  {errors.picture?.message && (
-                    <Form.Text className="text-danger">
-                      {errors.picture.message}
-                    </Form.Text>
-                  )}
-                </Form.Group>
+                </div>
+                {errors.picture?.message && (
+                  <div className="invalid-feedback d-block">
+                    {errors.picture.message}
+                  </div>
+                )}
                 {pictureUrl && (
                   <div className="mt-3">
-                    <p>Picture Preview:</p>
+                    <p className="text-muted mb-2">Preview:</p>
                     <img
                       src={pictureUrl}
                       alt="Profile preview"
-                      style={{ maxWidth: '200px', borderRadius: '8px' }}
+                      className="rounded"
+                      style={{ maxWidth: '200px' }}
                     />
                   </div>
                 )}
-              </Col>
-            </Row>
-            <Row className={formPadding}>
-              <Col>
-                <Button variant="primary" type="submit">
-                  {isNewProfile ? 'Create Profile' : 'Update Profile'}
+              </div>
+
+              <div className="d-grid gap-2">
+                <Button type="submit" className="w-100" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="me-2 spinner-border spinner-border-sm" />
+                      {isNewProfile
+                        ? 'Creating Profile...'
+                        : 'Updating Profile...'}
+                    </>
+                  ) : isNewProfile ? (
+                    'Create Profile'
+                  ) : (
+                    'Update Profile'
+                  )}
                 </Button>
-              </Col>
-              {!isNewProfile && (
-                <Col>
+
+                {!isNewProfile && (
                   <Button
-                    className="float-end"
-                    variant="warning"
-                    type="reset"
+                    type="button"
+                    variant="outline"
                     onClick={() => reset()}
+                    className="w-100"
                   >
-                    Reset
+                    <RefreshCw className="me-2" />
+                    Reset Form
                   </Button>
-                </Col>
-              )}
-            </Row>
-          </Form>
-        </Card.Body>
-      </Card>
-    </Container>
+                )}
+              </div>
+            </div>
+          </form>
+        </Card>
+      </Container>
+    </div>
   );
 };
 

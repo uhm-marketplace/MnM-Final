@@ -59,6 +59,7 @@ const FilterProfileForm = ({
     const profileInterestNames = getProfileInterestNames(profile.id);
     const profProjects = getProfileProjects(profile.id);
     return {
+      id: profile.id,
       email: profile.email,
       bio: profile.bio,
       firstName: profile.firstName,

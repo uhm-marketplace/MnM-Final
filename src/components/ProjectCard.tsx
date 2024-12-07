@@ -25,7 +25,7 @@ const ProjectCard = ({ project }: { project: ProjectCardData }) => {
           style={{ height: '200px', overflow: 'hidden' }}
         >
           <Card.Img
-            src={project.picture || '/images/placeholder.png'} // Add a placeholder image
+            src={project.picture || '/images/user.png'} // Add a placeholder image
             style={{
               height: '100%',
               width: '100%',
@@ -117,7 +117,7 @@ const ProjectCard = ({ project }: { project: ProjectCardData }) => {
                   <TooltipImage
                     name={p.email}
                     roundedCircle
-                    src={p.picture || '/images/default-avatar.png'} // Add a default avatar
+                    src={p.picture || '/images/user.png'} // Add a default avatar
                     width={35}
                     height={35}
                     style={{

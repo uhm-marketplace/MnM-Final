@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-alert */
 
 'use client';
@@ -6,7 +8,14 @@ import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { Card, Col, Container, Button, Form, Row } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { AlertCircle, Eye, EyeOff, Loader2, RefreshCw } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { createUser } from '@/lib/dbActions';
 
 type SignUpForm = {
@@ -16,6 +25,11 @@ type SignUpForm = {
 };
 
 const SignUp = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
+
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .required('Email is required')
@@ -44,92 +58,161 @@ const SignUp = () => {
   });
 
   const onSubmit = async (data: SignUpForm) => {
+    setIsLoading(true);
+    setError('');
+
     try {
-      // Validate email domain
       if (!data.email.endsWith('@hawaii.edu')) {
-        alert('Only hawaii.edu email addresses are allowed.');
+        setError('Only hawaii.edu email addresses are allowed.');
         return;
       }
 
       await createUser(data);
-      await signIn('credentials', { callbackUrl: '/home', ...data });
+      await signIn('credentials', {
+        callbackUrl: '/home',
+        email: data.email,
+        password: data.password,
+      });
     } catch (error) {
       console.error('Error during sign-up:', error);
+      setError('An error occurred during sign up. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <main>
+    <div className="min-vh-100 bg-light py-5">
       <Container>
         <Row className="justify-content-center">
-          <Col xs={5}>
-            <h1 className="text-center">Sign Up</h1>
-            <Card>
-              <Card.Body>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                  <Form.Group className="form-group">
-                    <Form.Label>Email</Form.Label>
-                    <input
-                      type="text"
-                      {...register('email')}
-                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">
-                      {errors.email?.message}
-                    </div>
-                  </Form.Group>
+          <Col xs={12} md={6} lg={4}>
+            <div className="text-center mb-4">
+              <h1 className="display-6 fw-bold">Create Account</h1>
+              <p className="text-muted">Sign up with your UH account</p>
+            </div>
 
-                  <Form.Group className="form-group">
-                    <Form.Label>Password</Form.Label>
-                    <input
-                      type="password"
+            <Card className="p-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="mb-3">
+                {error && (
+                  <Alert variant="destructive" className="mb-3">
+                    <AlertCircle className="me-2" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                <div className="mb-3">
+                  <Label htmlFor="email">UH Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register('email')}
+                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                    placeholder="your.name@hawaii.edu"
+                  />
+                  {errors.email && (
+                    <div className="invalid-feedback d-block">
+                      {errors.email.message}
+                    </div>
+                  )}
+                </div>
+
+                <div className="mb-3">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="position-relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
                       {...register('password')}
-                      className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                      className={`form-control pe-5 ${errors.password ? 'is-invalid' : ''}`}
+                      placeholder="Create a password"
                     />
-                    <div className="invalid-feedback">
-                      {errors.password?.message}
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h4" />
+                      ) : (
+                        <Eye className="h4" />
+                      )}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <div className="invalid-feedback d-block">
+                      {errors.password.message}
                     </div>
-                  </Form.Group>
-                  <Form.Group className="form-group">
-                    <Form.Label>Confirm Password</Form.Label>
-                    <input
-                      type="password"
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <div className="position-relative">
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
                       {...register('confirmPassword')}
-                      className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                      className={`form-control pe-5 ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                      placeholder="Confirm your password"
                     />
-                    <div className="invalid-feedback">
-                      {errors.confirmPassword?.message}
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h4" />
+                      ) : (
+                        <Eye className="h4" />
+                      )}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && (
+                    <div className="invalid-feedback d-block">
+                      {errors.confirmPassword.message}
                     </div>
-                  </Form.Group>
-                  <Form.Group className="form-group py-3">
-                    <Row>
-                      <Col>
-                        <Button type="submit" className="btn btn-primary">
-                          Register
-                        </Button>
-                      </Col>
-                      <Col>
-                        <Button
-                          type="button"
-                          onClick={() => reset()}
-                          className="btn btn-warning float-right"
-                        >
-                          Reset
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Form.Group>
-                </Form>
-              </Card.Body>
-              <Card.Footer>
+                  )}
+                </div>
+
+                <div className="d-grid gap-2">
+                  <Button type="submit" className="w-100" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="me-2 spinner-border spinner-border-sm" />
+                        Creating account...
+                      </>
+                    ) : (
+                      'Create Account'
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => reset()}
+                    className="w-100"
+                  >
+                    <RefreshCw className="me-2" />
+                    Reset Form
+                  </Button>
+                </div>
+              </form>
+
+              <div className="text-center text-muted">
                 Already have an account?
-                <a href="/auth/signin">Sign in</a>
-              </Card.Footer>
+                {' '}
+                <a
+                  href="/auth/signin"
+                  className="text-primary text-decoration-none"
+                >
+                  Sign in
+                </a>
+              </div>
             </Card>
           </Col>
         </Row>
       </Container>
-    </main>
+    </div>
   );
 };
 
