@@ -68,7 +68,7 @@ export default function ReviewsPage() {
     try {
       const profileId = 1; // Replace with dynamic fetching logic for the user's profileId
 
-      const response = await axios.post('/api/reviews', {
+      const response = await axios.post<ReviewResponse>('/api/reviews', {
         ...data,
         profileId,
       });
