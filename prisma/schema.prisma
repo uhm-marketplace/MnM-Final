@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
@@ -43,8 +43,8 @@ model Project {
   picture     String?
   price       Float
   profiles    ProfileProject[]
-  interests   ProjectInterest[]
   buyers      ProjectBuyer[]
+  interests   ProjectInterest[]
 }
 
 model ProfileInterest {
@@ -75,9 +75,9 @@ model ProjectBuyer {
   id        Int      @id @default(autoincrement())
   projectId Int
   profileId Int
-  project   Project  @relation(fields: [projectId], references: [id])
-  profile   Profile  @relation(fields: [profileId], references: [id])
   createdAt DateTime @default(now())
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id])
 }
 
 model Reviews {
@@ -87,7 +87,7 @@ model Reviews {
   rating     Float?
   contact    String
   reviewText String
-  profileId  Int    @unique
+  profileId  Int    
 }
 
 enum Role {

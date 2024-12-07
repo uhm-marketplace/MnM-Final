@@ -4,16 +4,20 @@ import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {
-  Card,
-  Button,
-  Form,
-  ListGroup,
-  Row,
-  Col,
-  Container,
-} from 'react-bootstrap';
+import axios from 'axios';
+import { AxiosError, ErrorResponse } from 'axios';
 import swal from 'sweetalert';
+import { Card, Form, Row, Col, Button, ListGroup, Container } from 'react-bootstrap';
+
+// Define the type for response data
+interface ReviewResponse {
+  id: number;
+  userName: string;
+  item: string;
+  rating: number | null;
+  contact: string;
+  reviewText: string;
+}
 
 // Form Validation Schema
 const ReviewSchema = yup.object().shape({
@@ -29,68 +33,60 @@ const ReviewSchema = yup.object().shape({
 });
 
 // Mock Data for Initial Reviews
-const initialReviews = [
-  {
-    id: 1,
-    userName: 'Jane Doe',
-    item: 'Wireless Earbuds',
-    rating: 4,
-    contact: 'jane.doe@example.com',
-    reviewText: 'Great sound quality, but the battery could last longer.',
-  },
-  {
-    id: 2,
-    userName: 'John Smith',
-    item: 'Laptop Stand',
-    rating: 5,
-    contact: 'john.smith@example.com',
-    reviewText: 'Sturdy and ergonomic. A must-have for remote work!',
-  },
-];
+// const initialReviews = [
+//   {
+//     id: 1,
+//     userName: 'Jane Doe',
+//     item: 'Wireless Earbuds',
+//     rating: 4,
+//     contact: 'jane.doe@example.com',
+//     reviewText: 'Great sound quality, but the battery could last longer.',
+//   },
+//   {
+//     id: 2,
+//     userName: 'John Smith',
+//     item: 'Laptop Stand',
+//     rating: 5,
+//     contact: 'john.smith@example.com',
+//     reviewText: 'Sturdy and ergonomic. A must-have for remote work!',
+//   },
+// ];
 
-const ReviewPage = () => {
-  const [reviews, setReviews] = useState(initialReviews);
-
-  // React Hook Form setup
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = useForm({
+export default function ReviewsPage() {
+  const { control, handleSubmit, reset } = useForm({
     resolver: yupResolver(ReviewSchema),
   });
+  const [loading, setLoading] = useState(false);
+  const [responseReview, setResponseReview] = useState<ReviewResponse | null>(null);
 
-  // Submission Handler
-  const onSubmit = async (data: {
-    userName: string;
-    item: string;
-    rating: number;
-    contact: string;
-    reviewText: string;
-  }) => {
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+
     try {
-      // Simmulate sending data to database
-      const response = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      const profileId = 1; // Replace with dynamic fetching logic for the user's profileId
+
+      const response = await axios.post('/api/reviews', {
+        ...data,
+        profileId,
       });
 
-      if (response.ok) {
-        const newReview = await response.json();
-        setReviews([...reviews, newReview]);
-        swal('Success!', 'Review submitted successfully!', 'success');
-        reset();
-      } else {
-        swal('Error!', 'Failed to submit review. Please try again.', 'error');
-      }
+      setResponseReview(response.data); // Store the response data
+      swal('Success', 'Review submitted successfully!', 'success');
+      reset();
     } catch (error) {
-      console.error('Error submitting review:', error);
-      swal('Error!', 'An unexpected error occured.', 'error');
+    // Explicitly check if error is an AxiosError
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ErrorResponse>; // Type the Axios error
+        const errorMessage = axiosError.response?.data?.error || axiosError.message;
+        console.error('Error submitting review:', errorMessage);
+        swal('Error', errorMessage, 'error');
+      } else {
+      // Handle non-Axios errors
+        console.error('Unexpected error:', error);
+        swal('Error', 'An unexpected error occurred', 'error');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,31 +102,21 @@ const ReviewPage = () => {
               <Col>
                 <Form.Group controlId="userName">
                   <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    {...register('userName')}
-                    required
-                    placeholder="Enter your name"
-                    isInvalid={!!errors.userName}
+                  <Controller
+                    name="userName"
+                    control={control}
+                    render={({ field }) => <input placeholder="Enter your name" {...field} />}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.userName?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="item">
                   <Form.Label>Item</Form.Label>
-                  <Form.Control
-                    type="text"
-                    {...register('item')}
-                    required
-                    placeholder="Enter item name"
-                    isInvalid={!!errors.item}
+                  <Controller
+                    name="item"
+                    control={control}
+                    render={({ field }) => <input placeholder="Enter item name" {...field} />}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.item?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -146,77 +132,57 @@ const ReviewPage = () => {
                         type="number"
                         {...field}
                         placeholder="Rating"
-                        isInvalid={!!errors.rating}
                       />
                     )}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.rating?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group controlId="contact">
                   <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    required
-                    {...register('contact')}
-                    placeholder="Enter your email"
-                    isInvalid={!!errors.contact}
+                  <Controller
+                    name="contact"
+                    control={control}
+                    render={({ field }) => <input placeholder="Enter your email" {...field} />}
                   />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.contact?.message}
-                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
             <Form.Group className="mb-3" controlId="reviewText">
               <Form.Label>Review</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                required
-                placeholder="Write your review here"
-                {...register('reviewText')}
-                isInvalid={!!errors.reviewText}
+              <Controller
+                name="reviewText"
+                control={control}
+                render={({ field }) => <input placeholder="Write your review here" {...field} />}
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.reviewText?.message}
-              </Form.Control.Feedback>
             </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit Review
+            <Button disabled={loading} type="submit">
+              {loading ? 'Submitting...' : 'Submit Review'}
             </Button>
           </Form>
         </Card.Body>
       </Card>
-      <h2>Customer Reviews</h2>
       <ListGroup>
-        {reviews.map((review) => (
-          <ListGroup.Item key={review.id}>
-            <h5>{review.userName}</h5>
-            <p>
-              <strong>Item:</strong>
-              {' '}
-              {review.item}
-            </p>
-            <p>
-              <strong>Rating:</strong>
-              {' '}
-              {review.rating}
-            </p>
-            <p>
-              <strong>Contact:</strong>
-              {' '}
-              {review.contact}
-            </p>
-            <p>{review.reviewText}</p>
-          </ListGroup.Item>
-        ))}
+        {/* Display the response data if available */}
+        {responseReview && (
+        <ListGroup.Item>
+          <h5>{responseReview.userName}</h5>
+          <p>
+            <strong>Item:</strong>
+            {responseReview.item}
+          </p>
+          <p>
+            <strong>Rating:</strong>
+            {responseReview.rating}
+          </p>
+          <p>
+            <strong>Contact:</strong>
+            {responseReview.contact}
+          </p>
+          <p>{responseReview.reviewText}</p>
+        </ListGroup.Item>
+        )}
       </ListGroup>
     </Container>
   );
-};
-
-export default ReviewPage;
+}
