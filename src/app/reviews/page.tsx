@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import axios from 'axios';
-import { AxiosError, ErrorResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import swal from 'sweetalert';
 import { Card, Form, Row, Col, Button, ListGroup, Container } from 'react-bootstrap';
 
@@ -17,6 +16,10 @@ interface ReviewResponse {
   rating: number | null;
   contact: string;
   reviewText: string;
+}
+
+interface ErrorResponse {
+  error: string; // Adjust this to match your backend's error response format
 }
 
 // Form Validation Schema
