@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import axios, { AxiosError } from 'axios';
 import swal from 'sweetalert';
 import { Card, Form, Row, Col, Button, ListGroup, Container } from 'react-bootstrap';
 
@@ -16,10 +15,6 @@ interface ReviewResponse {
   rating: number | null;
   contact: string;
   reviewText: string;
-}
-
-interface ErrorResponse {
-  error: string; // Adjust this to match your backend's error response format
 }
 
 // Form Validation Schema
@@ -68,26 +63,31 @@ export default function ReviewsPage() {
     try {
       const profileId = 1; // Replace with dynamic fetching logic for the user's profileId
 
-      const response = await axios.post<ReviewResponse>('/api/reviews', {
-        ...data,
-        profileId,
+      // Use fetch to send a POST request
+      const response = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          profileId,
+        }),
       });
 
-      setResponseReview(response.data); // Store the response data
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit review');
+      }
+
+      const responseData: ReviewResponse = await response.json();
+      setResponseReview(responseData); // Store the successful response data
       swal('Success', 'Review submitted successfully!', 'success');
       reset();
-    } catch (error) {
-    // Explicitly check if error is an AxiosError
-      if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError<ErrorResponse>; // Type the Axios error
-        const errorMessage = axiosError.response?.data?.error || axiosError.message;
-        console.error('Error submitting review:', errorMessage);
-        swal('Error', errorMessage, 'error');
-      } else {
-      // Handle non-Axios errors
-        console.error('Unexpected error:', error);
-        swal('Error', 'An unexpected error occurred', 'error');
-      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      console.error('Error submitting review:', errorMessage);
+      swal('Error', errorMessage, 'error');
     } finally {
       setLoading(false);
     }
