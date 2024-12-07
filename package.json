@@ -15,7 +15,7 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.6.0",
+    "@hookform/resolvers": "^3.9.1",
     "@neondatabase/serverless": "^0.10.3",
     "@ngneat/falso": "^7.2.0",
     "@playwright/test": "^1.49.0",
@@ -30,11 +30,11 @@
     "react-bootstrap": "^2.10.5",
     "react-bootstrap-icons": "^1.11.4",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.52.0",
+    "react-hook-form": "^7.53.2",
     "simpler-state": "^1.2.2",
     "sweetalert": "^2.1.2",
     "ts-node": "10.9.2",
-    "yup": "^1.4.0"
+    "yup": "^1.5.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
