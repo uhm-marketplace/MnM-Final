@@ -35,10 +35,12 @@ const ReviewsPage = () => {
     resolver: yupResolver(ReviewSchema),
   });
 
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: any) => {
     try {
+      console.log('Submitting data:', data); // Log the payload being sent
+
       const response = await fetch('/api/reviews', {
         method: 'POST',
         headers: {
@@ -48,20 +50,34 @@ const ReviewsPage = () => {
       });
 
       if (!response.ok) {
-        const errorMessage = await response.text();
-        console.error('Server error response:', errorMessage);
-        throw new Error(errorMessage || `Failed to submit review: ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('Server error response:', errorText); // Log the server's error response
+        throw new Error(errorText || 'An error occurred while submitting the review.');
       }
 
       const responseData = await response.json();
-      console.log('Review submitted successfully:', responseData);
+      console.log('Review submitted successfully:', responseData); // Log the successful response
       swal('Success', 'Review submitted successfully!', 'success');
       reset();
     } catch (error) {
-      console.error('Error submitting review:', (error as Error).message);
+      console.error('Error submitting review:', (error as Error).message); // Log the error for debugging
       swal('Error', (error as Error).message, 'error');
+    } finally {
+      setLoading(false);
     }
   };
+
+  const testPayload = {
+    userName: 'Test User',
+    item: 'Sample Item',
+    rating: 5,
+    contact: 'testuser@example.com',
+    reviewText: 'This is a test review.',
+    profileId: 123, // Replace with a valid profile ID
+  };
+
+  console.log('Test Payload:', testPayload);
+  onSubmit(testPayload); // Test the submission logic manually
 
   return (
     <Container>
