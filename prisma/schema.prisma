@@ -87,7 +87,7 @@ model Reviews {
   rating     Float?
   contact    String
   reviewText String
-  profileId  Int    
+  profileId  Int
 }
 
 enum Role {
