@@ -10,6 +10,7 @@ import { Form, Row, Col, Button, ListGroup, Container } from 'react-bootstrap';
 
 // Define the type for review data
 interface Review {
+  createdAt: string | number | Date;
   id: number;
   userName: string;
   item: string;
@@ -34,7 +35,7 @@ const ReviewSchema = yup.object().shape({
 
 const ReviewsPage = () => {
   const { data: session } = useSession();
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, control, watch, reset, formState: { errors } } = useForm({
     resolver: yupResolver(ReviewSchema),
   });
 
@@ -42,17 +43,22 @@ const ReviewsPage = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    // Fetch stored reviews from the database
     const fetchReviews = async () => {
       try {
         const response = await fetch('/api/reviews');
+        console.log('Fetch response status:', response.status);
+
         if (!response.ok) {
-          throw new Error('Failed to fetch reviews');
+          const errorText = await response.text();
+          console.error('Error fetching reviews:', errorText);
+          throw new Error(errorText || 'Failed to fetch reviews');
         }
+
         const data = await response.json();
+        console.log('Fetched reviews:', data);
         setReviews(data);
       } catch (error) {
-        console.error('Error fetching reviews:', error);
+        console.error('Error in fetchReviews:', (error as Error).message);
       }
     };
 
@@ -106,18 +112,28 @@ const ReviewsPage = () => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                value={watch('userName') || ''} // Use a default value when undefined
                 {...register('userName')}
+                value={watch('userName') || ''} // Controlled input
+                isInvalid={!!errors.userName}
               />
-              <Form.Control.Feedback type="invalid">{errors.userName?.message}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {errors.userName?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
 
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>Item</Form.Label>
-              <Form.Control type="text" {...register('item')} isInvalid={!!errors.item} />
-              <Form.Control.Feedback type="invalid">{errors.item?.message}</Form.Control.Feedback>
+              <Form.Control
+                type="text"
+                {...register('item')}
+                value={watch('item') || ''} // Controlled input
+                isInvalid={!!errors.item}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.item?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -135,19 +151,29 @@ const ReviewsPage = () => {
                     min="1"
                     max="5"
                     {...field}
+                    value={field.value || ''} // Controlled input
                     isInvalid={!!errors.rating}
                   />
                 )}
               />
-              <Form.Control.Feedback type="invalid">{errors.rating?.message}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {errors.rating?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
 
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" {...register('contact')} isInvalid={!!errors.contact} />
-              <Form.Control.Feedback type="invalid">{errors.contact?.message}</Form.Control.Feedback>
+              <Form.Control
+                type="text"
+                {...register('contact')}
+                value={watch('contact') || ''} // Controlled input
+                isInvalid={!!errors.contact}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.contact?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -155,12 +181,14 @@ const ReviewsPage = () => {
         <Form.Group className="mb-3">
           <Form.Label>Review</Form.Label>
           <Form.Control
-            as="textarea"
-            rows={3}
+            type="text"
             {...register('reviewText')}
+            value={watch('reviewText') || ''} // Controlled input
             isInvalid={!!errors.reviewText}
           />
-          <Form.Control.Feedback type="invalid">{errors.reviewText?.message}</Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">
+            {errors.reviewText?.message}
+          </Form.Control.Feedback>
         </Form.Group>
 
         <Button disabled={loading} type="submit">
@@ -172,6 +200,9 @@ const ReviewsPage = () => {
       <ListGroup>
         {reviews.map((review) => (
           <ListGroup.Item key={review.id}>
+            <p>
+              {new Date(review.createdAt).toLocaleString()}
+            </p>
             <h5>{review.userName}</h5>
             <p>
               <strong>Item:</strong>
