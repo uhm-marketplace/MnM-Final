@@ -7,16 +7,6 @@ import * as yup from 'yup';
 import swal from 'sweetalert';
 import { Form, Row, Col, Button, Container } from 'react-bootstrap';
 
-// Define the type for response data
-// interface ReviewResponse {
-//   id: number;
-//   userName: string;
-//   item: string;
-//   rating: number | null;
-//   contact: string;
-//   reviewText: string;
-// }
-
 // Form Validation Schema
 const ReviewSchema = yup.object().shape({
   userName: yup.string().required('Name is required'),
@@ -66,18 +56,6 @@ const ReviewsPage = () => {
       setLoading(false);
     }
   };
-
-  const testPayload = {
-    userName: 'Test User',
-    item: 'Sample Item',
-    rating: 5,
-    contact: 'testuser@example.com',
-    reviewText: 'This is a test review.',
-    profileId: 123, // Replace with a valid profile ID
-  };
-
-  console.log('Test Payload:', testPayload);
-  onSubmit(testPayload); // Test the submission logic manually
 
   return (
     <Container>

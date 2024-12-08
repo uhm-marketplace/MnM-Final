@@ -16,18 +16,7 @@ export const POST = async (req: Request) => {
       return NextResponse.json({ error: 'All required fields must be provided' }, { status: 400 });
     }
 
-    // Check for existing review
-    const existingReview = await prisma.reviews.findFirst({
-      where: {
-        profileId,
-        userName,
-      },
-    });
-
-    if (existingReview) {
-      console.error('Duplicate review detected for profileId:', profileId);
-      return NextResponse.json({ error: 'A review already exists for this profileId' }, { status: 400 });
-    }
+    // Allow multiple reviews from the same profile; no duplicate check
 
     // Create a new review
     const newReview = await prisma.reviews.create({
