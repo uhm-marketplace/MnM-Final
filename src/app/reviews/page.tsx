@@ -63,10 +63,10 @@ const ReviewsPage = () => {
     try {
       setLoading(true);
 
-      // Use the current logged-in user's profileId from the session, or null if not logged in
-      const profileId = session?.user?.id || null;
+      const profileId = session?.user?.id ? parseInt(session.user.id, 10) : null; // Ensure profileId is an integer
 
       const payload = { ...data, profileId };
+
       console.log('Submitting payload:', payload);
 
       const response = await fetch('/api/reviews', {
@@ -88,7 +88,6 @@ const ReviewsPage = () => {
       swal('Success', 'Review submitted successfully!', 'success');
       reset();
 
-      // Refresh reviews list
       setReviews((prevReviews) => [...prevReviews, responseData]);
     } catch (error) {
       console.error('Error submitting review:', (error as Error).message);
@@ -105,7 +104,11 @@ const ReviewsPage = () => {
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>Name</Form.Label>
-              <Form.Control type="text" {...register('userName')} isInvalid={!!errors.userName} />
+              <Form.Control
+                type="text"
+                value={watch('userName') || ''} // Use a default value when undefined
+                {...register('userName')}
+              />
               <Form.Control.Feedback type="invalid">{errors.userName?.message}</Form.Control.Feedback>
             </Form.Group>
           </Col>

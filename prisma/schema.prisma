@@ -88,9 +88,9 @@ model Reviews {
   rating     Float?
   contact    String
   reviewText String
-  profileId  Int?     // Make profileId optional
-  profile    Profile? @relation(fields: [profileId], references: [id]) // Make the relation optional
+  profileId  Int?
   createdAt  DateTime @default(now())
+  profile    Profile? @relation(fields: [profileId], references: [id])
 }
 
 enum Role {
