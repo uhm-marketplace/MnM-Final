@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import swal from 'sweetalert';
-import { Form, Row, Col, Button, ListGroup, Container } from 'react-bootstrap';
+import { Form, Row, Col, Button, ListGroup, Container, Card } from 'react-bootstrap';
 
 // Define the type for review data
 interface Review {
@@ -69,7 +69,7 @@ const ReviewsPage = () => {
     try {
       setLoading(true);
 
-      const profileId = session?.user?.id ? parseInt(session.user.id, 10) : null; // Ensure profileId is an integer
+      const profileId = session?.user?.id ? parseInt(session.user.id, 10) : null;
 
       const payload = { ...data, profileId };
 
@@ -104,124 +104,116 @@ const ReviewsPage = () => {
   };
 
   return (
-    <Container>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row>
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                {...register('userName')}
-                value={watch('userName') || ''} // Controlled input
-                isInvalid={!!errors.userName}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.userName?.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
+    <Container className="my-4">
+      <h1>Reviews</h1>
+      <Card className="my-3">
+        <Card.Body>
+          <Card.Title> Product Reviews</Card.Title>
 
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>Item</Form.Label>
-              <Form.Control
-                type="text"
-                {...register('item')}
-                value={watch('item') || ''} // Controlled input
-                isInvalid={!!errors.item}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.item?.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-        </Row>
+          <ListGroup className="mb-3">
+            {reviews.map((review) => (
+              <ListGroup.Item key={review.id}>
+                <Row>
+                  <Col>
+                    {new Date(review.createdAt).toLocaleString()}
+                    <strong>{review.userName}</strong>
+                    reviewed
+                    <em>{review.item}</em>
+                  </Col>
+                  <Col className="text-end">
+                    <span>{'⭐'.repeat(review.rating)}</span>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <p>{review.reviewText}</p>
+                    <small className="text-muted">
+                      Contact:
+                      {review.contact}
+                    </small>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
 
-        <Row>
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>Rating</Form.Label>
-              <Controller
-                name="rating"
-                control={control}
-                render={({ field }) => (
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Row className="mb-3">
+              <Col>
+                <Form.Group controlId="formUserName">
+                  <Form.Label>Name</Form.Label>
                   <Form.Control
-                    type="number"
-                    min="1"
-                    max="5"
-                    {...field}
-                    value={field.value || ''} // Controlled input
-                    isInvalid={!!errors.rating}
+                    type="text"
+                    {...register('userName')}
+                    value={watch('userName') || ''}
+                    isInvalid={!!errors.userName}
+                    placeholder="Enter your name"
                   />
-                )}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.rating?.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="formItemName">
+                  <Form.Label>Item</Form.Label>
+                  <Form.Control
+                    type="text"
+                    {...register('item')}
+                    value={watch('item') || ''}
+                    isInvalid={!!errors.item}
+                    placeholder="Enter item name"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                <Form.Group controlId="formRating">
+                  <Form.Label>Rating</Form.Label>
+                  <Controller
+                    name="rating"
+                    control={control}
+                    render={({ field }) => (
+                      <Form.Control
+                        type="number"
+                        min="1"
+                        max="5"
+                        {...field}
+                        value={field.value || ''}
+                        isInvalid={!!errors.rating}
+                        placeholder="Rate between 1 to 5"
+                      />
+                    )}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group controlId="formContact">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    {...register('contact')}
+                    value={watch('contact') || ''}
+                    isInvalid={!!errors.contact}
+                    placeholder="Enter your email"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group className="mb-3" controlId="formReviewText">
+              <Form.Label>Review</Form.Label>
               <Form.Control
                 type="text"
-                {...register('contact')}
-                value={watch('contact') || ''} // Controlled input
-                isInvalid={!!errors.contact}
+                {...register('reviewText')}
+                value={watch('reviewText') || ''}
+                isInvalid={!!errors.reviewText}
+                placeholder="Write your review here"
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.contact?.message}
-              </Form.Control.Feedback>
             </Form.Group>
-          </Col>
-        </Row>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Review</Form.Label>
-          <Form.Control
-            type="text"
-            {...register('reviewText')}
-            value={watch('reviewText') || ''} // Controlled input
-            isInvalid={!!errors.reviewText}
-          />
-          <Form.Control.Feedback type="invalid">
-            {errors.reviewText?.message}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Button disabled={loading} type="submit">
-          {loading ? 'Submitting...' : 'Submit Review'}
-        </Button>
-      </Form>
-
-      <h2 className="mt-5">Stored Reviews</h2>
-      <ListGroup>
-        {reviews.map((review) => (
-          <ListGroup.Item key={review.id}>
-            <p>
-              {new Date(review.createdAt).toLocaleString()}
-            </p>
-            <h5>{review.userName}</h5>
-            <p>
-              <strong>Item:</strong>
-              {' '}
-              {review.item}
-            </p>
-            <p>
-              <strong>Rating:</strong>
-              {' '}
-              {review.rating || 'N/A'}
-            </p>
-            <p>
-              <strong>Review:</strong>
-              {' '}
-              {review.reviewText}
-            </p>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
+            <Button variant="primary" disabled={loading} type="submit">
+              {loading ? 'Submitting...' : 'Submit Review'}
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
     </Container>
   );
 };
