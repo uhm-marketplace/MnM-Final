@@ -26,6 +26,7 @@ model Profile {
   interests    ProfileInterest[]
   projects     ProfileProject[]
   ProjectBuyer ProjectBuyer[]
+  Reviews      Reviews[]
 }
 
 model Interest {
@@ -81,13 +82,15 @@ model ProjectBuyer {
 }
 
 model Reviews {
-  id         Int    @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   userName   String
   item       String
   rating     Float?
   contact    String
   reviewText String
-  profileId  Int
+  profileId  Int?     // Make profileId optional
+  profile    Profile? @relation(fields: [profileId], references: [id]) // Make the relation optional
+  createdAt  DateTime @default(now())
 }
 
 enum Role {
