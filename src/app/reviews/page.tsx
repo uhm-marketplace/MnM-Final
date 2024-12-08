@@ -90,9 +90,9 @@ const ReviewsPage = () => {
 
       // Refresh reviews list
       setReviews((prevReviews) => [...prevReviews, responseData]);
-    } catch (error: any) {
-      console.error('Error submitting review:', error.message);
-      swal('Error', error.message, 'error');
+    } catch (error) {
+      console.error('Error submitting review:', (error as Error).message);
+      swal('Error', (error as Error).message, 'error');
     } finally {
       setLoading(false);
     }
