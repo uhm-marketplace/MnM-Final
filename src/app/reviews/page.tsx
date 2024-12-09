@@ -22,43 +22,30 @@ const ReviewsPage = () => {
   const { register, handleSubmit, control, watch, reset, formState: { errors } } = useForm({
     resolver: yupResolver(ReviewSchema),
   });
-
   const [loading, setLoading] = useState(false);
   const [reviews, setReviews] = useState<IReview[]>([]);
-
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const response = await fetch('/api/reviews');
-        console.log('Fetch response status:', response.status);
-
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Error fetching reviews:', errorText);
           throw new Error(errorText || 'Failed to fetch reviews');
         }
-
         const data = await response.json();
-        console.log('Fetched reviews:', data);
         setReviews(data);
       } catch (error) {
         console.error('Error in fetchReviews:', (error as Error).message);
       }
     };
-
     fetchReviews();
   }, []);
 
   const onSubmit = async (data: any) => {
     try {
       setLoading(true);
-
       const profileId = session?.user?.id;
-
       const payload = { ...data, profileId };
-
-      console.log('Submitting payload:', payload);
-
       const response = await fetch('/api/reviews', {
         method: 'POST',
         headers: {
@@ -66,18 +53,9 @@ const ReviewsPage = () => {
         },
         body: JSON.stringify(payload),
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Server error response:', errorText);
-        throw new Error(errorText || 'An error occurred while submitting the review.');
-      }
-
       const responseData = await response.json();
-      console.log('Review submitted successfully:', responseData);
       swal('Success', 'Review submitted successfully!', 'success');
       reset();
-
       setReviews((prevReviews) => [...prevReviews, responseData]);
     } catch (error) {
       console.error('Error submitting review:', (error as Error).message);
