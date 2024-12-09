@@ -1,11 +1,12 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable import/prefer-default-export */
+// src/lib/auth.ts
 import { compare } from 'bcrypt';
-import type { AuthOptions } from 'next-auth/core/types';
+import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
@@ -51,23 +52,17 @@ export const authOptions: AuthOptions = {
     signOut: '/auth/signout',
   },
   callbacks: {
-    async session({ session, user }: { session: any; user: any }) {
-      const updatedSession = { ...session };
-      if (updatedSession.user) {
-        updatedSession.user = {
-          ...updatedSession.user,
-          id: user.id,
-        };
-      }
+    session: ({ session, token }) => {
       return {
-        ...updatedSession,
+        ...session,
         user: {
-          ...updatedSession.user,
-          randomKey: user.randomKey,
+          ...session.user,
+          id: token.id,
+          randomKey: token.randomKey,
         },
       };
     },
-    jwt: ({ token, user }: { token: any; user?: any }) => {
+    jwt: ({ token, user }) => {
       if (user) {
         const u = user as unknown as any;
         return {
