@@ -4,10 +4,8 @@ import { prisma } from '@/lib/prisma';
 export const GET = async () => {
   try {
     const reviews = await prisma.reviews.findMany();
-    console.log('Fetched reviews from database:', reviews);
     return NextResponse.json(reviews, { status: 200 });
   } catch (error: any) {
-    console.error('Error fetching reviews:', error.message, error.stack);
     return NextResponse.json({ error: 'Failed to fetch reviews', details: error.message }, { status: 500 });
   }
 };
@@ -17,7 +15,6 @@ export const POST = async (req: Request) => {
     const body = await req.json();
     let { profileId } = body;
     const { userName, item, rating, contact, reviewText } = body;
-    console.log('Received payload:', body);
     // Validate input fields
     if (!userName || !item || !contact || !reviewText) {
       console.error('Validation failed:', { userName, item, contact, reviewText, profileId });
