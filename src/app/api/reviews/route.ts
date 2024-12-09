@@ -17,7 +17,8 @@ export const GET = async () => {
 export const POST = async (req: Request) => {
   try {
     const body = await req.json();
-    let { userName, item, rating, contact, reviewText, profileId } = body;
+    let { profileId } = body;
+    const { userName, item, rating, contact, reviewText } = body;
 
     console.log('Received payload:', body);
 
@@ -30,7 +31,7 @@ export const POST = async (req: Request) => {
     // Validate and convert profileId
     if (profileId) {
       const parsedProfileId = parseInt(profileId, 10);
-      if (isNaN(parsedProfileId)) {
+      if (Number.isNaN(parsedProfileId)) {
         console.error('Invalid profileId:', profileId);
         return NextResponse.json({ error: 'Invalid profileId' }, { status: 400 });
       }

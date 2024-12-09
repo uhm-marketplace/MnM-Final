@@ -4,34 +4,18 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import swal from 'sweetalert';
 import { Form, Row, Col, Button, ListGroup, Container, Card } from 'react-bootstrap';
+import { ReviewSchema, IReview } from '@/lib/validationSchemas';
 
-// Define the type for review data
-interface Review {
-  createdAt: string | number | Date;
-  id: number;
-  userName: string;
-  item: string;
-  rating: number | null;
-  contact: string;
-  reviewText: string;
-  profileId?: number;
-}
-
-// Form Validation Schema
-const ReviewSchema = yup.object().shape({
-  userName: yup.string().required('Name is required'),
-  item: yup.string().required('Item name is required'),
-  rating: yup
-    .number()
-    .required('Rating is required')
-    .min(1, 'Rating must be at least 1')
-    .max(5, 'Rating must be at most 5'),
-  contact: yup.string().email('Invalid email').required('Email is required'),
-  reviewText: yup.string().required('Review text is required'),
-});
+const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
+  const stars = Array.from({ length: 5 }, (_, index) => (
+    <span key={index} style={{ color: index < rating ? '#ffc107' : '#e4e5e9' }}>
+      &#9733;
+    </span>
+  ));
+  return <div>{stars}</div>;
+};
 
 const ReviewsPage = () => {
   const { data: session } = useSession();
@@ -40,7 +24,7 @@ const ReviewsPage = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<IReview[]>([]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -69,7 +53,7 @@ const ReviewsPage = () => {
     try {
       setLoading(true);
 
-      const profileId = session?.user?.id ? parseInt(session.user.id, 10) : null;
+      const profileId = session?.user?.id;
 
       const payload = { ...data, profileId };
 
@@ -115,13 +99,16 @@ const ReviewsPage = () => {
               <ListGroup.Item key={review.id}>
                 <Row>
                   <Col>
-                    {new Date(review.createdAt).toLocaleString()}
+                    <p>{new Date(review.createdAt).toLocaleString()}</p>
                     <strong>{review.userName}</strong>
-                    reviewed
-                    <em>{review.item}</em>
+                    <p>
+                      reviewed
+                      {' '}
+                      <em>{review.item}</em>
+                    </p>
                   </Col>
                   <Col className="text-end">
-                    <span>{'⭐'.repeat(review.rating)}</span>
+                    <StarRating rating={review.rating || 0} />
                   </Col>
                 </Row>
                 <Row>
@@ -129,6 +116,7 @@ const ReviewsPage = () => {
                     <p>{review.reviewText}</p>
                     <small className="text-muted">
                       Contact:
+                      {' '}
                       {review.contact}
                     </small>
                   </Col>

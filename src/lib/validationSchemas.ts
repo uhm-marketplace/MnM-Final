@@ -46,3 +46,26 @@ export const ProfileSchema = Yup.object().shape({
   projects: Yup.array().of(Yup.string()),
   picture: Yup.string().optional().url('Profile picture must be a valid URL'),
 });
+
+export interface IReview {
+  createdAt: string | number | Date;
+  id: number;
+  userName: string;
+  item: string;
+  rating: number | null;
+  contact: string;
+  reviewText: string;
+  profileId?: number;
+}
+
+export const ReviewSchema = Yup.object().shape({
+  userName: Yup.string().required('Name is required'),
+  item: Yup.string().required('Item name is required'),
+  rating: Yup
+    .number()
+    .required('Rating is required')
+    .min(1, 'Rating must be at least 1')
+    .max(5, 'Rating must be at most 5'),
+  contact: Yup.string().email('Invalid email').required('Email is required'),
+  reviewText: Yup.string().required('Review text is required'),
+});
