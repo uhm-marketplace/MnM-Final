@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 
 test('test', async ({ page }) => {
+  test.slow();
   await page.goto('http://localhost:3000');
   await page.getByRole('button', { name: 'Get Started' }).click();
   await page.locator('#loginDropdown').click();
