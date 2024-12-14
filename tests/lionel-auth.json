@@ -1,0 +1,65 @@
+{
+    "defaultProfiles": [
+      {
+        "firstName": "Lionel Derrick",
+        "lastName": "Roxas",
+        "bio": "Hi my Name is Lionel Derrick Roxas.",
+        "title": "Student",
+        "interests": [
+          "Digital HQ",
+          "Study Tools",
+          "Campus Closet",
+          "Self-Care",
+          "Dorm Life"
+        ],
+        "projects":[
+          "Test 1",
+          "Test 2",
+          "Test 3"
+        ],
+        "picture": "https://avatars.githubusercontent.com/u/169416387?s=400&u=6549e0acda75f2068062c00ff6d091cbfed6af1f&v=4",
+        "email": "lionelroxas80@gmail.com"
+      }
+    ],
+    "defaultProjects": [
+      {
+        "name": "Test 1",
+        "homepage": "https://uhm-marketplace.github.io/",
+        "description": "Test 1",
+        "interests": [
+          "Digital HQ"
+        ],
+        "picture": "https://www.thespruceeats.com/thmb/w282FiA18oOHgNqftYbo93B5an8=/5928x3957/filters:fill(auto,1)/classic-and-easy-chocolate-cake-recipe-995137-hero-01-e361ee51a67d4c12afb451cc48fb1940.jpg",
+        "buyerId": null,
+        "price": 9.99
+      },
+      {
+        "name": "Test 2",
+        "homepage": "https://uhm-marketplace.github.io/",
+        "description": "This is a test",
+        "interests": [
+          "Study Tools",
+          "Campus Closet"
+        ],
+        "picture": "https://www.multivu.com/players/English/7259051-wilton-method-class-cake-decorating/gallery/image/47287638-19fb-49c5-aa86-c13218194221.jpg",
+        "buyerId": null,
+        "price": 9.99
+      },
+      {
+        "name": "Test 3",
+        "homepage": "https://uhm-marketplace.github.io/",
+        "description": "This is a strawberry chocolate cake from Google",
+        "interests": [
+          "Digital HQ",
+          "Study Tools",
+          "Campus Closet",
+          "Self-Care",
+          "Dorm Life"
+        ],
+        "picture": "https://www.tastingtable.com/img/gallery/30-types-of-cake-explained/l-intro-1658850950.jpg",
+        "buyerId": null,
+        "price": 9.99
+      }
+    ],
+    "loadAssetsFile":  false
+  }
