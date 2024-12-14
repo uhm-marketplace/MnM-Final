@@ -28,6 +28,16 @@ export default function ProjectCardWithCart({ product }: ProjectCardWithCartProp
   const quickAmounts = [500, 1000, 2000, 5000]; // Quick amounts in cents
   const coinValues = [1, 5, 10, 25, 50, 100, 200, 500]; // Coin values in cents
 
+  if (!product) {
+    return <div>Error: Product data is missing.</div>;
+  }
+
+  const { name, price, id, ownerId } = product;
+
+  if (!name || !price || !id || ownerId === undefined) {
+    return <div>Error: Product details are incomplete.</div>;
+  }
+
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
@@ -228,4 +238,13 @@ export default function ProjectCardWithCart({ product }: ProjectCardWithCartProp
       </Modal>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const products = [
+    { id: 1, name: 'Product A', price: 100, ownerId: 2 },
+    { id: 2, name: 'Product B', price: 150, ownerId: 3 },
+  ]; // Replace with actual database query
+
+  return { props: { products } };
 }
