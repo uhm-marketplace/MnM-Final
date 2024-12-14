@@ -13,5 +13,4 @@ test('test', async ({ page }) => {
   await page.getByPlaceholder('Enter your password').click();
   await page.getByPlaceholder('Enter your password').fill('100102');
   await page.getByRole('button', { name: 'Sign in' }).click();
-  await page.goto('http://localhost:3000/home');
 });
