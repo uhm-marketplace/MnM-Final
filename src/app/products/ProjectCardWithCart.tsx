@@ -195,6 +195,14 @@ const ProjectCardWithCart = ({
 
       console.log('Retrieved Fields:', { projectId, ownerId, userId });
 
+      if (!projectData || !projectData.id || !projectData.ownerId) {
+        throw new Error('Project information is incomplete or missing.');
+      }
+
+      if (!session || !session.user || !session.user.id) {
+        throw new Error('User session is invalid or missing.');
+      }
+
       // Validate retrieved attributes
       if (!projectId || !ownerId || !userId) {
         throw new Error('Missing project, user, or owner information.');
@@ -208,6 +216,17 @@ const ProjectCardWithCart = ({
       };
 
       console.log('Submitting Payload:', payload);
+
+      const parsedBidAmount = parseFloat(bidAmount);
+      if (Number.isNaN(parsedBidAmount) || parsedBidAmount <= 0) {
+        throw new Error('Bid amount must be a valid number greater than zero.');
+      }
+
+      console.log('Validated Fields:');
+      console.log('Project ID:', projectId);
+      console.log('Owner ID:', ownerId);
+      console.log('User ID:', userId);
+      console.log('Bid Amount:', parsedBidAmount);
 
       const response = await fetch('/api/bidding', {
         method: 'POST',
