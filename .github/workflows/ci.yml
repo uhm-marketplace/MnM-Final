@@ -21,8 +21,6 @@ jobs:
         run: npm run lint
       - name: Start Next.js and run Playwright tests
         run: |
-          npm run dev
-          npx wait-on http://localhost:3000 # Wait for Next.js to be ready
           cd tests/
           npx playwright test user-testing.spec.ts
       - uses: actions/upload-artifact@v4
