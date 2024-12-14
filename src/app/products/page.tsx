@@ -16,7 +16,14 @@ const ProjectsPage = async () => {
     } | null,
   );
 
-  const projects = await prisma.project.findMany();
+  const projects = await prisma.project.findMany({
+    include: {
+      profiles: { include: { profile: true } }, // Include profile data
+      buyers: { include: { profile: true } }, // Include buyer profiles
+      interests: { include: { interest: true } }, // Include interest names
+    },
+  });
+  console.log('Fetched projects:', projects);
   projects.sort((a, b) => a.name.localeCompare(b.name));
 
   return (

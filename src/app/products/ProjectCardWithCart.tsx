@@ -195,8 +195,9 @@ const ProjectCardWithCart = ({
 
       console.log('Retrieved Fields:', { projectId, ownerId, userId });
 
-      if (!projectData || !projectData.id || !projectData.ownerId) {
-        throw new Error('Project information is incomplete or missing.');
+      if (!projectData?.id || !projectData?.ownerId) {
+        console.error('Invalid project data:', projectData);
+        return null; // Or show a placeholder/error message
       }
 
       if (!session || !session.user || !session.user.id) {
@@ -251,6 +252,20 @@ const ProjectCardWithCart = ({
       console.error('Error during offer submission:', (error as Error).message || error);
       alert(`Error submitting offer: ${(error as Error).message || 'Unknown error occurred'}`);
     }
+
+    if (!projectData || Object.keys(projectData).length === 0) {
+      console.error('Invalid project data:', projectData);
+      return <div>Project data is unavailable.</div>;
+    }
+
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
+    
+    if (!projectData) {
+      return <div>Error: No project data found.</div>;
+    }
+
   };
 
   return (
