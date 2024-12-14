@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-alert */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unknown-property */
 
@@ -123,6 +125,9 @@ const ProjectCardWithCart = ({
         return;
       }
 
+      console.log('Project Data:', projectData);
+      console.log('User Session:', session);
+
       const response = await fetch('/api/projects/interest', {
         method: 'POST',
         headers: {
@@ -175,58 +180,52 @@ const ProjectCardWithCart = ({
   };
 
   const handleSubmitOffer = async () => {
-    if (!session || !session.user) {
-      console.error('Session or user data is missing:', session);
-      return;
-    }
-
-    const bidAmountParsed = parseFloat(bidAmount);
-    if (Number.isNaN(bidAmountParsed) || bidAmountParsed <= 0) {
-      console.error('Invalid bid amount:', bidAmount);
-      return;
-    }
-
-    console.log('Submitting offer with the following data:', {
-      projectId: projectData?.id,
-      bidAmount: bidAmountParsed,
-      userId: session?.user?.id,
-    });
-
-    if (!projectData?.id || !session?.user?.id) {
-      console.error('Missing required data:', {
-        projectId: projectData?.id,
-        userId: session?.user?.id,
-      });
-      return;
-    }
-
-    setIsLoading(true);
     try {
+      console.log('Starting offer submission...');
+
+      if (!projectData?.id || !session?.user?.id) {
+        throw new Error('Missing project or user information.');
+      }
+
+      const bidAmountParsed = Number(bidAmount);
+      if (Number.isNaN(bidAmountParsed) || bidAmountParsed <= 0) {
+        throw new Error('Invalid bid amount. Please enter a positive number.');
+      }
+
+      // Log payload being sent
+      const payload = {
+        projectId: projectData.id,
+        bidAmount: bidAmountParsed,
+        userId: session.user.id,
+      };
+      console.log('Submitting Payload:', payload);
+
       const response = await fetch('/api/bidding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          projectId: projectData.id,
-          bidAmount: bidAmountParsed,
-          userId: session.user.id,
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log('Response Status:', response.status);
+      console.log('Response Headers:', [...response.headers.entries()]);
+
       if (!response.ok) {
-        const errorText = await response.text(); // Handle non-JSON responses
+        const errorText = await response.text();
         console.error('API responded with error:', errorText);
-        throw new Error(errorText || 'Unknown error occurred.');
+        throw new Error(
+          `API Error: ${errorText || 'Unknown error occurred.'} (Status: ${response.status})`,
+        );
       }
 
-      const responseData = await response.json(); // Parse valid JSON response
+      const responseData = await response.json();
       console.log('Offer submitted successfully:', responseData);
 
+      // Reset the form and close the modal
       setShowOfferModal(false);
       setBidAmount('');
     } catch (error) {
-      console.error('Error during offer submission:', (error as Error).message, (error as Error).stack);
-    } finally {
-      setIsLoading(false);
+      console.error('Error during offer submission:', (error as Error).message || error);
+      alert(`Error submitting offer: ${(error as Error).message || 'Unknown error occurred'}`);
     }
   };
 

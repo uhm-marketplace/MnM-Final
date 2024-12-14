@@ -97,17 +97,16 @@ model Reviews {
 }
 
 model Bidding {
-  id            Int       @id @default(autoincrement())
-  bidAmount     Float
-  status        String    @default("active") // active, accepted, rejected
-  createdAt     DateTime  @default(now())
-  user          User      @relation(fields: [userId], references: [id])
-  userId        Int
-  product       Project   @relation(fields: [productId], references: [id])
-  productId     Int
-  owner         User      @relation("Owner", fields: [ownerId], references: [id])
-  ownerId       Int
-  projectId     Int
+  id        Int     @id @default(autoincrement())
+  bidAmount Float
+  status    String  @default("active")
+  createdAt DateTime @default(now())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Project @relation(fields: [productId], references: [id])
+  productId Int
+  owner     User    @relation("Owner", fields: [ownerId], references: [id])
+  ownerId   Int
 }
 
 enum Role {
