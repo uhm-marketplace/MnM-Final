@@ -203,8 +203,21 @@ const ProjectCardWithCart = ({
       const response = await fetch('/api/bidding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          projectId: projectData.id,
+          bidAmount: Number(bidAmount),
+          userId: session.user.id,
+        }),
       });
+
+      console.log('Submitting payload to API:', {
+        projectId: projectData.id,
+        bidAmount: Number(bidAmount),
+        userId: session.user.id,
+      });
+
+      console.log('Response Status:', response.status);
+      console.log('Response Headers:', [...response.headers.entries()]);
 
       console.log('Response Status:', response.status);
       console.log('Response Headers:', [...response.headers.entries()]);

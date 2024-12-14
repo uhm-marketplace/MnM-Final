@@ -99,7 +99,7 @@ model Reviews {
 model Bidding {
   id        Int     @id @default(autoincrement())
   bidAmount Float
-  status    String  @default("active")
+  status    String  @default("active") // active, accepted, rejected
   createdAt DateTime @default(now())
   user      User    @relation(fields: [userId], references: [id])
   userId    Int
