@@ -107,7 +107,6 @@ model Bidding {
   ownerId   Int
 }
 
-
 enum Role {
   USER
   ADMIN
