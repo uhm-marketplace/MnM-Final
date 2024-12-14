@@ -1,11 +1,7 @@
 import { test } from '@playwright/test';
 
-test.use({
-  storageState: 'lionel-auth.json',
-});
-
 test('test', async ({ page }) => {
-  await page.goto('http://localhost:3000/');
+  await page.goto('http://localhost:3000');
   await page.getByRole('button', { name: 'Get Started' }).click();
   await page.locator('#loginDropdown').click();
   await page.getByRole('link', { name: 'Sign in' }).click();
