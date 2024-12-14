@@ -187,40 +187,17 @@ const ProjectCardWithCart = ({
         throw new Error('Missing project or user information.');
       }
 
-      const bidAmountParsed = Number(bidAmount);
-      if (Number.isNaN(bidAmountParsed) || bidAmountParsed <= 0) {
-        throw new Error('Invalid bid amount. Please enter a positive number.');
-      }
-
-      // Log payload being sent
       const payload = {
-        projectId: projectData.id,
-        bidAmount: bidAmountParsed,
-        userId: session.user.id,
+        projectId: projectData.id, // id is already a number
+        bidAmount: parseFloat(bidAmount),
+        userId: parseInt(session.user.id, 10),
       };
-      console.log('Submitting Payload:', payload);
 
       const response = await fetch('/api/bidding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          projectId: projectData.id,
-          bidAmount: Number(bidAmount),
-          userId: session.user.id,
-        }),
+        body: JSON.stringify(payload),
       });
-
-      console.log('Submitting payload to API:', {
-        projectId: projectData.id,
-        bidAmount: Number(bidAmount),
-        userId: session.user.id,
-      });
-
-      console.log('Response Status:', response.status);
-      console.log('Response Headers:', [...response.headers.entries()]);
-
-      console.log('Response Status:', response.status);
-      console.log('Response Headers:', [...response.headers.entries()]);
 
       if (!response.ok) {
         const errorText = await response.text();
