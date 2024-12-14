@@ -1,4 +1,5 @@
 # Welcome to UHM Marketplace
+[![ci-nextjs-application-template](https://github.com/uhm-marketplace/MnM-Final/actions/workflows/ci.yml/badge.svg)](https://github.com/uhm-marketplace/MnM-Final/actions/workflows/ci.yml)
 
 ## Table of contents
 * [About UHM Marketplace](#about-uhm-marketplace)
