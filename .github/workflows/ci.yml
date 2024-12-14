@@ -19,6 +19,8 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run ESLint
         run: npm run lint
+      - name: Run server
+        run: npm run dev
       - name: Run Playwright tests
         run: |
           cd tests/
