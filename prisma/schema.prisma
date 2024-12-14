@@ -107,6 +107,7 @@ model Bidding {
   productId     Int
   owner         User      @relation("Owner", fields: [ownerId], references: [id])
   ownerId       Int
+  projectId     Int
 }
 
 enum Role {
