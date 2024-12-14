@@ -183,15 +183,31 @@ const ProjectCardWithCart = ({
     try {
       console.log('Starting offer submission...');
 
-      if (!projectData?.id || !session?.user?.id) {
-        throw new Error('Missing project or user information.');
+      // Ensure projectData and session are valid
+      if (!projectData || !session?.user?.id) {
+        throw new Error('Project or user information is missing.');
+      }
+
+      // Dynamically retrieve attributes
+      const projectId = projectData.id; // Retrieved from projectData
+      const { ownerId } = projectData; // Retrieved from projectData
+      const userId = session.user.id; // Retrieved from session
+
+      console.log('Retrieved Fields:', { projectId, ownerId, userId });
+
+      // Validate retrieved attributes
+      if (!projectId || !ownerId || !userId) {
+        throw new Error('Missing project, user, or owner information.');
       }
 
       const payload = {
-        projectId: projectData.id, // id is already a number
-        bidAmount: parseFloat(bidAmount),
-        userId: parseInt(session.user.id, 10),
+        projectId,
+        bidAmount: parseFloat(bidAmount), // Ensure bidAmount is numeric
+        userId,
+        ownerId,
       };
+
+      console.log('Submitting Payload:', payload);
 
       const response = await fetch('/api/bidding', {
         method: 'POST',
@@ -210,7 +226,6 @@ const ProjectCardWithCart = ({
       const responseData = await response.json();
       console.log('Offer submitted successfully:', responseData);
 
-      // Reset the form and close the modal
       setShowOfferModal(false);
       setBidAmount('');
     } catch (error) {

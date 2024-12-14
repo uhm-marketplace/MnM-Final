@@ -10,4 +10,6 @@ export type ProjectCardData = {
   interests: string[];
   participants: Profile[];
   buyers: Profile[];
+  ownerId: number;
+  productId: number;
 };
