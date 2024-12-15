@@ -24,7 +24,8 @@ const ProductsPage = async ({ searchParams }: { searchParams?: { query?: string 
 
   return (
     <div>
-      <h1>Search Products:</h1>
+      <h2 className="text-2xl font-semibold border-l-4 pl-4 border-gray-300">Search the UHM Way</h2>
+
       <SearchProducts />
       <ListProducts query={query} projects={projects} />
     </div>
