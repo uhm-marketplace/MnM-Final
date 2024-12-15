@@ -30,7 +30,7 @@
         "Digital HQ"
       ],
       "picture": "https://www.thespruceeats.com/thmb/w282FiA18oOHgNqftYbo93B5an8=/5928x3957/filters:fill(auto,1)/classic-and-easy-chocolate-cake-recipe-995137-hero-01-e361ee51a67d4c12afb451cc48fb1940.jpg",
-      "buyerId": null,
+      "buyerId": 1,
       "price": 9.99
     },
     {
@@ -42,8 +42,8 @@
         "Campus Closet"
       ],
       "picture": "https://www.multivu.com/players/English/7259051-wilton-method-class-cake-decorating/gallery/image/47287638-19fb-49c5-aa86-c13218194221.jpg",
-      "buyerId": null,
-      "price": 9.99
+      "buyerId": 1,
+      "price": 12.00
     },
     {
       "name": "Test 3",
@@ -57,8 +57,8 @@
         "Dorm Life"
       ],
       "picture": "https://www.tastingtable.com/img/gallery/30-types-of-cake-explained/l-intro-1658850950.jpg",
-      "buyerId": null,
-      "price": 9.99
+      "buyerId": 1,
+      "price": 5.99
     }
   ],
   
