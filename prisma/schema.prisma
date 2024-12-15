@@ -9,23 +9,26 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  role     Role   @default(USER)
+  id                            Int       @id @default(autoincrement())
+  email                         String    @unique
+  password                      String
+  role                          Role      @default(USER)
+  Bidding_Bidding_ownerIdToUser Bidding[] @relation("Bidding_ownerIdToUser")
+  Bidding_Bidding_userIdToUser  Bidding[] @relation("Bidding_userIdToUser")
 }
 
 model Profile {
-  id           Int               @id @default(autoincrement())
-  email        String            @unique
-  firstName    String?
-  lastName     String?
-  bio          String?
-  title        String?
-  picture      String?
-  interests    ProfileInterest[]
-  projects     ProfileProject[]
-  ProjectBuyer ProjectBuyer[]
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  firstName       String?
+  lastName        String?
+  bio             String?
+  title           String?
+  picture         String?
+  ProfileInterest ProfileInterest[]
+  ProfileProject  ProfileProject[]
+  ProjectBuyer    ProjectBuyer[]
+  Reviews         Reviews[]
 }
 
 model Interest {
@@ -42,9 +45,10 @@ model Project {
   description String?
   picture     String?
   price       Float
+  Bidding     Bidding[]
   profiles    ProfileProject[]
-  interests   ProjectInterest[]
   buyers      ProjectBuyer[]
+  interests   ProjectInterest[]
 }
 
 model ProfileInterest {
@@ -75,19 +79,34 @@ model ProjectBuyer {
   id        Int      @id @default(autoincrement())
   projectId Int
   profileId Int
-  project   Project  @relation(fields: [projectId], references: [id])
-  profile   Profile  @relation(fields: [profileId], references: [id])
   createdAt DateTime @default(now())
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id])
 }
 
 model Reviews {
-  id         Int    @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   userName   String
   item       String
   rating     Float?
   contact    String
   reviewText String
-  profileId  Int    @unique
+  profileId  Int?
+  createdAt  DateTime @default(now())
+  Profile    Profile? @relation(fields: [profileId], references: [id])
+}
+
+model Bidding {
+  id                         Int      @id @default(autoincrement())
+  bidAmount                  Float
+  status                     String   @default("active")
+  createdAt                  DateTime @default(now())
+  userId                     Int
+  productId                  Int
+  ownerId                    Int
+  User_Bidding_ownerIdToUser User     @relation("Bidding_ownerIdToUser", fields: [ownerId], references: [id])
+  Project                    Project  @relation(fields: [productId], references: [id])
+  User_Bidding_userIdToUser  User     @relation("Bidding_userIdToUser", fields: [userId], references: [id])
 }
 
 enum Role {

@@ -8,7 +8,6 @@ import SearchProducts from './SearchProducts';
 const ProductsPage = async ({ searchParams }: { searchParams?: { query?: string } }) => {
   const session = await getServerSession(authOptions);
 
-  // Call the loggedInProtectedPage function to enforce authentication
   loggedInProtectedPage(session as { user: { email: string; id: string; randomKey: string } } | null);
 
   const query = searchParams?.query || '';

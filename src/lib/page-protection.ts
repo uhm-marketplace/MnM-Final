@@ -4,9 +4,10 @@ import { Role } from '@prisma/client';
 /**
  * Redirects to the login page if the user is not logged in.
  */
-export const loggedInProtectedPage = (session: { user: { email: string; id: string; randomKey: string } } | null) => {
-  if (!session) {
-    redirect('/auth/signin');
+// src/lib/page-protection.ts
+export const loggedInProtectedPage = (session: { user: { email: string; id: string } } | null) => {
+  if (!session || !session.user) {
+    throw new Error('You must be logged in to access this page.');
   }
 };
 
