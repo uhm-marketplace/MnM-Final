@@ -88,22 +88,23 @@ const NavBar: React.FC = () => {
               </Form>
 
               {currentUser ? (
-                <NavDropdown id={ComponentIDs.currentUserDropdown} title={<PersonCircle size={20} />}>
-                  <NavDropdown.Item id={ComponentIDs.currentUserDropdownSignOut} href="/auth/signout">
-                    <BoxArrowRight size={20} className="me-3" />
-                    Sign out
-                  </NavDropdown.Item>
-                </NavDropdown>
-              ) : (
-                <NavDropdown id={ComponentIDs.loginDropdown} title={<PersonCircle size={20} />}>
-                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignIn} href="/auth/signin">
-                    Sign in
-                  </NavDropdown.Item>
-                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignUp} href="/auth/signup">
-                    Sign up
-                  </NavDropdown.Item>
-                </NavDropdown>
-              )}
+  <NavDropdown id={ComponentIDs.currentUserDropdown} title={<PersonCircle size={20} />}>
+    <NavDropdown.Item href="/account">View Account</NavDropdown.Item>
+    <NavDropdown.Item id={ComponentIDs.currentUserDropdownSignOut} href="/auth/signout">
+      <BoxArrowRight /> Sign out
+    </NavDropdown.Item>
+  </NavDropdown>
+) : (
+  <NavDropdown id={ComponentIDs.loginDropdown} title={<PersonCircle size={20} />}>
+    <NavDropdown.Item id={ComponentIDs.loginDropdownSignIn} href="/auth/signin">
+      Sign in
+    </NavDropdown.Item>
+    <NavDropdown.Item id={ComponentIDs.loginDropdownSignUp} href="/auth/signup">
+      Sign up
+    </NavDropdown.Item>
+  </NavDropdown>
+)}
+
 
               <Nav.Link
                 as={Link}
