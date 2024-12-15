@@ -22,6 +22,9 @@ import PropTypes from 'prop-types';
 const ProjectCardWithCart = ({
   projectData,
   userId,
+}: {
+  projectData: ProjectCardData;
+  userId: string;
 }) => {
   const [isInCart, setIsInCart] = useState(false);
   const [isInterested, setIsInterested] = useState(false);
