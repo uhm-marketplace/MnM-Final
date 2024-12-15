@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import { getServerSession } from 'next-auth';
 import { Container, Row } from 'react-bootstrap';
 import { prisma } from '@/lib/prisma';
@@ -29,9 +30,9 @@ const ProjectsPage = async () => {
   return (
     <Container id={PageIDs.projectsPage} style={pageStyle}>
       <Row xs={1} md={2} lg={4} className="g-2">
-        {projects.map((project) => (
-          // Ensuring a unique key by combining project.id and project.name
-          <ProjectCardHelper key={`project-${project.id}-${project.name}`} project={project} />
+        {projects.map((project, index) => (
+          // Combining id, name, and index for a guaranteed unique key
+          <ProjectCardHelper key={`project-${project.id}-${project.name}-${index}`} project={project} />
         ))}
       </Row>
     </Container>
