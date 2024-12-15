@@ -23,8 +23,8 @@ const ProjectsPage = async () => {
     <Container id={PageIDs.projectsPage} style={pageStyle}>
       <Row xs={1} md={2} lg={4} className="g-2">
         {projects.map((project) => (
-          // Using project.id instead of project.name for the key
-          <ProjectCardHelper key={`project-${project.id}`} project={project} />
+          // Ensuring a unique key by combining project.id and project.name
+          <ProjectCardHelper key={`project-${project.id}-${project.name}`} project={project} />
         ))}
       </Row>
     </Container>
