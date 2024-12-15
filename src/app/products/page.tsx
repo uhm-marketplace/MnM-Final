@@ -19,6 +19,13 @@ const ProjectsPage = async () => {
   const projects = await prisma.project.findMany();
   projects.sort((a, b) => a.name.localeCompare(b.name));
 
+  console.log('Generated keys:', projects.map((project, index) => `project-${project.id}-${project.name}-${index}`));
+
+  const uniqueProjects = new Set(projects.map((project) => `project-${project.id}-${project.name}`));
+  if (uniqueProjects.size !== projects.length) {
+    console.error('Duplicate projects detected in the database.');
+  }
+
   return (
     <Container id={PageIDs.projectsPage} style={pageStyle}>
       <Row xs={1} md={2} lg={4} className="g-2">
