@@ -12,7 +12,7 @@ const SearchProducts: React.FC = () => {
   // Handle input change directly without debounce for faster response
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
-    setQuery(searchQuery);  // Update the query immediately
+    setQuery(searchQuery); // Update the query
     const newSearch = searchQuery ? `?query=${searchQuery}` : ''; // Construct query string
     replace(`${window.location.pathname}${newSearch}`); // Update the URL immediately
   };
@@ -60,7 +60,7 @@ const SearchProducts: React.FC = () => {
           "
           placeholder="Search the UHM Way"
           value={query}
-          onChange={handleSearch}  // Directly update the query without delay
+          onChange={handleSearch} // Directly update the query
           aria-label="Search products"
         />
         <button
@@ -68,8 +68,7 @@ const SearchProducts: React.FC = () => {
           className="absolute right-0 top-1/2 -translate-y-1/2 pr-3"
           aria-label="Search"
         >
-          {/* Increase the size of the search icon */}
-          <Search className="text-gray-500 text-3xl" />  {/* Increased font size to 3xl */}
+          <Search className="text-gray-500 text-3xl" />
         </button>
       </form>
     </div>
