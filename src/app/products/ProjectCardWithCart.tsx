@@ -35,6 +35,29 @@ const ProjectCardWithCart = ({
 
   const currentUser = session?.user?.email;
 
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    setIsInCart(
+      cart.some((item: ProjectCardData) => item.name === projectData.name),
+    );
+
+    if (currentUser) {
+      setIsInterested(
+        projectData.buyers.some((buyer) => buyer.email === currentUser),
+      );
+    }
+  }, [projectData.name, projectData.buyers, currentUser]);
+
+  if (!projectData) {
+    return <div>Error: Product data is missing.</div>;
+  }
+
+  const { name, price, id } = projectData;
+
+  if (!name || !price || !id) {
+    return <div>Error: Product details are incomplete.</div>;
+  }
+
   const getCoinStyle = (value: number) => {
     switch (value) {
       case 1:
@@ -79,19 +102,6 @@ const ProjectCardWithCart = ({
         };
     }
   };
-
-  useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    setIsInCart(
-      cart.some((item: ProjectCardData) => item.name === projectData.name),
-    );
-
-    if (currentUser) {
-      setIsInterested(
-        projectData.buyers.some((buyer) => buyer.email === currentUser),
-      );
-    }
-  }, [projectData.name, projectData.buyers, currentUser]);
 
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -169,6 +179,30 @@ const ProjectCardWithCart = ({
   const handleReset = () => {
     setCoinTotal(0);
     setSelectedCoin(null);
+  };
+
+  const handleSubmitOffer = async () => {
+    try {
+      const response = await fetch('/api/bidding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bidAmount: coinTotal / 100, // Convert cents to dollars
+          userId: 1, // Placeholder for userId
+          productId: id, // Pass the productId
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit bid');
+      }
+
+      const data = await response.json();
+      console.log('Bid submitted successfully:', data);
+      handleModalClose();
+    } catch (error) {
+      console.error('Error submitting bid:', error);
+    }
   };
 
   return (
