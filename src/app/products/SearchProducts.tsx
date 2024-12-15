@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 const SearchProducts: React.FC = () => {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
-  const [query, setQuery] = useState(searchParams.get('query') ?? ''); // Manage query state
+  const [query, setQuery] = useState(searchParams.get('query') ?? '');
 
   // Handle input change directly without debounce for faster response
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +26,7 @@ const SearchProducts: React.FC = () => {
     <div className="min-h-screen px-4 flex items-center justify-start">
       <form
         className="relative flex items-center w-full max-w-2xl lg:max-w-xl mt-6"
-        onSubmit={(e) => e.preventDefault()} // Prevent form submission
+        onSubmit={(e) => e.preventDefault()}
       >
         <input
           id="search"
@@ -54,7 +54,7 @@ const SearchProducts: React.FC = () => {
             ml-16
           "
           value={query}
-          onChange={handleSearch} // Directly update the query
+          onChange={handleSearch}
           aria-label="Search products"
         />
       </form>

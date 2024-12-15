@@ -13,12 +13,11 @@ interface Project {
 }
 
 interface ListProductsProps {
-  query: string; // Removed session from here
+  query: string;
   projects: Project[];
 }
 
 const ListProducts = ({ query, projects }: ListProductsProps) => {
-  // Filter and sort the projects
   const filteredProjects = query
     ? projects.filter((project) => project.name.toLowerCase().includes(query.toLowerCase()))
     : projects;
