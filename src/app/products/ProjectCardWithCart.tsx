@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unknown-property */
 
@@ -22,9 +23,6 @@ import PropTypes from 'prop-types';
 const ProjectCardWithCart = ({
   projectData,
   userId,
-}: {
-  projectData: ProjectCardData;
-  userId: string;
 }) => {
   const [isInCart, setIsInCart] = useState(false);
   const [isInterested, setIsInterested] = useState(false);
@@ -36,7 +34,7 @@ const ProjectCardWithCart = ({
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [quickAmounts, setQuickAmounts] = useState([500, 1000, 2500, 5000]); // $5, $10, $25, $50
 
-  const currentUser = session?.user?.email;
+  const currentUser = session?.user?.id;
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -185,26 +183,42 @@ const ProjectCardWithCart = ({
   };
 
   const handleSubmitOffer = async () => {
-    console.log({ coinTotal, userId, id });
+    if (!currentUser) {
+      alert('You must be logged in to submit an offer.');
+      return;
+    }
+
+    console.log('Submitting offer with:', {
+      coinTotal,
+      userId: currentUser,
+      projectId: projectData.id,
+    });
+
     try {
       const response = await fetch('/api/bidding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           bidAmount: coinTotal / 100,
-          userId: 1, // Replace this with a real user ID if possible
-          productId: id,
+          userId: currentUser,
+          productId: projectData.id,
         }),
       });
+
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('API error:', errorData);
-        throw new Error('Failed to submit bid');
+        console.error('API error details:', errorData);
+        alert(errorData.error || 'Failed to submit offer.');
+        return;
       }
+
       const data = await response.json();
       console.log('Bid submitted successfully:', data);
+      alert('Offer submitted successfully!');
+      handleModalClose();
     } catch (error) {
       console.error('Error in handleSubmitOffer:', error);
+      alert('Failed to submit offer.');
     }
   };
 
@@ -263,8 +277,11 @@ const ProjectCardWithCart = ({
         </Modal.Header>
         <Modal.Body>
           <p>Quick Offer Amounts:</p>
-          {quickAmounts.map((amount) => (
-            <Button key={amount} onClick={() => handleQuickAmount(amount)}>
+          {quickAmounts.map((amount, index) => (
+            <Button
+              key={`quick-${amount}`}
+              onClick={() => handleQuickAmount(amount)}
+            >
               $
               {amount / 100}
             </Button>
@@ -274,8 +291,11 @@ const ProjectCardWithCart = ({
               Current Offer: $
               {coinTotal / 100}
             </p>
-            {coinValues.map((value) => (
-              <Button key={value} onClick={() => handleCoinClick(value)}>
+            {coinValues.map((value, index) => (
+              <Button
+                key={`coin-${value}`}
+                onClick={() => handleCoinClick(value)}
+              >
                 +
                 {value}
                 ¢
@@ -324,6 +344,25 @@ const ProjectCardWithCart = ({
       </style>
     </div>
   );
+};
+
+ProjectCardWithCart.propTypes = {
+  projectData: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    buyers: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+      }),
+    ),
+  }).isRequired,
+  userId: PropTypes.string,
+};
+
+ProjectCardWithCart.defaultProps = {
+  userId: '',
 };
 
 export default ProjectCardWithCart;
