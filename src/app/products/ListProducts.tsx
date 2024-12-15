@@ -1,4 +1,3 @@
-import { prisma } from '@/lib/prisma';
 import { Container, Row } from 'react-bootstrap';
 import { PageIDs } from '@/utilities/ids';
 import pageStyle from '@/utilities/pageStyle';
@@ -13,14 +12,16 @@ interface Project {
   price: number;
 }
 
-const ListProducts = async ({ query }: { query: string }) => {
-  const projects = await prisma.project.findMany();
+interface ListProductsProps {
+  query: string;
+  session: any;
+  projects: Project[];
+}
 
-  // Apply filtering if the query exists
+const ListProducts = ({ query, session, projects }: ListProductsProps) => {
+  // Filter and sort the projects
   const filteredProjects = query
-    ? projects.filter((project) =>
-        project.name.toLowerCase().includes(query.toLowerCase())
-      )
+    ? projects.filter((project) => project.name.toLowerCase().includes(query.toLowerCase()))
     : projects;
 
   filteredProjects.sort((a, b) => a.name.localeCompare(b.name));

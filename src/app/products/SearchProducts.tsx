@@ -1,60 +1,78 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'react-bootstrap-icons'; // Import the Search icon from react-bootstrap-icons
 
 const SearchProducts: React.FC = () => {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
+  const [query, setQuery] = useState(searchParams.get('query') ?? ''); // Manage query state
 
-  const query = searchParams.get('query') ?? ''; // Use nullish coalescing for safer fallback
-
+  // Handle input change directly without debounce for faster response
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value;
-    const newSearch = searchQuery ? `?query=${searchQuery}` : ''; // Safely construct query string
-    replace(`${window.location.pathname}${newSearch}`); // Update the URL
+    setQuery(searchQuery);  // Update the query immediately
+    const newSearch = searchQuery ? `?query=${searchQuery}` : ''; // Construct query string
+    replace(`${window.location.pathname}${newSearch}`); // Update the URL immediately
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Prevent form submission
   };
 
+  // Ensure that searchParams updates in real-time if query changes in the URL
+  useEffect(() => {
+    const currentQuery = searchParams.get('query') ?? '';
+    setQuery(currentQuery);
+  }, [searchParams]);
+
   return (
-    <form
-      className="relative flex items-center w-full max-w-sm"
-      onSubmit={handleSubmit}
-    >
-      <label htmlFor="search" className="sr-only">
-        Search products
-      </label>
-      <input
-        id="search"
-        className="
-          peer
-          block
-          w-full
-          rounded-l-md
-          border
-          border-gray-200
-          py-[9px]
-          pl-10
-          text-sm outline-2
-          placeholder:text-gray-500
-        "
-        placeholder="Search products"
-        value={query}
-        onChange={handleSearch}
-        aria-label="Search products"
-      />
-      <button
-        type="submit"
-        className="absolute right-0 top-1/2 -translate-y-1/2 pr-3"
-        aria-label="Search"
+    <div className="min-h-screen px-4 flex items-center justify-start">
+      <form
+        className="relative flex items-center w-full max-w-2xl lg:max-w-xl mt-6"
+        onSubmit={handleSubmit}
       >
-        <Search className="text-gray-500 text-xl" />
-      </button>
-    </form>
+        <input
+          id="search"
+          className="
+            peer
+            block
+            w-full
+            max-w-2xl
+            rounded-full
+            border
+            border-gray-300
+            pl-10
+            pr-1
+            py-2
+            text-sm
+            outline-none
+            placeholder:text-gray-500
+            focus:ring-2
+            focus:ring-blue-500
+            focus:border-blue-500
+            shadow-md
+            transition-all
+            duration-200
+            ease-in-out
+            ml-16
+          "
+          placeholder="Search the UHM Way"
+          value={query}
+          onChange={handleSearch}  // Directly update the query without delay
+          aria-label="Search products"
+        />
+        <button
+          type="submit"
+          className="absolute right-0 top-1/2 -translate-y-1/2 pr-3"
+          aria-label="Search"
+        >
+          {/* Increase the size of the search icon */}
+          <Search className="text-gray-500 text-3xl" />  {/* Increased font size to 3xl */}
+        </button>
+      </form>
+    </div>
   );
 };
 
