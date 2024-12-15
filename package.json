@@ -39,6 +39,7 @@
     "react-bootstrap-icons": "^1.11.4",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.0",
+    "react-router-dom": "^7.0.2",
     "shadcn": "^1.0.0",
     "shadcn-ui": "^0.2.3",
     "simpler-state": "^1.2.2",
