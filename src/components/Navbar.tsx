@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { Image, Nav, Navbar, NavDropdown, Container, Form, FormControl } from 'react-bootstrap';
+import { Image, Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
 import { BoxArrowRight, PersonCircle, Cart } from 'react-bootstrap-icons';
 import { ComponentIDs } from '@/utilities/ids';
 import Link from 'next/link';
@@ -78,32 +78,25 @@ const NavBar: React.FC = () => {
             </Nav>
 
             <Nav className="d-flex align-items-center justify-content-end">
-              <Form className="d-inline me-3">
-                <FormControl
-                  type="text"
-                  placeholder="Search..."
-                  className="rounded-pill"
-                  style={{ width: '200px' }}
-                />
-              </Form>
 
               {currentUser ? (
-                <NavDropdown id={ComponentIDs.currentUserDropdown} title={<PersonCircle size={20} />}>
-                  <NavDropdown.Item id={ComponentIDs.currentUserDropdownSignOut} href="/auth/signout">
-                    <BoxArrowRight size={20} className="me-3" />
-                    Sign out
-                  </NavDropdown.Item>
-                </NavDropdown>
-              ) : (
-                <NavDropdown id={ComponentIDs.loginDropdown} title={<PersonCircle size={20} />}>
-                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignIn} href="/auth/signin">
-                    Sign in
-                  </NavDropdown.Item>
-                  <NavDropdown.Item id={ComponentIDs.loginDropdownSignUp} href="/auth/signup">
-                    Sign up
-                  </NavDropdown.Item>
-                </NavDropdown>
-              )}
+  <NavDropdown id={ComponentIDs.currentUserDropdown} title={<PersonCircle size={20} />}>
+    <NavDropdown.Item href="/account">View Account</NavDropdown.Item>
+    <NavDropdown.Item id={ComponentIDs.currentUserDropdownSignOut} href="/auth/signout">
+      <BoxArrowRight /> Sign out
+    </NavDropdown.Item>
+  </NavDropdown>
+) : (
+  <NavDropdown id={ComponentIDs.loginDropdown} title={<PersonCircle size={20} />}>
+    <NavDropdown.Item id={ComponentIDs.loginDropdownSignIn} href="/auth/signin">
+      Sign in
+    </NavDropdown.Item>
+    <NavDropdown.Item id={ComponentIDs.loginDropdownSignUp} href="/auth/signup">
+      Sign up
+    </NavDropdown.Item>
+  </NavDropdown>
+)}
+
 
               <Nav.Link
                 as={Link}

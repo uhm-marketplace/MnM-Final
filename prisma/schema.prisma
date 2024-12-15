@@ -9,24 +9,26 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
-  role     Role   @default(USER)
+  id                            Int       @id @default(autoincrement())
+  email                         String    @unique
+  password                      String
+  role                          Role      @default(USER)
+  Bidding_Bidding_ownerIdToUser Bidding[] @relation("Bidding_ownerIdToUser")
+  Bidding_Bidding_userIdToUser  Bidding[] @relation("Bidding_userIdToUser")
 }
 
 model Profile {
-  id           Int               @id @default(autoincrement())
-  email        String            @unique
-  firstName    String?
-  lastName     String?
-  bio          String?
-  title        String?
-  picture      String?
-  interests    ProfileInterest[]
-  projects     ProfileProject[]
-  ProjectBuyer ProjectBuyer[]
-  Reviews      Reviews[]
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  firstName       String?
+  lastName        String?
+  bio             String?
+  title           String?
+  picture         String?
+  ProfileInterest ProfileInterest[]
+  ProfileProject  ProfileProject[]
+  ProjectBuyer    ProjectBuyer[]
+  Reviews         Reviews[]
 }
 
 model Interest {
@@ -43,6 +45,7 @@ model Project {
   description String?
   picture     String?
   price       Float
+  Bidding     Bidding[]
   profiles    ProfileProject[]
   buyers      ProjectBuyer[]
   interests   ProjectInterest[]
@@ -90,7 +93,7 @@ model Reviews {
   reviewText String
   profileId  Int?
   createdAt  DateTime @default(now())
-  profile    Profile? @relation(fields: [profileId], references: [id])
+  Profile    Profile? @relation(fields: [profileId], references: [id])
 }
 
 enum Role {
