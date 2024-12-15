@@ -1,37 +1,38 @@
 import { getServerSession } from 'next-auth';
-import { Container, Row } from 'react-bootstrap';
-import { prisma } from '@/lib/prisma';
-import { PageIDs } from '@/utilities/ids';
-import pageStyle from '@/utilities/pageStyle';
-import { authOptions } from '@/lib/auth';
 import { loggedInProtectedPage } from '@/lib/page-protection';
-import ProjectCardHelper from './ProjectCardHelper';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+import ListProducts from './ListProducts';
+import SearchProducts from './SearchProducts';
 
-const ProjectsPage = async () => {
+const ProductsPage = async ({ searchParams }: { searchParams?: { query?: string } }) => {
   const session = await getServerSession(authOptions);
 
-  loggedInProtectedPage(
-    session as {
-      user: { email: string; id: string; randomKey: string };
-    } | null,
-  );
+  loggedInProtectedPage(session as { user: { email: string; id: string; randomKey: string } } | null);
 
-  const projects = await prisma.project.findMany();
-  projects.sort((a, b) => a.name.localeCompare(b.name));
+  const query = searchParams?.query || '';
+
+  const projects = await prisma.project.findMany({
+    where: {
+      name: {
+        contains: query,
+        mode: 'insensitive',
+      },
+    },
+  });
 
   return (
-    <Container id={PageIDs.projectsPage} style={pageStyle}>
-      <Row xs={1} md={2} lg={4} className="g-2">
-        {projects.map((project) => (
-          // Using project.id instead of project.name for the key
-          <ProjectCardHelper key={`project-${project.id}`} project={project} />
-        ))}
-      </Row>
-    </Container>
+    <div>
+      <h2 className="text-2xl font-semibold border-l-4 pl-4 border-gray-300">Search the UHM Way</h2>
+
+      <SearchProducts />
+      <ListProducts query={query} projects={projects} />
+    </div>
   );
 };
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+ProductsPage.defaultProps = {
+  searchParams: { query: '' },
+};
 
-export default ProjectsPage;
+export default ProductsPage;

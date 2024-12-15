@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { Image, Nav, Navbar, NavDropdown, Container, Form, FormControl } from 'react-bootstrap';
+import { Image, Nav, Navbar, NavDropdown, Container } from 'react-bootstrap';
 import { BoxArrowRight, PersonCircle, Cart } from 'react-bootstrap-icons';
 import { ComponentIDs } from '@/utilities/ids';
 import Link from 'next/link';
@@ -78,14 +78,6 @@ const NavBar: React.FC = () => {
             </Nav>
 
             <Nav className="d-flex align-items-center justify-content-end">
-              <Form className="d-inline me-3">
-                <FormControl
-                  type="text"
-                  placeholder="Search..."
-                  className="rounded-pill"
-                  style={{ width: '200px' }}
-                />
-              </Form>
 
               {currentUser ? (
   <NavDropdown id={ComponentIDs.currentUserDropdown} title={<PersonCircle size={20} />}>
