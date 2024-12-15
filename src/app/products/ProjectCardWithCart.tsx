@@ -17,11 +17,11 @@ import {
 import ProjectCard from '@/components/ProjectCard';
 import { ProjectCardData } from '@/lib/ProjectCardData';
 import { useSession } from 'next-auth/react';
+import PropTypes from 'prop-types';
 
 const ProjectCardWithCart = ({
   projectData,
-}: {
-  projectData: ProjectCardData;
+  userId,
 }) => {
   const [isInCart, setIsInCart] = useState(false);
   const [isInterested, setIsInterested] = useState(false);
@@ -49,13 +49,13 @@ const ProjectCardWithCart = ({
   }, [projectData.name, projectData.buyers, currentUser]);
 
   if (!projectData) {
-    return <div>Error: Product data is missing.</div>;
+    return <div>Error: Project data is missing.</div>;
   }
 
   const { name, price, id } = projectData;
 
   if (!name || !price || !id) {
-    return <div>Error: Product details are incomplete.</div>;
+    return <div>Error: Project details are incomplete.</div>;
   }
 
   const getCoinStyle = (value: number) => {
@@ -182,26 +182,26 @@ const ProjectCardWithCart = ({
   };
 
   const handleSubmitOffer = async () => {
+    console.log({ coinTotal, userId, id });
     try {
       const response = await fetch('/api/bidding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          bidAmount: coinTotal / 100, // Convert cents to dollars
-          userId: 1, // Placeholder for userId
-          productId: id, // Pass the productId
+          bidAmount: coinTotal / 100,
+          userId: 1, // Replace this with a real user ID if possible
+          productId: id,
         }),
       });
-
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API error:', errorData);
         throw new Error('Failed to submit bid');
       }
-
       const data = await response.json();
       console.log('Bid submitted successfully:', data);
-      handleModalClose();
     } catch (error) {
-      console.error('Error submitting bid:', error);
+      console.error('Error in handleSubmitOffer:', error);
     }
   };
 
@@ -254,117 +254,42 @@ const ProjectCardWithCart = ({
         </Alert>
       )}
 
-      <Modal show={showOfferModal} onHide={handleModalClose} centered size="lg">
-        <Modal.Header closeButton className="bg-light">
-          <Modal.Title className="d-flex align-items-center">
-            <CurrencyDollar size={24} className="me-2 text-success" />
-            Make an Offer
-          </Modal.Title>
+      <Modal show={showOfferModal} onHide={handleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Make an Offer</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="bg-light">
-          <div className="text-center mb-4 p-3 bg-white rounded-lg shadow-sm">
-            <h3 id="total-display" className="mb-0">
-              Total Offer:
-              {' '}
-              <strong className="text-success">
-                $
-                {(coinTotal / 100).toFixed(2)}
-              </strong>
-            </h3>
-          </div>
-
-          <div className="mb-4">
-            <h6 className="text-muted mb-2">Quick Amounts:</h6>
-            <div className="d-flex justify-content-between gap-2">
-              {quickAmounts.map((amount) => (
-                <Button
-                  key={`quick-${amount}`}
-                  variant="outline-primary"
-                  className="flex-grow-1"
-                  onClick={() => handleQuickAmount(amount)}
-                >
-                  $
-                  {(amount / 100).toFixed(2)}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <h6 className="text-muted mb-2">Add Coins:</h6>
-            <div className="d-flex flex-wrap justify-content-center gap-2">
-              {coinValues.map((value) => {
-                const style = getCoinStyle(value);
-                return (
-                  <Button
-                    key={`coin-${value}`}
-                    variant="outline-primary"
-                    onClick={() => handleCoinClick(value)}
-                    className="coin-button d-flex flex-column align-items-center justify-content-center p-2"
-                    style={{
-                      width: 80,
-                      height: 80,
-                      background: style.bg,
-                      color: style.color,
-                      border: 'none',
-                      borderRadius: '50%',
-                      transition: 'transform 0.2s',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }}
-                  >
-                    <div className="font-weight-bold mb-1">
-                      $
-                      {(value / 100).toFixed(2)}
-                    </div>
-                    <div className="small text-center">
-                      {value >= 100 ? 'Bill' : 'Coin'}
-                    </div>
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="d-flex justify-content-center gap-3 mb-3">
-            <Button
-              variant="outline-secondary"
-              size="sm"
-              onClick={() => setCoinTotal((prev) => Math.max(0, prev - 1))}
-            >
-              <Dash />
-              1¢
+        <Modal.Body>
+          <p>Quick Offer Amounts:</p>
+          {quickAmounts.map((amount) => (
+            <Button key={amount} onClick={() => handleQuickAmount(amount)}>
+              $
+              {amount / 100}
             </Button>
-            <Button
-              variant="outline-secondary"
-              size="sm"
-              onClick={() => setCoinTotal((prev) => prev + 1)}
-            >
-              <Plus />
-              1¢
-            </Button>
-            <Button variant="outline-danger" size="sm" onClick={handleReset}>
-              <ArrowCounterclockwise />
-              Reset
-            </Button>
+          ))}
+          <div>
+            <p>
+              Current Offer: $
+              {coinTotal / 100}
+            </p>
+            {coinValues.map((value) => (
+              <Button key={value} onClick={() => handleCoinClick(value)}>
+                +
+                {value}
+                ¢
+              </Button>
+            ))}
           </div>
-        </Modal.Body>
-        <Modal.Footer className="bg-light">
-          <Button variant="secondary" onClick={handleModalClose}>
-            Cancel
+          <Button variant="danger" onClick={handleReset}>
+            <ArrowCounterclockwise />
+            {' '}
+            Reset
           </Button>
-          <Button
-            variant="success"
-            onClick={() => {
-              console.log(`Offer: $${(coinTotal / 100).toFixed(2)}`);
-              handleModalClose();
-            }}
-          >
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleModalClose}>
+            Close
+          </Button>
+          <Button variant="success" onClick={handleSubmitOffer}>
             Submit Offer
           </Button>
         </Modal.Footer>
