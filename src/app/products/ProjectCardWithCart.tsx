@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/no-unknown-property */
+
 'use client';
 
-import { useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Button, Alert, Modal } from 'react-bootstrap';
 import {
   Cart as CartIcon,
   Heart,
@@ -11,38 +14,139 @@ import {
   Dash,
   ArrowCounterclockwise,
 } from 'react-bootstrap-icons';
+import ProjectCard from '@/components/ProjectCard';
+import { ProjectCardData } from '@/lib/ProjectCardData';
+import { useSession } from 'next-auth/react';
 
-interface ProjectCardWithCartProps {
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    ownerId: number;
-  };
-}
-
-export default function ProjectCardWithCart({ product }: ProjectCardWithCartProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+const ProjectCardWithCart = ({
+  projectData,
+}: {
+  projectData: ProjectCardData;
+}) => {
+  const [isInCart, setIsInCart] = useState(false);
+  const [isInterested, setIsInterested] = useState(false);
+  const [showProfileAlert, setShowProfileAlert] = useState(false);
+  const { data: session } = useSession();
   const [showOfferModal, setShowOfferModal] = useState(false);
-  const [coinTotal, setCoinTotal] = useState(0); // Total offer in cents
-  const quickAmounts = [500, 1000, 2000, 5000]; // Quick amounts in cents
-  const coinValues = [1, 5, 10, 25, 50, 100, 200, 500]; // Coin values in cents
+  const [coinTotal, setCoinTotal] = useState(0);
+  const coinValues = [1, 5, 10, 25, 100, 500, 1000]; // $0.01 through $10.00
+  const [selectedCoin, setSelectedCoin] = useState(null);
+  const [quickAmounts, setQuickAmounts] = useState([500, 1000, 2500, 5000]); // $5, $10, $25, $50
 
-  if (!product) {
-    return <div>Error: Product data is missing.</div>;
-  }
+  const currentUser = session?.user?.email;
 
-  const { name, price, id, ownerId } = product;
-
-  if (!name || !price || !id || ownerId === undefined) {
-    return <div>Error: Product details are incomplete.</div>;
-  }
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+  const getCoinStyle = (value: number) => {
+    switch (value) {
+      case 1:
+        return {
+          bg: 'linear-gradient(145deg, #B87333, #cb8e53)',
+          color: 'white',
+        }; // Copper
+      case 5:
+        return {
+          bg: 'linear-gradient(145deg, #C0C0C0, #d6d6d6)',
+          color: 'black',
+        }; // Silver
+      case 10:
+        return {
+          bg: 'linear-gradient(145deg, #C0C0C0, #e6e6e6)',
+          color: 'black',
+        }; // Silver
+      case 25:
+        return {
+          bg: 'linear-gradient(145deg, #FFD700, #ffe44d)',
+          color: 'black',
+        }; // Gold
+      case 100:
+        return {
+          bg: 'linear-gradient(145deg, #90EE90, #b4f5b4)',
+          color: 'black',
+        }; // Light green
+      case 500:
+        return {
+          bg: 'linear-gradient(145deg, #87CEEB, #b0e0f5)',
+          color: 'black',
+        }; // Sky blue
+      case 1000:
+        return {
+          bg: 'linear-gradient(145deg, #DDA0DD, #ecc6ec)',
+          color: 'black',
+        }; // Plum
+      default:
+        return {
+          bg: 'linear-gradient(145deg, #f8f9fa, #e9ecef)',
+          color: 'black',
+        };
+    }
   };
 
-  const handleModalOpen = () => {
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    setIsInCart(
+      cart.some((item: ProjectCardData) => item.name === projectData.name),
+    );
+
+    if (currentUser) {
+      setIsInterested(
+        projectData.buyers.some((buyer) => buyer.email === currentUser),
+      );
+    }
+  }, [projectData.name, projectData.buyers, currentUser]);
+
+  const handleAddToCart = () => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    if (isInCart) {
+      const newCart = cart.filter(
+        (item: ProjectCardData) => item.name !== projectData.name,
+      );
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      setIsInCart(false);
+    } else {
+      cart.push(projectData);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      setIsInCart(true);
+    }
+
+    window.dispatchEvent(new Event('cartUpdated'));
+  };
+
+  const handleInterestClick = async () => {
+    if (!currentUser) return;
+
+    try {
+      const profileResponse = await fetch(`/api/profile?email=${currentUser}`);
+      const profileData = await profileResponse.json();
+
+      if (!profileData?.id) {
+        setShowProfileAlert(true);
+        return;
+      }
+
+      const response = await fetch('/api/projects/interest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectId: projectData.id,
+          profileId: profileData.id,
+        }),
+      });
+
+      if (response.ok) {
+        setIsInterested(!isInterested);
+        window.location.reload();
+      } else {
+        const errorData = await response.json();
+        console.error('Error:', errorData);
+      }
+    } catch (error) {
+      console.error('Error updating interest:', error);
+    }
+  };
+
+  const handleMakeOfferClick = () => {
     setShowOfferModal(true);
   };
 
@@ -51,79 +155,71 @@ export default function ProjectCardWithCart({ product }: ProjectCardWithCartProp
     setCoinTotal(0);
   };
 
+  const handleCoinClick = (value: number) => {
+    setCoinTotal((prev) => prev + value);
+    const totalElement = document.getElementById('total-display');
+    totalElement?.classList.add('scale-up-center');
+    setTimeout(() => totalElement?.classList.remove('scale-up-center'), 200);
+  };
+
   const handleQuickAmount = (amount: number) => {
     setCoinTotal(amount);
   };
 
-  const handleCoinClick = (value: number) => {
-    setCoinTotal((prev) => prev + value);
-  };
-
   const handleReset = () => {
     setCoinTotal(0);
-  };
-
-  const getCoinStyle = (value: number) => ({
-    bg: value >= 100 ? '#cce5ff' : '#e9ecef',
-    color: value >= 100 ? '#004085' : '#6c757d',
-  });
-
-  const handleSubmitOffer = async () => {
-    try {
-      const response = await fetch('/api/bidding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          bidAmount: coinTotal / 100, // Convert cents to dollars
-          productId: product.id,
-          ownerId: product.ownerId,
-        }),
-      });
-
-      if (response.ok) {
-        console.log('Offer submitted successfully.');
-      } else {
-        const errorData = await response.json();
-        console.error('Error submitting offer:', errorData.error);
-      }
-    } catch (error) {
-      console.error('Failed to submit offer:', error);
-    } finally {
-      handleModalClose();
-    }
+    setSelectedCoin(null);
   };
 
   return (
-    <div className="project-card">
-      <div className="project-details">
-        <h2>{product.name}</h2>
-        <p>
-          Price: $
-          {product.price}
-        </p>
-        <div className="actions">
-          {/* Favorite Button */}
-          <Button variant="light" onClick={toggleFavorite}>
-            {isFavorite ? <HeartFill color="red" /> : <Heart />}
-          </Button>
+    <div className="position-relative h-100">
+      <ProjectCard project={projectData} />
 
-          {/* Add to Cart Button */}
-          <Button variant="primary" onClick={() => console.log('Add to Cart')}>
-            <CartIcon />
-            {' '}
-            Add to Cart
-          </Button>
+      <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-2">
+        {currentUser && (
+          <>
+            {isInterested && (
+              <Button
+                variant="success"
+                onClick={handleMakeOfferClick}
+                className="d-flex align-items-center"
+                size="sm"
+              >
+                <CurrencyDollar size={14} fill="gold" />
+              </Button>
+            )}
+            <Button
+              variant={isInterested ? 'danger' : 'outline-danger'}
+              onClick={handleInterestClick}
+              className="d-flex align-items-center gap-1"
+              size="sm"
+            >
+              {isInterested ? <HeartFill size={14} /> : <Heart size={14} />}
+            </Button>
+          </>
+        )}
 
-          {/* Make an Offer Button */}
-          <Button variant="success" onClick={handleModalOpen}>
-            <CurrencyDollar />
-            {' '}
-            Make an Offer
-          </Button>
-        </div>
+        <Button
+          variant={isInCart ? 'outline-danger' : 'outline-success'}
+          onClick={handleAddToCart}
+          className="d-flex align-items-center gap-1"
+          size="sm"
+        >
+          <CartIcon size={14} />
+          {isInCart ? '-' : '+'}
+        </Button>
       </div>
 
-      {/* Make an Offer Modal */}
+      {showProfileAlert && (
+        <Alert
+          variant="warning"
+          onClose={() => setShowProfileAlert(false)}
+          dismissible
+        >
+          Please create your profile first to access this feature.
+        </Alert>
+      )}
+
       <Modal show={showOfferModal} onHide={handleModalClose} centered size="lg">
         <Modal.Header closeButton className="bg-light">
           <Modal.Title className="d-flex align-items-center">
@@ -230,21 +326,42 @@ export default function ProjectCardWithCart({ product }: ProjectCardWithCartProp
           </Button>
           <Button
             variant="success"
-            onClick={handleSubmitOffer}
+            onClick={() => {
+              console.log(`Offer: $${(coinTotal / 100).toFixed(2)}`);
+              handleModalClose();
+            }}
           >
             Submit Offer
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <style jsx global>
+        {`
+          .scale-up-center {
+            animation: scale-up-center 0.2s cubic-bezier(0.39, 0.575, 0.565, 1)
+              both;
+          }
+
+          @keyframes scale-up-center {
+            0% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.1);
+            }
+            100% {
+              transform: scale(1);
+            }
+          }
+
+          .coin-button:active {
+            transform: scale(0.95) !important;
+          }
+        `}
+      </style>
     </div>
   );
-}
+};
 
-export async function getServerSideProps() {
-  const products = [
-    { id: 1, name: 'Product A', price: 100, ownerId: 2 },
-    { id: 2, name: 'Product B', price: 150, ownerId: 3 },
-  ]; // Replace with actual database query
-
-  return { props: { products } };
-}
+export default ProjectCardWithCart;
