@@ -1,12 +1,10 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-alert */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unknown-property */
 
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button, Alert, Modal, Form } from 'react-bootstrap';
+import { Button, Alert, Modal } from 'react-bootstrap';
 import {
   Cart as CartIcon,
   Heart,
@@ -26,43 +24,16 @@ const ProjectCardWithCart = ({
   projectData: ProjectCardData;
 }) => {
   const [isInCart, setIsInCart] = useState(false);
+  const [isInterested, setIsInterested] = useState(false);
   const [showProfileAlert, setShowProfileAlert] = useState(false);
   const { data: session } = useSession();
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [coinTotal, setCoinTotal] = useState(0);
-  const [bidAmount, setBidAmount] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedCoin, setSelectedCoin] = useState<number | null>(null);
+  const coinValues = [1, 5, 10, 25, 100, 500, 1000]; // $0.01 through $10.00
+  const [selectedCoin, setSelectedCoin] = useState(null);
+  const [quickAmounts, setQuickAmounts] = useState([500, 1000, 2500, 5000]); // $5, $10, $25, $50
+
   const currentUser = session?.user?.email;
-
-  const [isInterested, setIsInterested] = useState(
-    projectData.buyers.some((buyer) => buyer.email === currentUser),
-  );
-
-  const handleFetchProfile = async () => {
-    if (!currentUser) {
-      console.error('Error: No current user available to fetch profile.');
-      return null;
-    }
-
-    try {
-      const profileResponse = await fetch(`/api/profile?email=${currentUser}`);
-      if (profileResponse.ok) {
-        const profileData = await profileResponse.json();
-        if (!profileData?.id) {
-          console.error('Error: Profile ID is missing from API response.');
-          return null;
-        }
-        return profileData;
-      }
-      const errorData = await profileResponse.json();
-      console.error('Error fetching profile:', errorData.error || 'Unknown error');
-      return null;
-    } catch (error) {
-      console.error('Unexpected error fetching profile:', error);
-      return null;
-    }
-  };
 
   const getCoinStyle = (value: number) => {
     switch (value) {
@@ -110,19 +81,17 @@ const ProjectCardWithCart = ({
   };
 
   useEffect(() => {
-    const fetchInterestStatus = async () => {
-      const profileData = await handleFetchProfile();
-      if (!profileData) return;
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    setIsInCart(
+      cart.some((item: ProjectCardData) => item.name === projectData.name),
+    );
 
-      const fetchedInterestStatus = projectData.buyers.some(
-        (buyer) => buyer.id === profileData.id,
+    if (currentUser) {
+      setIsInterested(
+        projectData.buyers.some((buyer) => buyer.email === currentUser),
       );
-      console.log('Fetched interest status:', fetchedInterestStatus);
-      setIsInterested(fetchedInterestStatus);
-    };
-
-    fetchInterestStatus();
-  }, [projectData, currentUser]);
+    }
+  }, [projectData.name, projectData.buyers, currentUser]);
 
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -153,9 +122,6 @@ const ProjectCardWithCart = ({
         setShowProfileAlert(true);
         return;
       }
-
-      console.log('Project Data:', projectData);
-      console.log('User Session:', session);
 
       const response = await fetch('/api/projects/interest', {
         method: 'POST',
@@ -189,9 +155,6 @@ const ProjectCardWithCart = ({
     setCoinTotal(0);
   };
 
-  const quickAmounts = [100, 500, 1000, 5000, 10000];
-  const coinValues = [1, 5, 10, 25, 100, 500, 1000];
-
   const handleCoinClick = (value: number) => {
     setCoinTotal((prev) => prev + value);
     const totalElement = document.getElementById('total-display');
@@ -208,45 +171,8 @@ const ProjectCardWithCart = ({
     setSelectedCoin(null);
   };
 
-  const handleSubmitOffer = async () => {
-    const profileData = await handleFetchProfile();
-    if (!profileData) {
-      alert('Failed to fetch profile. Please try again.');
-      return;
-    }
-
-    const payload = {
-      projectId: projectData.id,
-      profileId: profileData.id,
-    };
-    console.log('Submitting interest toggle:', payload);
-
-    try {
-      const response = await fetch('/api/projects/interest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Interest toggle result:', result);
-        setIsInterested(result.interested); // Update UI state based on response
-      } else {
-        const errorData = await response.json();
-        console.error('Error toggling interest:', errorData.error);
-        alert('Failed to toggle interest. Please try again.');
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      alert('An unexpected error occurred. Please try again.');
-    }
-  };
-
   return (
-    <div className="project-card-with-cart position-relative h-100 ">
+    <div className="position-relative h-100">
       <ProjectCard project={projectData} />
 
       <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-2">
@@ -255,7 +181,7 @@ const ProjectCardWithCart = ({
             {isInterested && (
               <Button
                 variant="success"
-                onClick={() => setShowOfferModal(true)}
+                onClick={handleMakeOfferClick}
                 className="d-flex align-items-center"
                 size="sm"
               >
@@ -264,7 +190,7 @@ const ProjectCardWithCart = ({
             )}
             <Button
               variant={isInterested ? 'danger' : 'outline-danger'}
-              onClick={() => console.log('Toggle interest')} // Replace with actual handler
+              onClick={handleInterestClick}
               className="d-flex align-items-center gap-1"
               size="sm"
             >
@@ -294,34 +220,118 @@ const ProjectCardWithCart = ({
         </Alert>
       )}
 
-      <Modal show={showOfferModal} onHide={() => setShowOfferModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Submit Your Offer</Modal.Title>
+      <Modal show={showOfferModal} onHide={handleModalClose} centered size="lg">
+        <Modal.Header closeButton className="bg-light">
+          <Modal.Title className="d-flex align-items-center">
+            <CurrencyDollar size={24} className="me-2 text-success" />
+            Make an Offer
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Bid Amount</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Enter your bid"
-                value={bidAmount}
-                onChange={(e) => setBidAmount(e.target.value)}
-                disabled={isLoading}
-              />
-            </Form.Group>
-          </Form>
+        <Modal.Body className="bg-light">
+          <div className="text-center mb-4 p-3 bg-white rounded-lg shadow-sm">
+            <h3 id="total-display" className="mb-0">
+              Total Offer:
+              {' '}
+              <strong className="text-success">
+                $
+                {(coinTotal / 100).toFixed(2)}
+              </strong>
+            </h3>
+          </div>
+
+          <div className="mb-4">
+            <h6 className="text-muted mb-2">Quick Amounts:</h6>
+            <div className="d-flex justify-content-between gap-2">
+              {quickAmounts.map((amount) => (
+                <Button
+                  key={`quick-${amount}`}
+                  variant="outline-primary"
+                  className="flex-grow-1"
+                  onClick={() => handleQuickAmount(amount)}
+                >
+                  $
+                  {(amount / 100).toFixed(2)}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <h6 className="text-muted mb-2">Add Coins:</h6>
+            <div className="d-flex flex-wrap justify-content-center gap-2">
+              {coinValues.map((value) => {
+                const style = getCoinStyle(value);
+                return (
+                  <Button
+                    key={`coin-${value}`}
+                    variant="outline-primary"
+                    onClick={() => handleCoinClick(value)}
+                    className="coin-button d-flex flex-column align-items-center justify-content-center p-2"
+                    style={{
+                      width: 80,
+                      height: 80,
+                      background: style.bg,
+                      color: style.color,
+                      border: 'none',
+                      borderRadius: '50%',
+                      transition: 'transform 0.2s',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <div className="font-weight-bold mb-1">
+                      $
+                      {(value / 100).toFixed(2)}
+                    </div>
+                    <div className="small text-center">
+                      {value >= 100 ? 'Bill' : 'Coin'}
+                    </div>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="d-flex justify-content-center gap-3 mb-3">
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={() => setCoinTotal((prev) => Math.max(0, prev - 1))}
+            >
+              <Dash />
+              1¢
+            </Button>
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={() => setCoinTotal((prev) => prev + 1)}
+            >
+              <Plus />
+              1¢
+            </Button>
+            <Button variant="outline-danger" size="sm" onClick={handleReset}>
+              <ArrowCounterclockwise />
+              Reset
+            </Button>
+          </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowOfferModal(false)} disabled={isLoading}>
+        <Modal.Footer className="bg-light">
+          <Button variant="secondary" onClick={handleModalClose}>
             Cancel
           </Button>
           <Button
             variant="success"
-            onClick={handleSubmitOffer}
-            disabled={isLoading || !bidAmount}
+            onClick={() => {
+              console.log(`Offer: $${(coinTotal / 100).toFixed(2)}`);
+              handleModalClose();
+            }}
           >
-            {isLoading ? 'Submitting...' : 'Submit Offer'}
+            Submit Offer
           </Button>
         </Modal.Footer>
       </Modal>

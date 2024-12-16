@@ -44,7 +44,6 @@ model Project {
   description String?
   picture     String?
   price       Float
-  Bidding     Bidding[]
   profiles    ProfileProject[]
   buyers      ProjectBuyer[]
   interests   ProjectInterest[]
