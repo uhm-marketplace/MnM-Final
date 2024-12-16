@@ -12,7 +12,7 @@ interface Product {
 }
 
 const EditProduct: React.FC = () => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [routerLoaded, setRouterLoaded] = useState(false); // State to track if the router has loaded
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
@@ -72,7 +72,7 @@ const EditProduct: React.FC = () => {
       });
 
       if (response.ok) {
-        router.push(`/account`);
+        router.push('/account');
       } else {
         setError('Failed to update the product. Please try again.');
       }
@@ -109,9 +109,7 @@ const EditProduct: React.FC = () => {
               as="textarea"
               rows={3}
               value={product.description}
-              onChange={(e) =>
-                setProduct({ ...product, description: e.target.value })
-              }
+              onChange={(e) => setProduct({ ...product, description: e.target.value })}
             />
           </Form.Group>
 

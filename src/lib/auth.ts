@@ -25,25 +25,25 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
-      
+
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
-      
+
         if (!user) {
           return null;
         }
-      
+
         const isPasswordValid = await compare(credentials.password, user.password);
         if (!isPasswordValid) {
           return null;
         }
-      
+
         // Fetch the associated profile
         const profile = await prisma.profile.findUnique({
           where: { email: credentials.email },
         });
-      
+
         return {
           id: `${user.id}`,
           email: user.email,
@@ -51,8 +51,8 @@ export const authOptions: NextAuthOptions = {
           name: `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim(), // Combines first and last name
           firstName: profile?.firstName,
           lastName: profile?.lastName,
-        };        
-      },      
+        };
+      },
     }),
   ],
   pages: {
@@ -84,11 +84,11 @@ export const authOptions: NextAuthOptions = {
           id: u.id, // User ID
           profileId: u.profileId || null, // Include profile ID if present
           randomKey: u.randomKey || null, // Additional user data
-          name: u.name || u.username || "", // Name or fallback to username
-          email: u.email || "", // Email of the user
+          name: u.name || u.username || '', // Name or fallback to username
+          email: u.email || '', // Email of the user
         };
       }
       return token;
     },
   },
-}  
+};

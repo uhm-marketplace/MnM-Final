@@ -51,8 +51,16 @@ const ViewAccount: React.FC = () => {
         {user && (
           <>
             <h3>User Information</h3>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Name:</strong> {user.name}</p>
+            <p>
+              <strong>Email:</strong>
+              {' '}
+              {user.email}
+            </p>
+            <p>
+              <strong>Name:</strong>
+              {' '}
+              {user.name}
+            </p>
           </>
         )}
       </div>
@@ -67,7 +75,12 @@ const ViewAccount: React.FC = () => {
                   <Card.Body>
                     <Card.Title>{product.name}</Card.Title>
                     <Card.Text>{product.description}</Card.Text>
-                    <p><strong>Price:</strong> ${product.price}</p>
+                    <p>
+                      <strong>Price:</strong>
+                      {' '}
+                      $
+                      {product.price}
+                    </p>
                   </Card.Body>
                 </Card>
               </Col>

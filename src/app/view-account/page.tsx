@@ -2,8 +2,6 @@
 
 import ViewAccount from '@/components/ViewAccount';
 
-const ViewAccountPage = () => {
-  return <ViewAccount />;
-};
+const ViewAccountPage = () => <ViewAccount />;
 
 export default ViewAccountPage;

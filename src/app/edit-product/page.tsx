@@ -2,8 +2,6 @@
 
 import EditProduct from '../../components/EditProductForm';
 
-const EditProductPage = () => {
-  return <EditProduct />;
-};
+const EditProductPage = () => <EditProduct />;
 
 export default EditProductPage;
