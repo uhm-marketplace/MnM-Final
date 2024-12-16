@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useForm, Controller, set } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import swal from 'sweetalert';
 import { Form, Row, Col, Button, ListGroup, Container, Card } from 'react-bootstrap';
@@ -24,8 +24,6 @@ const ReviewsPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [reviews, setReviews] = useState<IReview[]>([]);
-  const [editReviewId, setEditReviewId] = useState(null);
-  const [editedReviewContent, setEditedReviewContent] = useState('');
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -43,49 +41,6 @@ const ReviewsPage = () => {
     };
     fetchReviews();
   }, []);
-
-  const handleDelete = async (reviewId: any) => {
-    try {
-      await fetch('/api/reviews', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ reviewId }),
-      });
-      setReviews(reviews.filter((review) => review.id !== reviewId));
-    } catch (error) {
-      console.error('Error deleting review:', (error as Error).message);
-      swal('Error', (error as Error).message, 'error');
-    }
-  };
-
-  const handleEdit = (reviewId: any, currentContent: any) => {
-    setEditReviewId(reviewId);
-    setEditedReviewContent(currentContent);
-  };
-
-  const handleEditSubmit = async () => {
-    try {
-      await fetch('/api/reviews', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ reviewId: editReviewId, content: editedReviewContent }),
-      });
-      setReviews(
-        reviews.map((review) => (review.id === editReviewId
-          ? { ...review, content: editedReviewContent }
-          : review)),
-      );
-      setEditReviewId(null);
-      setEditedReviewContent('');
-    } catch (error) {
-      console.error('Error updating review:', (error as Error).message);
-      swal('Error', (error as Error).message, 'error');
-    }
-  };
 
   const onSubmit = async (data: any) => {
     try {
@@ -145,23 +100,6 @@ const ReviewsPage = () => {
                     </small>
                   </Col>
                 </Row>
-                <Button
-                  variant="primary"
-                  disabled={loading}
-                  type="submit"
-                  onClick={() => { handleEdit(review.id, review.reviewText); }}
-                >
-                  Edit
-                </Button>
-                {' '}
-                <Button
-                  variant="primary"
-                  disabled={loading}
-                  type="submit"
-                  onClick={() => { handleDelete(review.id); }}
-                >
-                  Delete
-                </Button>
               </ListGroup.Item>
             ))}
           </ListGroup>

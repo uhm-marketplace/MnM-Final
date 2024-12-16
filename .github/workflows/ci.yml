@@ -19,11 +19,15 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run ESLint
         run: npm run lint
-    # - name: Run Playwright tests
-    # run: npx playwright test
-    # - uses: actions/upload-artifact@v4
-    # if: always()
-    # with:
-    # name: playwright-report
-    # path: playwright-report/
-    # retention-days: 30
+      - name: Run server
+        run: npm run dev &
+      - name: Run Playwright tests
+        run: |
+          cd tests/
+          npx playwright test user-testing.spec.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

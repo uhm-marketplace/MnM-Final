@@ -34,6 +34,8 @@ const CartPage = () => {
     window.dispatchEvent(new Event('cartUpdated'));
   };
 
+  const totalPrice = cartItems.reduce((acc, item) => acc + (item.price || 0), 0);
+
   if (!isClient) {
     return <div>Loading...</div>;
   }
@@ -55,6 +57,8 @@ const CartPage = () => {
                 <th>Product</th>
                 <th>Description</th>
                 <th>Interests</th>
+                <th>Price</th>
+
                 <th style={{ width: '100px' }}>Actions</th>
               </tr>
             </thead>
@@ -92,6 +96,7 @@ const CartPage = () => {
                   </td>
                   <td>{item.description}</td>
                   <td>{item.interests.join(', ')}</td>
+                  <td>{item.price}</td>
                   <td>
                     <Button
                       variant="danger"
@@ -121,6 +126,12 @@ const CartPage = () => {
             >
               Proceed to Checkout
             </Button>
+          </div>
+          <div className="d-flex align-items-end">
+            <h4>
+              Total Price: $
+              {totalPrice.toFixed(2)}
+            </h4>
           </div>
         </>
       )}

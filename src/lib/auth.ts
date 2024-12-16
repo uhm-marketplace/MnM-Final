@@ -8,7 +8,7 @@ import { prisma } from '@/lib/prisma';
 
 export const authOptions: NextAuthOptions = {
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt', // Use JSON Web Tokens for session management
   },
   providers: [
     CredentialsProvider({
@@ -25,11 +25,11 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
+
         const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
+          where: { email: credentials.email },
         });
+
         if (!user) {
           return null;
         }
@@ -39,10 +39,18 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // Fetch the associated profile
+        const profile = await prisma.profile.findUnique({
+          where: { email: credentials.email },
+        });
+
         return {
           id: `${user.id}`,
           email: user.email,
-          randomKey: user.role,
+          role: user.role,
+          name: `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim(), // Combines first and last name
+          firstName: profile?.firstName,
+          lastName: profile?.lastName,
         };
       },
     }),
@@ -52,23 +60,32 @@ export const authOptions: NextAuthOptions = {
     signOut: '/auth/signout',
   },
   callbacks: {
-    session: ({ session, token }) => {
+    // Add user details to the session object
+    session: async ({ session, token }) => {
       return {
         ...session,
         user: {
           ...session.user,
-          id: token.id,
-          randomKey: token.randomKey,
+          id: token.id, // User ID
+          profileId: token.profileId, // Profile ID if needed
+          randomKey: token.randomKey, // Additional role info
+          name: token.name, // User's name
+          email: token.email, // User's email
         },
       };
     },
-    jwt: ({ token, user }) => {
+    // Include user fields in the JWT token
+    jwt: async ({ token, user }) => {
       if (user) {
-        const u = user as unknown as any;
+        // Extract user fields for inclusion in the JWT
+        const u = user as any; // Adjust type as needed for your user object
         return {
           ...token,
-          id: u.id,
-          randomKey: u.randomKey,
+          id: u.id, // User ID
+          profileId: u.profileId || null, // Include profile ID if present
+          randomKey: u.randomKey || null, // Additional user data
+          name: u.name || u.username || '', // Name or fallback to username
+          email: u.email || '', // Email of the user
         };
       }
       return token;

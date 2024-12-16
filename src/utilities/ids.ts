@@ -41,6 +41,7 @@ export const ComponentIDs = {
   studyToolsMenuItem: 'studyToolsMenuItem',
   vendorsMenuItem: 'vendorsMenuItem',
   reviewsMenuItem: 'reviewsMenuItem',
+  viewAccountMenuItem: 'viewAccountMenuItem',
 };
 
 export const PageIDs = {
