@@ -6,8 +6,10 @@ import { prisma } from '@/lib/prisma';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const { projectId, profileId } = body;
 
-    if (!body.projectId || !body.profileId) {
+    if (!projectId || !profileId) {
+      console.error('Missing projectId or profileId:', { projectId, profileId });
       return NextResponse.json(
         { error: 'Missing projectId or profileId' },
         { status: 400 },
@@ -15,31 +17,25 @@ export async function POST(req: Request) {
     }
 
     const existingInterest = await prisma.projectBuyer.findFirst({
-      where: {
-        projectId: Number(body.projectId),
-        profileId: Number(body.profileId),
-      },
+      where: { projectId, profileId },
     });
 
     if (existingInterest) {
-      // Remove interest if already exists
+      console.log('Removing interest for:', { projectId, profileId });
       await prisma.projectBuyer.delete({
         where: { id: existingInterest.id },
       });
-      return NextResponse.json({ message: 'Interest removed' });
+      return NextResponse.json({ interested: false });
     }
-    // Add new interest
+    console.log('Adding interest for:', { projectId, profileId });
     await prisma.projectBuyer.create({
-      data: {
-        projectId: Number(body.projectId),
-        profileId: Number(body.profileId),
-      },
+      data: { projectId, profileId },
     });
-    return NextResponse.json({ message: 'Interest added' });
+    return NextResponse.json({ interested: true });
   } catch (error) {
-    console.error('Error handling project interest:', error);
+    console.error('Error toggling interest:', error);
     return NextResponse.json(
-      { error: 'Failed to update interest' },
+      { error: 'Failed to toggle interest' },
       { status: 500 },
     );
   }

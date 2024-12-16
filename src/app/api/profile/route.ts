@@ -8,6 +8,7 @@ export async function GET(request: Request) {
   const email = searchParams.get('email');
 
   if (!email) {
+    console.error('Error: Email parameter is missing in API request.');
     return NextResponse.json(
       { error: 'Email parameter is required' },
       { status: 400 },
@@ -21,6 +22,7 @@ export async function GET(request: Request) {
     });
 
     if (!profile) {
+      console.error(`Error: Profile not found for email: ${email}`);
       return NextResponse.json(
         { error: 'Profile not found' },
         { status: 404 },
@@ -29,7 +31,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(profile);
   } catch (error) {
-    console.error('Error fetching profile:', error);
+    console.error('Error fetching profile from database:', error);
     return NextResponse.json(
       { error: 'Failed to fetch profile' },
       { status: 500 },

@@ -26,7 +26,6 @@ const ProjectCardWithCart = ({
   projectData: ProjectCardData;
 }) => {
   const [isInCart, setIsInCart] = useState(false);
-  const [isInterested, setIsInterested] = useState(false);
   const [showProfileAlert, setShowProfileAlert] = useState(false);
   const { data: session } = useSession();
   const [showOfferModal, setShowOfferModal] = useState(false);
@@ -34,8 +33,36 @@ const ProjectCardWithCart = ({
   const [bidAmount, setBidAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCoin, setSelectedCoin] = useState<number | null>(null);
-
   const currentUser = session?.user?.email;
+
+  const [isInterested, setIsInterested] = useState(
+    projectData.buyers.some((buyer) => buyer.email === currentUser),
+  );
+
+  const handleFetchProfile = async () => {
+    if (!currentUser) {
+      console.error('Error: No current user available to fetch profile.');
+      return null;
+    }
+
+    try {
+      const profileResponse = await fetch(`/api/profile?email=${currentUser}`);
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json();
+        if (!profileData?.id) {
+          console.error('Error: Profile ID is missing from API response.');
+          return null;
+        }
+        return profileData;
+      }
+      const errorData = await profileResponse.json();
+      console.error('Error fetching profile:', errorData.error || 'Unknown error');
+      return null;
+    } catch (error) {
+      console.error('Unexpected error fetching profile:', error);
+      return null;
+    }
+  };
 
   const getCoinStyle = (value: number) => {
     switch (value) {
@@ -83,17 +110,19 @@ const ProjectCardWithCart = ({
   };
 
   useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    setIsInCart(
-      cart.some((item: ProjectCardData) => item.name === projectData.name),
-    );
+    const fetchInterestStatus = async () => {
+      const profileData = await handleFetchProfile();
+      if (!profileData) return;
 
-    if (currentUser) {
-      setIsInterested(
-        projectData.buyers.some((buyer) => buyer.email === currentUser),
+      const fetchedInterestStatus = projectData.buyers.some(
+        (buyer) => buyer.id === profileData.id,
       );
-    }
-  }, [projectData.name, projectData.buyers, currentUser]);
+      console.log('Fetched interest status:', fetchedInterestStatus);
+      setIsInterested(fetchedInterestStatus);
+    };
+
+    fetchInterestStatus();
+  }, [projectData, currentUser]);
 
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -180,92 +209,43 @@ const ProjectCardWithCart = ({
   };
 
   const handleSubmitOffer = async () => {
+    const profileData = await handleFetchProfile();
+    if (!profileData) {
+      console.error('Error: Unable to fetch profile data. Offer submission aborted.');
+      alert('Unable to fetch profile. Please log in and try again.');
+      return;
+    }
+
+    console.log('Submitting offer with:', {
+      projectId: projectData.id,
+      profileId: profileData.id,
+    });
+
     try {
-      console.log('Starting offer submission...');
-
-      // Ensure projectData and session are valid
-      if (!projectData || !session?.user?.id) {
-        throw new Error('Project or user information is missing.');
-      }
-
-      // Dynamically retrieve attributes
-      const projectId = projectData.id; // Retrieved from projectData
-      const { ownerId } = projectData; // Retrieved from projectData
-      const userId = session.user.id; // Retrieved from session
-
-      console.log('Retrieved Fields:', { projectId, ownerId, userId });
-
-      if (!projectData?.id || !projectData?.ownerId) {
-        console.error('Invalid project data:', projectData);
-        return null; // Or show a placeholder/error message
-      }
-
-      if (!session || !session.user || !session.user.id) {
-        throw new Error('User session is invalid or missing.');
-      }
-
-      // Validate retrieved attributes
-      if (!projectId || !ownerId || !userId) {
-        throw new Error('Missing project, user, or owner information.');
-      }
-
-      const payload = {
-        projectId,
-        bidAmount: parseFloat(bidAmount), // Ensure bidAmount is numeric
-        userId,
-        ownerId,
-      };
-
-      console.log('Submitting Payload:', payload);
-
-      const parsedBidAmount = parseFloat(bidAmount);
-      if (Number.isNaN(parsedBidAmount) || parsedBidAmount <= 0) {
-        throw new Error('Bid amount must be a valid number greater than zero.');
-      }
-
-      console.log('Validated Fields:');
-      console.log('Project ID:', projectId);
-      console.log('Owner ID:', ownerId);
-      console.log('User ID:', userId);
-      console.log('Bid Amount:', parsedBidAmount);
-
-      const response = await fetch('/api/bidding', {
+      const response = await fetch('/api/projects/interest', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectId: projectData.id,
+          profileId: profileData.id,
+        }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API responded with error:', errorText);
-        throw new Error(
-          `API Error: ${errorText || 'Unknown error occurred.'} (Status: ${response.status})`,
-        );
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Offer submitted successfully. Result:', result);
+        setIsInterested(result.interested); // Use the backend response to set the state
+      } else {
+        const errorData = await response.json();
+        console.error('Error submitting offer:', errorData.error || 'Unknown error');
+        alert('Failed to place the offer. Please try again.');
       }
-
-      const responseData = await response.json();
-      console.log('Offer submitted successfully:', responseData);
-
-      setShowOfferModal(false);
-      setBidAmount('');
     } catch (error) {
-      console.error('Error during offer submission:', (error as Error).message || error);
-      alert(`Error submitting offer: ${(error as Error).message || 'Unknown error occurred'}`);
+      console.error('Unexpected error during offer submission:', error);
+      alert('An unexpected error occurred. Please try again.');
     }
-
-    if (!projectData || Object.keys(projectData).length === 0) {
-      console.error('Invalid project data:', projectData);
-      return <div>Project data is unavailable.</div>;
-    }
-
-    if (isLoading) {
-      return <div>Loading...</div>;
-    }
-    
-    if (!projectData) {
-      return <div>Error: No project data found.</div>;
-    }
-
   };
 
   return (
