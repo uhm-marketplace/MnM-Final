@@ -5,12 +5,13 @@ import { prisma } from '@/lib/prisma';
 import ListProducts from './ListProducts';
 import SearchProducts from './SearchProducts';
 
-const ProductsPage = async ({ searchParams }: { searchParams?: { query?: string } }) => {
+const ProductsPage = async ({ searchParams }: { searchParams: Record<string, any> }) => {
   const session = await getServerSession(authOptions);
 
   loggedInProtectedPage(session as { user: { email: string; id: string; randomKey: string } } | null);
 
-  const query = searchParams?.query || '';
+  // Ensure searchParams is awaited
+  const query = (await searchParams)?.query || ''; // Await searchParams and extract 'query'
 
   const projects = await prisma.project.findMany({
     where: {
@@ -29,10 +30,6 @@ const ProductsPage = async ({ searchParams }: { searchParams?: { query?: string 
       <ListProducts query={query} projects={projects} />
     </div>
   );
-};
-
-ProductsPage.defaultProps = {
-  searchParams: { query: '' },
 };
 
 export default ProductsPage;

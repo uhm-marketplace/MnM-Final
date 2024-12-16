@@ -211,15 +211,15 @@ const ProjectCardWithCart = ({
   const handleSubmitOffer = async () => {
     const profileData = await handleFetchProfile();
     if (!profileData) {
-      console.error('Error: Unable to fetch profile data. Offer submission aborted.');
-      alert('Unable to fetch profile. Please log in and try again.');
+      alert('Failed to fetch profile. Please try again.');
       return;
     }
 
-    console.log('Submitting offer with:', {
+    const payload = {
       projectId: projectData.id,
       profileId: profileData.id,
-    });
+    };
+    console.log('Submitting interest toggle:', payload);
 
     try {
       const response = await fetch('/api/projects/interest', {
@@ -227,23 +227,20 @@ const ProjectCardWithCart = ({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          projectId: projectData.id,
-          profileId: profileData.id,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Offer submitted successfully. Result:', result);
-        setIsInterested(result.interested); // Use the backend response to set the state
+        console.log('Interest toggle result:', result);
+        setIsInterested(result.interested); // Update UI state based on response
       } else {
         const errorData = await response.json();
-        console.error('Error submitting offer:', errorData.error || 'Unknown error');
-        alert('Failed to place the offer. Please try again.');
+        console.error('Error toggling interest:', errorData.error);
+        alert('Failed to toggle interest. Please try again.');
       }
     } catch (error) {
-      console.error('Unexpected error during offer submission:', error);
+      console.error('Unexpected error:', error);
       alert('An unexpected error occurred. Please try again.');
     }
   };

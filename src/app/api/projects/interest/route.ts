@@ -19,13 +19,18 @@ export async function POST(req: Request) {
     const existingInterest = await prisma.projectBuyer.findFirst({
       where: { projectId, profileId },
     });
+    console.log('Existing interest:', existingInterest);
 
     if (existingInterest) {
-      console.log('Removing interest for:', { projectId, profileId });
+      console.log('Deleting existing interest for:', { projectId, profileId });
       await prisma.projectBuyer.delete({
         where: { id: existingInterest.id },
       });
-      return NextResponse.json({ interested: false });
+    } else {
+      console.log('Creating new interest for:', { projectId, profileId });
+      await prisma.projectBuyer.create({
+        data: { projectId, profileId },
+      });
     }
     console.log('Adding interest for:', { projectId, profileId });
     await prisma.projectBuyer.create({
